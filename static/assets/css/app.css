@@ -1,8 +1,8 @@
 @charset "UTF-8";
 /* Root Prefix Variable */
 :root {
-  --bs-logo-lg-height: 24px;
-  --bs-logo-sm-height: 26px;
+  --bs-logo-lg-height: 30px;
+  --bs-logo-sm-height: 36px;
   --bs-main-nav-width: 280px;
   --bs-main-nav-width-sm: 75px;
   --bs-main-nav-item-icon-size: 22px;
@@ -20147,4 +20147,30 @@ p.no-span::after {
 .breadcrumb-item + .breadcrumb-item::before{
   rotate: 180deg;
   padding-inline-start: var(--bs-breadcrumb-item-padding-x);
+}
+
+.logo-box a {
+  display: flex;
+  align-items: center; /* Aligns text and logo vertically */
+}
+a.logo-dark.logo-text{
+  color: #fff !important;
+}
+a.logo-light.logo-text{
+  color: #000 !important;
+}
+
+.logo-text {
+  display: none;
+  margin-left: 10px; /* Space between the logo and the text */
+  font-size: 18px; /* Adjust the font size as needed */
+  font-weight: bold; /* Make the text bold if needed */
+  white-space: nowrap; /* Prevents the text from wrapping onto a new line */
+}
+
+html[data-menu-size=sm-hover-active] .logo-text {
+  display: inline-block;
+}
+.main-nav:hover .logo-text {
+  display: inline-block;
 }

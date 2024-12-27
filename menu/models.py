@@ -3,9 +3,6 @@ from django.db import models
 # Menu Model (Main Menu)
 class Menu(models.Model):
     name = models.CharField(max_length=100, verbose_name='نام منو')
-    parent = models.ForeignKey(
-        'self', null=True, blank=True, on_delete=models.CASCADE, related_name='submenus', verbose_name='منو والد'
-    )
     title = models.CharField(max_length=150, verbose_name='عنوان نمایش', blank=True)
     description = models.TextField(blank=True, verbose_name='توضیحات')
     icon = models.CharField(max_length=100, verbose_name='آیکون', blank=True)
@@ -19,11 +16,12 @@ class Menu(models.Model):
         verbose_name_plural = 'منوها'
 
     def __str__(self):
-        return self.name
+        return self.title
 
 # SubMenu Model (Holds submenu items under each Menu)
 class SubMenu(models.Model):
     menu = models.ForeignKey(Menu, related_name='submenus', on_delete=models.CASCADE, verbose_name='منو')
+    name = models.CharField(max_length=100, verbose_name='نام زیر منو')
     title = models.CharField(max_length=150, verbose_name='عنوان زیر منو')
     url = models.CharField(max_length=255, verbose_name='آدرس لینک', blank=True)
     icon = models.CharField(max_length=100, verbose_name='آیکون', blank=True)
