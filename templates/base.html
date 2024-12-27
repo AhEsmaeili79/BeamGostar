@@ -1,0 +1,30 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-menu-size="sm-hover">
+<head>
+    <!-- Title Meta -->
+    <meta charset="utf-8" />
+    <title>{% block title %}داشبورد{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A fully responsive premium admin dashboard template" />
+    <meta name="author" content="Techzaa" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="{% static 'assets/images/favicon.html' %}">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="{% static 'assets/css/app.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/icons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/fontiran.min.css' %}">
+    <script src="{% static 'assets/js/config.js' %}"></script>
+</head>
+<body>
+    <div class="wrapper">
+        {% block content %}
+        {% endblock %}
+    </div>
+    {% include 'partials/scripts.html' %}
+</body>
+</html>
