@@ -4,10 +4,8 @@ from . import views
 app_name = 'admin_panel'
 
 urlpatterns = [
-    path('', views.DashboardView.as_view(), name='dashboard'),
-    path('users/', views.UserListView.as_view(), name='user_list'),
-    path('users/create/', views.UserCreateView.as_view(), name='user_create'),
-    path('users/<int:pk>/update/', views.UserUpdateView.as_view(), name='user_update'),
-    path('roles/', views.UserRoleListView.as_view(), name='role_list'),
-    path('roles/create/', views.UserRoleCreateView.as_view(), name='role_create'),
+    path('', views.DashboardView.as_view(), name='dashboard'),  # Use as_view() method to create an instance
+    path('login', views.user_login, name='login'),  # Make sure the URL has a trailing slash
+    path('user/add/', views.user_add_or_edit, name='user_add'),
+    path('user/edit/<int:user_id>/', views.user_add_or_edit, name='user_edit'),
 ]

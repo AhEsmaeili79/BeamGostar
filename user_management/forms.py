@@ -2,11 +2,22 @@ from django import forms
 from .models import User, UserRole
 from django.utils import timezone
 
+from django import forms
+from .models import User
+
 class UserForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email', 'password', 'national_id', 'date_of_birth', 'status', 'user_type']
-        exclude = ['date_joined', 'is_staff', 'created_at', 'deleted_at']  # Exclude date_joined, created_at, and deleted_at
+        fields = [
+            'first_name', 'last_name', 'father_name', 'gender', 'national_id', 'id_number', 'date_of_birth',
+            'province', 'city', 'role', 'work_group', 'status', 'profile_picture', 'phone_type', 
+            'phone_number', 'priority', 'username', 'password', 'user_type', 'description',
+        ]
+        widgets = {
+            'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
+            'password': forms.PasswordInput(render_value=True),
+            'profile_picture': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

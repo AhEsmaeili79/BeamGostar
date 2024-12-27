@@ -40,7 +40,7 @@ class UserRole(models.Model):
 class User(AbstractUser):
     first_name = models.CharField(max_length=100, verbose_name='نام')
     last_name = models.CharField(max_length=100, verbose_name='نام خانوادگی')
-    father_name = models.CharField(max_length=100, verbose_name='نام پدر')
+    father_name = models.CharField(max_length=100, verbose_name='نام پدر',blank=True, null=True)
     gender = models.CharField(max_length=1, choices=Gender.choices, verbose_name='جنسیت', default=Gender.MALE)
     national_id = models.CharField(max_length=10, unique=True, verbose_name="کد ملی")
     id_number = models.CharField(max_length=10, verbose_name='شماره شناسنامه')
