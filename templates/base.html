@@ -16,10 +16,18 @@
 </head>
 <body>
     <div class="wrapper">
-        {% block content %}
-        {% endblock %}
+        {% include 'partials/_header.html' %}
+        {% include 'partials/_sidebar.html' %}
+        <div class="page-content">
+            
+            {% block content %}
+            {% endblock %}
+
+            {% include 'partials/_footer.html' %}
+        </div>
     </div>
     {% include 'partials/theme_settings.html' %}
     {% include 'partials/scripts.html' %}
+    
 </body>
 </html>

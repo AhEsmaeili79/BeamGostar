@@ -1,69 +1,15 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, redirect
 from django.views import View
 from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
-from django.contrib import messages
-from .models import User, UserRole
-from .forms import UserForm, UserRoleForm
-from django.contrib.auth.mixins import LoginRequiredMixin  # Import LoginRequiredMixin
-from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login ,logout
+from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
-from .models import User
-from django.http import HttpResponse
-
-class DashboardView(LoginRequiredMixin, View):
-    login_url = '/login'  # Redirect to login if the user is not logged in
-
-    def get(self, request):
-        return render(request, 'admin_panel/dashboard.html')
-
-@login_required(login_url='/login')
-def user_add_or_edit(request):
-    # Get the current user
-    user = request.user
-    
-    if request.method == 'POST':
-        # Update user fields based on the submitted data
-        user.first_name = request.POST.get('first_name', user.first_name)
-        user.last_name = request.POST.get('last_name', user.last_name)
-        user.father_name = request.POST.get('father_name', user.father_name)
-        user.gender = request.POST.get('gender', user.gender)
-        user.national_id = request.POST.get('national_id', user.national_id)
-        user.id_number = request.POST.get('id_number', user.id_number)
-        user.date_of_birth = request.POST.get('date_of_birth', user.date_of_birth)
-        user.province = request.POST.get('province', user.province)
-        user.city = request.POST.get('city', user.city)
-        user.role_id = request.POST.get('role', user.role.id)  # Assuming roles are passed as their ID
-        user.work_group_id = request.POST.get('work_group', user.work_group.id)  # Same for work group
-        user.status = request.POST.get('status', user.status)
-        user.phone_type = request.POST.get('phone_type', user.phone_type)
-        user.phone_number = request.POST.get('phone_number', user.phone_number)
-        user.priority = request.POST.get('priority', user.priority)
-        user.username = request.POST.get('username', user.username)
-        user.password = request.POST.get('password', user.password)
-        user.user_type = request.POST.get('user_type', user.user_type)
-        user.description = request.POST.get('description', user.description)
-
-        # Handle profile picture (optional)
-        if request.FILES.get('profile_picture'):
-            user.profile_picture = request.FILES['profile_picture']
-        
-        user.save()
-        return redirect('profile_edit_success')  # Redirect to a success page after save
-    
-    # Render the page with current user details
-    return render(request, 'user_management/user_addoredit.html', {
-        'user': user,
-    })
-
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
 from django.contrib import messages
-from django.http import HttpResponseRedirect
+from django.contrib.auth.mixins import LoginRequiredMixin 
 
 def user_login(request):
     if request.method == 'POST':
-        username = request.POST['username']  # Ensure the input name matches this
+        username = request.POST['username']  
         password = request.POST['password']
         
         # Authenticate the user
@@ -72,9 +18,75 @@ def user_login(request):
         if user is not None:
             # Log the user in
             login(request, user)
-            return redirect('/')  # Redirect to home page after successful login
+            return redirect('/')  
         else:
             messages.error(request, "Invalid username or password")
-            return redirect('admin_panel:login')  # Use the correct namespaced URL for login
+            return redirect('admin_panel:login')  
             
     return render(request, 'user_management/login.html')
+
+def user_logout(request):
+    # Log the user out
+    logout(request)
+    # Redirect to the login page
+    return redirect('admin_panel:login')
+
+class DashboardView(LoginRequiredMixin, View):
+    login_url = '/login' 
+
+    def get(self, request):
+        return render(request, 'admin_panel/dashboard.html')
+
+@login_required(login_url='/login')
+def users_form(request):
+    return render(request, 'user_management/partials/user_form.html')
+
+
+@login_required(login_url='/login')
+def users_list(request):
+    # Sample users data
+    users_data = [
+        {'province': 'تهران', 'district': 'شهر ری', 'first_name': 'مایکل آ.', 'last_name': 'ماینر', 'national_code': '1234567890', 'executive_body': 'دستگاه اجرایی 1', 'work_group': 'گروه کاری 1', 'status': 'فعال'},
+        {'province': 'اصفهان', 'district': 'اصفهان', 'first_name': 'ترزا تی.', 'last_name': 'برُس', 'national_code': '0987654321', 'executive_body': 'دستگاه اجرایی 2', 'work_group': 'گروه کاری 2', 'status': 'غیرفعال'},
+        {'province': 'شیراز', 'district': 'شیراز', 'first_name': 'جیمز ال.', 'last_name': 'اریکسون', 'national_code': '1231231234', 'executive_body': 'دستگاه اجرایی 3', 'work_group': 'گروه کاری 3', 'status': 'فعال'},
+        {'province': 'کرج', 'district': 'کرج', 'first_name': 'لیلی و.', 'last_name': 'ویلسون', 'national_code': '4321432143', 'executive_body': 'دستگاه اجرایی 4', 'work_group': 'گروه کاری 4', 'status': 'غیرفعال'},
+        {'province': 'تبریز', 'district': 'تبریز', 'first_name': 'سارا م.', 'last_name': 'بروکس', 'national_code': '8765876587', 'executive_body': 'دستگاه اجرایی 5', 'work_group': 'گروه کاری 5', 'status': 'غیرفعال'},
+        {'province': 'مشهد', 'district': 'مشهد', 'first_name': 'جو ک.', 'last_name': 'هال', 'national_code': '6547654765', 'executive_body': 'دستگاه اجرایی 6', 'work_group': 'گروه کاری 6', 'status': 'فعال'},
+        {'province': 'یزد', 'district': 'یزد', 'first_name': 'رالف', 'last_name': 'هویبر', 'national_code': '3214321432', 'executive_body': 'دستگاه اجرایی 7', 'work_group': 'گروه کاری 7', 'status': 'فعال'},
+        {'province': 'کرمان', 'district': 'کرمان', 'first_name': 'سارا', 'last_name': 'درشر', 'national_code': '9081708170', 'executive_body': 'دستگاه اجرایی 8', 'work_group': 'گروه کاری 8', 'status': 'فعال'},
+        {'province': 'رشت', 'district': 'رشت', 'first_name': 'لئونی', 'last_name': 'مایستر', 'national_code': '9876987698', 'executive_body': 'دستگاه اجرایی 9', 'work_group': 'گروه کاری 9', 'status': 'فعال'},
+    ]
+
+    # Buttons for the toolbar
+    buttons = [
+        {'text': 'راهنما', 'title': 'راهنما: جهت مشاهده ی راهنما (پنجره ی فعلی) از این دکمه استفاده نمایید.', 'url': '#', 'icon': 'solar:users-group-two-rounded-bold-duotone'},
+        {'text': 'ثبت رکورد جدید', 'title': 'ثبت رکورد جدید: جهت ثبت یک رکورد جدید و افزودن آن به این لیست از این دکمه استفاده کنید. با کلیک روی این دکمه به فرم مربوطه هدایت می شوید.', 'url': '#', 'icon': 'solar:users-group-two-rounded-bold-duotone'},
+        {'text': 'پرینت', 'title': 'پرینت: جهت چاپ تمام اطلاعات موجود در گرید از این دکمه استفاده کنید. بنابراین با فیلتر اطلاعات گرید، اطلاعات فیلتر شده را میتوان پرینت گرفت.', 'url': '#', 'icon': 'solar:users-group-two-rounded-bold-duotone'},
+        {'text': 'حذف چندتایی', 'title': 'حذف چندتایی: در صورت تمایل به حذف چندتایی رکورد ها، ابتدا رکوردهای مورد نظر را در گرید مارک دار نمایید و سپس از این دکمه برای حذف استفاده نمایید.', 'url': '#', 'icon': 'solar:trash-bin-minimalistic-2-broken'},
+        {'text': 'خروجی', 'title': 'خروجی: جهت تهیه ی خروجی اکسل و یا پی دی اف از این دکمه و انتخاب نوع خروجی مورد نظر از لیست باز شده، استفاده نمایید.', 'url': '#', 'icon': 'solar:users-group-two-rounded-bold-duotone' },
+        {'text': 'تنظیمات', 'title': 'تنظیمات: جهت تنظیمات دلخواه گرید مانند: نمایش یا عدم نمایش ستونها، رنگ بندی، تعداد رکوردهای قابل نمایش در صفحه و.. از این دکمه استفاده نمایید.', 'url': '#', 'icon': 'solar:users-group-two-rounded-bold-duotone'},
+    ]
+    
+    # Paginator setup: 10 users per page
+    paginator = Paginator(users_data, 6)
+    
+    # Get current page number from the request (defaults to 1)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    # Define the filter dropdown options dynamically
+    filters = [
+        {'id': 'province', 'label': 'استان', 'options': ['استان 1', 'استان 2', 'استان 3','استان 1', 'استان 2', 'استان 3']},
+        {'id': 'district', 'label': 'شهرستان', 'options': ['شهرستان 1', 'شهرستان 2', 'شهرستان 3','شهرستان 1', 'شهرستان 2', 'شهرستان 3']},
+        {'id': 'executive_body', 'label': 'دستگاه اجرایی', 'options': ['اتحادیه ماکیان شرق', 'اداره راه شهرستان','اتحادیه ماکیان شرق', 'اداره راه شهرستان']},
+        {'id': 'work_group', 'label': 'گروه کاری', 'options': ['ادمین', 'پذیرش']},
+        {'id': 'status', 'label': 'وضعیت', 'options': ['فعال', 'غیرفعال']},
+    ]
+
+    # Render the template with dynamic data
+    return render(request, 'user_management/partials/user_list.html', {
+        'users_data': users_data,
+        'buttons': buttons,
+        'page_obj': page_obj,
+        'filters': filters,  # Pass dynamic filter data to the template
+    })
