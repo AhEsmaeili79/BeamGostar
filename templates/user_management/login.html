@@ -43,7 +43,7 @@
                                 {% endif %}
     
                                 <div class="mb-5">
-                                    <form method="POST" action="{% url 'admin_panel:login' %}" class="authentication-form">
+                                    <form method="POST" action="{% url 'login' %}" class="authentication-form">
                                         {% csrf_token %}
                                         <div class="mb-3">
                                             <label class="form-label" for="example-username">نام کاربری</label>

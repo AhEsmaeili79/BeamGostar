@@ -21,7 +21,7 @@ def user_login(request):
             return redirect('/')  
         else:
             messages.error(request, "Invalid username or password")
-            return redirect('admin_panel:login')  
+            return redirect('login')  
             
     return render(request, 'user_management/login.html')
 
@@ -29,7 +29,7 @@ def user_logout(request):
     # Log the user out
     logout(request)
     # Redirect to the login page
-    return redirect('admin_panel:login')
+    return redirect('login')
 
 class DashboardView(LoginRequiredMixin, View):
     login_url = '/login' 

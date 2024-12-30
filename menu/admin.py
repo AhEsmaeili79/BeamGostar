@@ -4,7 +4,7 @@ from .models import Menu, SubMenu, SubItem
 # Register Menu Model
 @admin.register(Menu)
 class MenuAdmin(admin.ModelAdmin):
-    list_display = ('id','title','name', 'icon', 'order', 'is_active')
+    list_display = ('id','title','name', 'icon', 'order', 'is_active','url')
     search_fields = ('name', 'title', 'icon')
     ordering = ('order',)  # Default ordering based on 'order' field
     prepopulated_fields = {'title': ('name',)}  # Automatically fill 'title' field based on 'name'
