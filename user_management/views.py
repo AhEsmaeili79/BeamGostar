@@ -59,12 +59,12 @@ def users_list(request):
 
     # Buttons for the toolbar
     buttons = [
-        {'text': 'راهنما', 'title': 'راهنما: جهت مشاهده ی راهنما (پنجره ی فعلی) از این دکمه استفاده نمایید.', 'url': '#', 'icon': 'solar:users-group-two-rounded-bold-duotone'},
-        {'text': 'ثبت رکورد جدید', 'title': 'ثبت رکورد جدید: جهت ثبت یک رکورد جدید و افزودن آن به این لیست از این دکمه استفاده کنید. با کلیک روی این دکمه به فرم مربوطه هدایت می شوید.', 'url': '#', 'icon': 'solar:users-group-two-rounded-bold-duotone'},
-        {'text': 'پرینت', 'title': 'پرینت: جهت چاپ تمام اطلاعات موجود در گرید از این دکمه استفاده کنید. بنابراین با فیلتر اطلاعات گرید، اطلاعات فیلتر شده را میتوان پرینت گرفت.', 'url': '#', 'icon': 'solar:users-group-two-rounded-bold-duotone'},
+        {'text': 'راهنما', 'title': 'راهنما: جهت مشاهده ی راهنما (پنجره ی فعلی) از این دکمه استفاده نمایید.', 'url': '#', 'icon': 'solar:question-circle-broken'},
+        {'text': 'ثبت رکورد جدید', 'title': 'ثبت رکورد جدید: جهت ثبت یک رکورد جدید و افزودن آن به این لیست از این دکمه استفاده کنید. با کلیک روی این دکمه به فرم مربوطه هدایت می شوید.', 'url': '#', 'icon': 'solar:add-circle-broken'},
+        {'text': 'پرینت', 'title': 'پرینت: جهت چاپ تمام اطلاعات موجود در گرید از این دکمه استفاده کنید. بنابراین با فیلتر اطلاعات گرید، اطلاعات فیلتر شده را میتوان پرینت گرفت.', 'url': '#', 'icon': 'solar:printer-bold'},
         {'text': 'حذف چندتایی', 'title': 'حذف چندتایی: در صورت تمایل به حذف چندتایی رکورد ها، ابتدا رکوردهای مورد نظر را در گرید مارک دار نمایید و سپس از این دکمه برای حذف استفاده نمایید.', 'url': '#', 'icon': 'solar:trash-bin-minimalistic-2-broken'},
-        {'text': 'خروجی', 'title': 'خروجی: جهت تهیه ی خروجی اکسل و یا پی دی اف از این دکمه و انتخاب نوع خروجی مورد نظر از لیست باز شده، استفاده نمایید.', 'url': '#', 'icon': 'solar:users-group-two-rounded-bold-duotone' },
-        {'text': 'تنظیمات', 'title': 'تنظیمات: جهت تنظیمات دلخواه گرید مانند: نمایش یا عدم نمایش ستونها، رنگ بندی، تعداد رکوردهای قابل نمایش در صفحه و.. از این دکمه استفاده نمایید.', 'url': '#', 'icon': 'solar:users-group-two-rounded-bold-duotone'},
+        {'text': 'خروجی', 'title': 'خروجی: جهت تهیه ی خروجی اکسل و یا پی دی اف از این دکمه و انتخاب نوع خروجی مورد نظر از لیست باز شده، استفاده نمایید.', 'url': '#', 'icon': 'solar:export-bold' },
+        {'text': 'تنظیمات', 'title': 'تنظیمات: جهت تنظیمات دلخواه گرید مانند: نمایش یا عدم نمایش ستونها، رنگ بندی، تعداد رکوردهای قابل نمایش در صفحه و.. از این دکمه استفاده نمایید.', 'url': '#', 'icon': 'solar:settings-outline'},
     ]
     
     # Paginator setup: 10 users per page
@@ -90,3 +90,74 @@ def users_list(request):
         'page_obj': page_obj,
         'filters': filters,  # Pass dynamic filter data to the template
     })
+    
+
+
+def accounts_list(request):
+    # Sample data for demonstration
+    accounts = [
+        {
+            'account_type': 'رسمی',
+            'account_number': '1234567890',
+            'card_number': '1234-5678-9012-3456',
+            'iban': 'IR123456789012345678901234',
+            'creation_date': '2024-01-01',
+            'edit_date': '2024-01-15',
+        },
+        {
+            'account_type': 'رسمی',
+            'account_number': '1234567890',
+            'card_number': '1234-5678-9012-3456',
+            'iban': 'IR123456789012345678901234',
+            'creation_date': '2024-01-01',
+            'edit_date': '2024-01-15',
+        },
+        {
+            'account_type': 'غیر رسمی',
+            'account_number': '1234567890',
+            'card_number': '1234-5678-9012-3456',
+            'iban': 'IR123456789012345678901234',
+            'creation_date': '2024-01-01',
+            'edit_date': '2024-01-15',
+        },
+        {
+            'account_type': 'رسمی',
+            'account_number': '1234567890',
+            'card_number': '1234-5678-9012-3456',
+            'iban': 'IR123456789012345678901234',
+            'creation_date': '2024-01-01',
+            'edit_date': '2024-01-15',
+        },
+        {
+            'account_type': 'رسمی',
+            'account_number': '1234567890',
+            'card_number': '1234-5678-9012-3456',
+            'iban': 'IR123456789012345678901234',
+            'creation_date': '2024-01-01',
+            'edit_date': '2024-01-15',
+            'status': 'غیر فعال',
+        },
+        {
+            'account_type': 'رسمی',
+            'account_number': '1234567890',
+            'card_number': '1234-5678-9012-3456',
+            'iban': 'IR123456789012345678901234',
+            'creation_date': '2024-01-01',
+            'edit_date': '2024-01-15',
+        },
+        # Add more accounts here
+    ]
+    buttons = [
+        {'text': 'راهنما', 'title': 'راهنما: جهت مشاهده ی راهنما (پنجره ی فعلی) از این دکمه استفاده نمایید.', 'url': '#', 'icon': 'solar:question-circle-broken'},
+        {'text': 'ثبت رکورد جدید', 'title': 'ثبت رکورد جدید: جهت ثبت یک رکورد جدید و افزودن آن به این لیست از این دکمه استفاده کنید. با کلیک روی این دکمه به فرم مربوطه هدایت می شوید.', 'url': '#', 'icon': 'solar:add-circle-broken'},
+        {'text': 'پرینت', 'title': 'پرینت: جهت چاپ تمام اطلاعات موجود در گرید از این دکمه استفاده کنید. بنابراین با فیلتر اطلاعات گرید، اطلاعات فیلتر شده را میتوان پرینت گرفت.', 'url': '#', 'icon': 'solar:printer-bold'},
+        {'text': 'حذف چندتایی', 'title': 'حذف چندتایی: در صورت تمایل به حذف چندتایی رکورد ها، ابتدا رکوردهای مورد نظر را در گرید مارک دار نمایید و سپس از این دکمه برای حذف استفاده نمایید.', 'url': '#', 'icon': 'solar:trash-bin-minimalistic-2-broken'},
+        {'text': 'خروجی', 'title': 'خروجی: جهت تهیه ی خروجی اکسل و یا پی دی اف از این دکمه و انتخاب نوع خروجی مورد نظر از لیست باز شده، استفاده نمایید.', 'url': '#', 'icon': 'solar:export-bold' },
+        {'text': 'تنظیمات', 'title': 'تنظیمات: جهت تنظیمات دلخواه گرید مانند: نمایش یا عدم نمایش ستونها، رنگ بندی، تعداد رکوردهای قابل نمایش در صفحه و.. از این دکمه استفاده نمایید.', 'url': '#', 'icon': 'solar:settings-outline'},
+    ]
+    # Pagination
+    paginator = Paginator(accounts, 5)  # Show 10 accounts per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'user_management/accounts_list.html', {'accounts': page_obj.object_list, 'page_obj': page_obj, 'buttons':buttons})
