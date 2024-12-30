@@ -12,7 +12,7 @@ from .models import User
 from django.http import HttpResponse
 
 class DashboardView(LoginRequiredMixin, View):
-    login_url = '/login/'  # Redirect to login if the user is not logged in
+    login_url = '/login'  # Redirect to login if the user is not logged in
 
     def get(self, request):
         return render(request, 'admin_panel/dashboard.html')

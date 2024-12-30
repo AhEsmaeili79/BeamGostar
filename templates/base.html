@@ -12,18 +12,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
     <!-- App favicon -->
-    <link rel="shortcut icon" href="{% static 'assets/images/favicon.html' %}">
-
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="{% static 'assets/css/app.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/icons.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/fontiran.min.css' %}">
-    <script src="{% static 'assets/js/config.js' %}"></script>
+    {% include 'partials/stylesheets.html' %}
 </head>
 <body>
     <div class="wrapper">
         {% block content %}
         {% endblock %}
     </div>
+    {% include 'partials/theme_settings.html' %}
+    {% include 'partials/scripts.html' %}
 </body>
 </html>

@@ -9,11 +9,7 @@
     <meta name="description" content="A fully responsive premium admin dashboard template" />
     <meta name="author" content="Techzaa" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-
-    <link rel="stylesheet" href="{% static 'assets/css/app.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/icons.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/fontiran.min.css' %}">
-    <script src="{% static 'assets/js/config.js' %}"></script>
+    {% include 'partials/stylesheets.html' %}
 </head>
 
 <body class="h-100">
@@ -85,8 +81,8 @@
             </div>
         </div>
     </div>
-    
-    <script src="{% static 'assets/js/app.js' %}"></script>
-    <script src="{% static 'assets/js/layout.js' %}"></script>
-</body>
+    {% include 'partials/scripts.html' %}
+    </body>
 </html>
+
+
