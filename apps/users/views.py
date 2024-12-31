@@ -65,7 +65,7 @@ class DashboardView(LoginRequiredMixin, View):
     login_url = '/login'
     
     def get(self, request):
-        return render(request, 'dashboard/base.html')
+        return render(request, 'dashboard/dashboard.html')
 
 
 @login_required(login_url='/login')
