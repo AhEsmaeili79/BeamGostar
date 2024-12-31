@@ -10,13 +10,7 @@
                     <div>
                         <h4 class="card-title">نحوه ی جوابدهی</h4>
                     </div>
-                    <div class="list_toolbox">
-                        {% for button in buttons %}
-                            <a href="{{ button.url }}" class="btn btn-light btn-sm rounded" title="{{ button.title }}">
-                                <iconify-icon icon="{{ button.icon }}" class="fs-28 align-middle"></iconify-icon>
-                            </a>
-                        {% endfor %}
-                    </div>
+                    {% include 'partials/toolbox.html' %} 
                 </div>
                 <div>
                     <div class="table-responsive">

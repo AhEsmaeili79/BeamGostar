@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from django.conf.urls import handler404, handler500
 
 urlpatterns = [
     path('', views.DashboardView.as_view(), name='dashboard'),
@@ -8,4 +9,6 @@ urlpatterns = [
     path('users/add/', views.users_form, name='usersform'),
     path('users/list/', views.users_list, name='userslist'),
     path('accounts/list/', views.accounts_list, name='accounts-list'),
+    path('404/', views.error_404, name='askhglks-list'),
 ]
+

@@ -7,3 +7,5 @@ def menu_view(request):
     
     # Pass the structure of the menus to the template
     return render(request, 'partials/_menu.html', {'menu_structure': menu_structure})
+
+

@@ -7,12 +7,11 @@ from django.core.paginator import Paginator
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .utils import generate_captcha
 
-# login
-from django.contrib.auth import authenticate, login
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from django.utils import timezone
-from datetime import timedelta
+
+def error_404(request):
+        data = {}
+        return render(request,'dashboard/404.html', data)
+
 
 def user_login(request):
     if request.user.is_authenticated:  # Check if the user is already logged in
