@@ -5,16 +5,54 @@ from django.contrib import messages
 from django.views import View
 from django.core.paginator import Paginator
 from django.contrib.auth.mixins import LoginRequiredMixin
+from .utils import generate_captcha
 
 # login
+from django.contrib.auth import authenticate, login
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.utils import timezone
+from datetime import timedelta
+
 def user_login(request):
+    if request.user.is_authenticated:  # Check if the user is already logged in
+        return redirect('/')  # Redirect to the homepage if already authenticated
+
     if request.method == 'POST':
-        user = authenticate(request, username=request.POST['username'], password=request.POST['password'])
-        if user:
-            login(request, user)
-            return redirect('/')
-        messages.error(request, "نام کاربری یا رمز عبور اشتباه است")
-    return render(request, 'auth/login.html')
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user_input = request.POST.get('captcha')
+        captcha_solution = request.session.get('captcha_solution')
+
+        remember_me = request.POST.get('remember_me')  # Check if the "Remember Me" checkbox is checked
+
+        if not username or not password:
+            messages.error(request, "لطفاً نام کاربری و کلمه عبور را وارد کنید")
+        elif not user_input:
+            messages.error(request, "لطفاً کد امنیتی را وارد کنید")
+        elif not user_input.isdigit():
+            messages.error(request, "لطفاً فقط عدد وارد کنید")
+        elif int(user_input) != captcha_solution:
+            messages.error(request, "کد امنیتی نادرست است")
+        else:
+            user = authenticate(request, username=username, password=password)
+            if user:
+                login(request, user)
+
+                # If "Remember Me" is selected, extend the session expiry
+                if remember_me:
+                    request.session.set_expiry(3600 * 24 * 7)  # 7 days session duration
+                else:
+                    request.session.set_expiry(0)  # Session expires when the user closes the browser
+
+                return redirect('/')
+            messages.error(request, "نام کاربری یا رمز عبور اشتباه است")
+
+    captcha_question, captcha_solution = generate_captcha()
+    request.session['captcha_solution'] = captcha_solution
+
+    return render(request, 'auth/login.html', {'captcha_question': captcha_question})
+
 
 # logout
 @login_required(login_url='/login')
@@ -28,8 +66,6 @@ class DashboardView(LoginRequiredMixin, View):
     
     def get(self, request):
         return render(request, 'dashboard/base.html')
-
-
 
 
 @login_required(login_url='/login')
@@ -155,4 +191,4 @@ def accounts_list(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    return render(request, 'dashboard/users/accounts_list.html', {'accounts': page_obj.object_list, 'page_obj': page_obj, 'buttons':buttons})
+    return render(request, 'dashboard/users/accounts/accounts_list.html', {'accounts': page_obj.object_list, 'page_obj': page_obj, 'buttons':buttons})

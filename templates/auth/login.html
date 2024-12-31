@@ -15,6 +15,14 @@
 <body class="h-100">
     <div class="d-flex flex-column h-100 p-3">
         <div class="d-flex flex-column flex-grow-1">
+            <div class="d-flex align-items-center gap-1">
+                <!-- تم رنگ (روشن/تاریک) -->
+                <div class="topbar-item">
+                    <a type="button" class="topbar-button" id="light-dark-mode">
+                        <iconify-icon icon="solar:moon-bold-duotone" class="fs-24 align-middle"></iconify-icon>
+                    </a>
+                </div>
+            </div>
             <div class="row h-100">
                 <div class="col-xxl-7">
                     <div class="row justify-content-center h-100">
@@ -23,16 +31,19 @@
                                 <div class="auth-logo mb-4">
                                     <a href="#" class="logo-dark">
                                         <img src="{% static 'assets/images/login_logo.png' %}" height="50" alt="لوگوی تاریک">
+                                        <span class="fw-bold fs-24">بیم گستر تابان</span>
                                     </a>
     
                                     <a href="#" class="logo-light">
                                         <img src="{% static 'assets/images/login_logo.png' %}" height="50" alt="لوگوی روشن">
+                                        <span class="fw-bold fs-24">بیم گستر تابان</span>
                                     </a>
                                 </div>
+                                
     
                                 <h2 class="fw-bold fs-24">ورود</h2>
     
-                                <p class="text-muted mt-1 mb-4">نام کاربری و کلمه عبور خود را وارد کنید تا به پنل مدیریت دسترسی پیدا کنید.</p>
+                                <p class="text-muted mt-1 mb-4">نام کاربری و کلمه عبور خود را وارد کنید.</p>
     
                                 {% if messages %}
                                     <div class="alert alert-danger">
@@ -55,22 +66,27 @@
                                         </div>
                                         <div class="mb-3">
                                             <div class="form-check">
-                                                <input type="checkbox" class="form-check-input" id="checkbox-signin">
+                                                <input type="checkbox" class="form-check-input" id="checkbox-signin" name="remember_me">
                                                 <label class="form-check-label" for="checkbox-signin">مرا به خاطر بسپار</label>
                                             </div>
                                         </div>
-                                    
+                                        <div class="mb-3">
+                                            <label class="form-label" for="captcha">کد امنیتی</label>
+                                            <div class="input-group">
+                                                <input type="text" id="captcha" name="captcha" class="form-control" placeholder="پاسخ را وارد کنید" required>
+                                                <span class="input-group-text" id="captcha-question">{{ captcha_question }}</span>
+                                                <button type="button" class="btn btn-outline-secondary" id="refresh-captcha">🔄</button>
+                                            </div>
+                                        </div>
                                         <div class="mb-1 text-center d-grid">
                                             <button class="btn btn-soft-primary" type="submit">ورود</button>
                                         </div>
                                     </form>
-                                    
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-    
                 <div class="col-xxl-5 d-none d-xxl-flex">
                     <div class="card h-100 mb-0 overflow-hidden">
                         <div class="d-flex flex-column h-100">
@@ -82,6 +98,11 @@
         </div>
     </div>
     {% include 'partials/scripts.html' %}
+    <script>
+        document.getElementById('refresh-captcha').addEventListener('click', function() {
+            location.reload();
+        });
+    </script>
     </body>
 </html>
 
