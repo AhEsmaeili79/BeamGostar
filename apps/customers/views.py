@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from .models import PaymentMethod
+from .models import PriceAnalysis, PriceAnalysisCredit,Customer
+from django.core.paginator import Paginator
 
-def payment_method_list(request):
-    # Define buttons
-    buttons = [
+buttons = [
         {'text': 'راهنما', 'url': '#', 'icon': 'solar:question-circle-broken'},
         {'text': 'ثبت رکورد جدید', 'url': '#', 'icon': 'solar:add-circle-broken'},
         {'text': 'پرینت', 'url': '#', 'icon': 'solar:printer-bold'},
@@ -11,6 +11,16 @@ def payment_method_list(request):
         {'text': 'خروجی', 'url': '#', 'icon': 'solar:export-bold'},
         {'text': 'تنظیمات', 'url': '#', 'icon': 'solar:settings-outline'},
     ]
+
+filters = [
+        {'id': 'province', 'label': 'نوع مشتری', 'options': ['حقیقی', 'حقوقی']},
+        {'id': 'district', 'label': 'نوع تسویه', 'options': ['نقدی','اعتباری']},
+        {'id': 'executive_body', 'label': 'تابعیت', 'options': ['ایرانی','خارجی']},
+    ]
+
+def payment_method_list(request):
+    # Define buttons
+    
     
     # Base queryset
     queryset = PaymentMethod.objects.all()
@@ -49,3 +59,38 @@ def payment_method_list(request):
     }
     
     return render(request, 'dashboard/customers/payment/payment_method_list.html', context)
+
+
+def price_analysis_list(request):
+    price_analyses = PriceAnalysis.objects.all()
+    paginator = Paginator(price_analyses, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    return render(request, 'dashboard/customers/prices_analysis/price_analysis_list.html', {'page_obj': page_obj,'buttons':buttons})
+
+def price_analysis_credit_list(request):
+    price_analysis_credits = PriceAnalysisCredit.objects.all()
+    paginator = Paginator(price_analysis_credits, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    return render(request, 'dashboard/customers/prices_analysis/price_analysis_credit_list.html', {'page_obj': page_obj,'buttons':buttons})
+
+
+
+
+def customer_list(request):
+    customers = Customer.objects.all()
+
+    # Set up pagination
+    paginator = Paginator(customers, 10)  # Show 10 customers per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'page_obj': page_obj,
+        'buttons':buttons,
+        'filters':filters,
+    }
+    return render(request, 'dashboard/customers/customers/customers_list.html', context)

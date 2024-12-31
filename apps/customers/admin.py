@@ -1,6 +1,6 @@
 # admin.py
 from django.contrib import admin
-from .models import PaymentMethod
+from .models import PaymentMethod,PriceAnalysis, PriceAnalysisCredit, Customer
 
 @admin.register(PaymentMethod)
 class PaymentMethodAdmin(admin.ModelAdmin):
@@ -8,3 +8,7 @@ class PaymentMethodAdmin(admin.ModelAdmin):
     list_filter = ('status', 'created_at')
     search_fields = ('title',)
     ordering = ('-created_at',)
+
+admin.site.register(PriceAnalysis)
+admin.site.register(PriceAnalysisCredit)
+admin.site.register(Customer)
