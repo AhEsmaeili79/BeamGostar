@@ -2,13 +2,16 @@ from django.db import models
 from apps.personnel.models import Personnel
 from apps.miscellaneous.models import Menu
 from django.contrib.auth.models import AbstractUser
-from django.utils import timezone
 
+from utils.utils import get_persian_datetime
+
+persian_date, persian_time = get_persian_datetime()
+datetime = [persian_date, persian_time]
 
 # Abstract User model for extending Django's default User model
 class User(AbstractUser):
     personnel = models.ForeignKey(Personnel, on_delete=models.SET_NULL, null=True, blank=True)
-    reg_date = models.DateTimeField(default=timezone.now)
+    reg_date = models.DateTimeField(default=datetime)
     remember_token = models.CharField(max_length=100, null=True, blank=True)
     registrator_id = models.IntegerField(null=True, blank=True)
     accounttype_id = models.PositiveSmallIntegerField()
@@ -28,7 +31,7 @@ class User(AbstractUser):
 class UserActivity(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     item_name = models.CharField(max_length=64)
-    date = models.DateTimeField()
+    date = models.DateTimeField(default=datetime)
     ip = models.CharField(max_length=15)
     lat = models.FloatField(null=True, blank=True)
     lng = models.FloatField(null=True, blank=True)
@@ -43,7 +46,7 @@ class UserActivity(models.Model):
 class AuthAssignment(models.Model):
     item_name = models.CharField(max_length=64)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    created_at = models.IntegerField(null=True, blank=True)
+    created_at = models.IntegerField(default=datetime,null=True, blank=True)
 
     class Meta:
         db_table = 'auth_assignment'
@@ -56,8 +59,8 @@ class AuthItem(models.Model):
     description = models.TextField(null=True, blank=True)
     rule_name = models.CharField(max_length=64, null=True, blank=True)
     data = models.TextField(null=True, blank=True)
-    created_at = models.IntegerField(null=True, blank=True)
-    updated_at = models.IntegerField(null=True, blank=True)
+    created_at = models.IntegerField(default=datetime,null=True, blank=True)
+    updated_at = models.IntegerField(default=datetime,null=True, blank=True)
 
     class Meta:
         db_table = 'auth_item'
@@ -67,7 +70,7 @@ class AuthItem(models.Model):
 class AuthItemChild(models.Model):
     parent = models.ForeignKey(AuthItem, related_name='parent_items', on_delete=models.CASCADE)
     child = models.ForeignKey(AuthItem, related_name='child_items', on_delete=models.CASCADE)
-    updated_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(default=datetime)
 
     class Meta:
         db_table = 'auth_item_child'
@@ -77,7 +80,7 @@ class AuthItemChild(models.Model):
 class AuthMenu(models.Model):
     item_name = models.CharField(max_length=64)
     menu = models.ForeignKey(Menu, on_delete=models.CASCADE)  # Corrected reference to Menu model
-    updated_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(default=datetime)
 
     class Meta:
         db_table = 'auth_menu'
@@ -87,8 +90,8 @@ class AuthMenu(models.Model):
 class AuthRule(models.Model):
     name = models.CharField(max_length=64)
     data = models.TextField(null=True, blank=True)
-    created_at = models.IntegerField(null=True, blank=True)
-    updated_at = models.IntegerField(null=True, blank=True)
+    created_at = models.IntegerField(default=datetime,null=True, blank=True)
+    updated_at = models.IntegerField(default=datetime,null=True, blank=True)
 
     class Meta:
         db_table = 'auth_rule'

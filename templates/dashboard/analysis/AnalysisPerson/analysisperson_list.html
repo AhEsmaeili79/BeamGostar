@@ -1,14 +1,14 @@
-{% extends "../base.html" %}
+{% extends "../../base.html" %}
 {% load static %}
 
 {% block content %}
-<div class="container-fluid">     
+<div class="container-fluid">
     <div class="row">
         <div class="col-xl-12">
             <div class="card">
                 <div class="d-flex card-header justify-content-between align-items-center">
                     <div>
-                        <h4 class="card-title">اطلاعات آنالیز ها</h4>
+                        <h4 class="card-title">مدیریت لینک آنالیزگر به آنالیز</h4>
                     </div>
                     <div class="list_toolbox">
                         {% for button in buttons %}
@@ -25,30 +25,22 @@
                                 <tr>
                                     <th style="width: 20px;"></th>
                                     <th>ردیف</th>
-                                    <th>عنوان آنالیز</th>
+                                    <th>نام فرد</th>
+                                    <th>آنالیز</th>
                                     <th>تاریخ ایجاد</th>
                                     <th>تاریخ ویرایش</th>
-                                    <th>وضعیت</th>
                                     <th>عملیات</th>
                                 </tr>
                                 <tr>
                                     <th style="width: 20px;"></th>
                                     <th></th>
                                     <th>
-                                        <input type="text" class="form-control form-control-sm" placeholder="عنوان" id="filterAnalyzeName">
-                                    </th>
-                                    <th>
-                                        <input type="date" class="form-control form-control-sm" placeholder="از تاریخ" id="filterAnalyzeName">
-                                        <input type="date" class="form-control form-control-sm" placeholder="تا تاریخ" id="filterAnalyzeName">
-                                    </th>
-                                    <th>
-                                        <input type="date" class="form-control form-control-sm" placeholder="از تاریخ" id="filterAnalyzeName">
-                                        <input type="date" class="form-control form-control-sm" placeholder="تا تاریخ" id="filterAnalyzeName">
+                                        <input type="text" class="form-control form-control-sm" placeholder="نام فرد" id="filterAnalyzeName">
                                     </th>
                                     <th>
                                         <div class="dropdown">
                                             <button class="btn btn-sm btn-outline-light rounded dropdown-toggle w-100" type="button" id="Dropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                                وضعیت
+                                                آنالیز
                                             </button>
                                             <div class="dropdown-menu dropdown-menu-end w-100 dropdown-list-menu" aria-labelledby="Dropdown">
                                                 <div class="dropdown-list-section">
@@ -62,13 +54,21 @@
                                             </div>
                                         </div>
                                     </th>
+                                    <th>
+                                        <input type="date" class="form-control form-control-sm" placeholder="از تاریخ" id="filterAnalyzeName">
+                                        <input type="date" class="form-control form-control-sm" placeholder="تا تاریخ" id="filterAnalyzeName">
+                                    </th>
+                                    <th>
+                                        <input type="date" class="form-control form-control-sm" placeholder="از تاریخ" id="filterAnalyzeName">
+                                        <input type="date" class="form-control form-control-sm" placeholder="تا تاریخ" id="filterAnalyzeName">
+                                    </th>
                                     <th colspan="4">
                                         <button type="button" class="btn btn-sm btn-outline-secondary w-50" id="clearFilters">پاک کردن فیلترها</button>
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for analyze in page_obj %}
+                                {% for link_analysis_person in page_obj %}
                                 <tr>
                                     <td>
                                         <div class="form-check">
@@ -77,17 +77,25 @@
                                         </div>
                                     </td>
                                     <td>{{ forloop.counter }}</td>
-                                    <td>{{ analyze.name }}</td>
-                                    <td>{{ analyze.creation_date }}</td>
-                                    <td>{{ analyze.edit_date }}</td>
-                                    <td>
-                                        <span class="badge {% if analyze.status == 'فعال' %}bg-success-subtle text-success{% elif analyze.status == 'غیرفعال' %}bg-danger-subtle text-danger{% endif %} py-1 px-2">{{ analyze.status }}</span>
-                                    </td>
+                                    <td>{{ link_analysis_person.personnel }}</td>
+                                    <td>{{ link_analysis_person.analyze }}</td>
+                                    <td>{{ link_analysis_person.created_at|date:"Y/m/d" }}</td>
+                                    <td>{{ link_analysis_person.updated_at|date:"Y/m/d" }}</td>
+                                    
                                     <td>
                                         <div class="d-flex gap-2">
-                                            <a href="#!" class="btn btn-light btn-sm"><iconify-icon icon="solar:eye-broken" class="align-middle fs-18"></iconify-icon></a>
-                                            <a href="#!" class="btn btn-soft-primary btn-sm" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><iconify-icon icon="solar:pen-2-broken" class="align-middle fs-18"></iconify-icon></a>
-                                            <a href="#!" class="btn btn-soft-danger btn-sm"><iconify-icon icon="solar:trash-bin-minimalistic-2-broken" class="align-middle fs-18"></iconify-icon></a>
+                                            <a href="{% url 'edit_answer' link_analysis_person.id %}" class="btn btn-light btn-sm">
+                                                <iconify-icon icon="solar:eye-broken" class="align-middle fs-18"></iconify-icon>
+                                            </a>
+                                            <a href="{% url 'edit_answer' link_analysis_person.id %}" class="btn btn-soft-primary btn-sm">
+                                                <iconify-icon icon="solar:pen-2-broken" class="align-middle fs-18"></iconify-icon>
+                                            </a>
+                                            <form method="POST" action="{% url 'delete_answer' link_analysis_person.id %}" style="display:inline;">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-soft-danger btn-sm">
+                                                    <iconify-icon icon="solar:trash-bin-minimalistic-2-broken" class="align-middle fs-18"></iconify-icon>
+                                                </button>
+                                            </form>
                                         </div>
                                     </td>
                                 </tr>

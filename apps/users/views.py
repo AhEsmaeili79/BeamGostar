@@ -31,7 +31,7 @@ def user_login(request):
         elif not user_input:
             messages.error(request, "لطفاً کد امنیتی را وارد کنید")
         elif not user_input.isdigit():
-            messages.error(request, "لطفاً فقط عدد وارد کنید")
+            messages.error(request, "لطفاً برای کد امنیتی فقط عدد وارد کنید")
         elif int(user_input) != captcha_solution:
             messages.error(request, "کد امنیتی نادرست است")
         else:
@@ -41,7 +41,7 @@ def user_login(request):
 
                 # If "Remember Me" is selected, extend the session expiry
                 if remember_me:
-                    request.session.set_expiry(3600 * 24 * 7)  # 7 days session duration
+                    request.session.set_expiry(3600 * 24 * 3)  # 7 days session duration
                 else:
                     request.session.set_expiry(0)  # Session expires when the user closes the browser
 

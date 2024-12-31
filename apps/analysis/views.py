@@ -1,6 +1,18 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
+from django.http import JsonResponse
+from django.utils import timezone
 from datetime import datetime
+from .models import GetAnswer,LinkAnalysisPerson
+
+buttons = [
+        {'text': 'راهنما', 'url': '#', 'icon': 'solar:question-circle-broken'},
+        {'text': 'ثبت رکورد جدید',  'url': '#', 'icon': 'solar:add-circle-broken'},
+        {'text': 'پرینت', 'url': '#', 'icon': 'solar:printer-bold'},
+        {'text': 'حذف چندتایی', 'url': '#', 'icon': 'solar:trash-bin-minimalistic-2-broken'},
+        {'text': 'خروجی', 'url': '#', 'icon': 'solar:export-bold' },
+        {'text': 'تنظیمات', 'url': '#', 'icon': 'solar:settings-outline'},
+    ]
 
 def analyze_list_view(request):
     # Sample Data
@@ -22,20 +34,10 @@ def analyze_list_view(request):
 
     context = {
         "page_obj": page_obj,
-        "buttons" : [
-            {'text': 'راهنما', 'url': '#', 'icon': 'solar:question-circle-broken'},
-            {'text': 'ثبت رکورد جدید',  'url': '#', 'icon': 'solar:add-circle-broken'},
-            {'text': 'پرینت', 'url': '#', 'icon': 'solar:printer-bold'},
-            {'text': 'حذف چندتایی', 'url': '#', 'icon': 'solar:trash-bin-minimalistic-2-broken'},
-            {'text': 'خروجی', 'url': '#', 'icon': 'solar:export-bold' },
-            {'text': 'تنظیمات', 'url': '#', 'icon': 'solar:settings-outline'},
-        ],
+        "buttons" : buttons,
     }
     return render(request, 'dashboard/analysis/analyze-list.html', context)
     
-
-
-
 
 def analysis_time_view(request):
     # Mock data - replace with database query
@@ -82,14 +84,7 @@ def analysis_time_view(request):
         },
         # Add all other analysis types as per requirements
     ]
-    buttons = [
-        {'text': 'راهنما', 'title': 'راهنما: جهت مشاهده ی راهنما (پنجره ی فعلی) از این دکمه استفاده نمایید.', 'url': '#', 'icon': 'solar:question-circle-broken'},
-        {'text': 'ثبت رکورد جدید', 'title': 'ثبت رکورد جدید: جهت ثبت یک رکورد جدید و افزودن آن به این لیست از این دکمه استفاده کنید. با کلیک روی این دکمه به فرم مربوطه هدایت می شوید.', 'url': '#', 'icon': 'solar:add-circle-broken'},
-        {'text': 'پرینت', 'title': 'پرینت: جهت چاپ تمام اطلاعات موجود در گرید از این دکمه استفاده کنید. بنابراین با فیلتر اطلاعات گرید، اطلاعات فیلتر شده را میتوان پرینت گرفت.', 'url': '#', 'icon': 'solar:printer-bold'},
-        {'text': 'حذف چندتایی', 'title': 'حذف چندتایی: در صورت تمایل به حذف چندتایی رکورد ها، ابتدا رکوردهای مورد نظر را در گرید مارک دار نمایید و سپس از این دکمه برای حذف استفاده نمایید.', 'url': '#', 'icon': 'solar:trash-bin-minimalistic-2-broken'},
-        {'text': 'خروجی', 'title': 'خروجی: جهت تهیه ی خروجی اکسل و یا پی دی اف از این دکمه و انتخاب نوع خروجی مورد نظر از لیست باز شده، استفاده نمایید.', 'url': '#', 'icon': 'solar:export-bold' },
-        {'text': 'تنظیمات', 'title': 'تنظیمات: جهت تنظیمات دلخواه گرید مانند: نمایش یا عدم نمایش ستونها، رنگ بندی، تعداد رکوردهای قابل نمایش در صفحه و.. از این دکمه استفاده نمایید.', 'url': '#', 'icon': 'solar:settings-outline'},
-    ]
+    
     filters = [
         {'id': 'executive_body', 'label': 'آنالیز', 'options': ['xrd','XRF','CHN','CHNS','ICP']},
         {'id': 'status', 'label': 'برحسب', 'options': ['روز', 'دقیقه']},
@@ -106,3 +101,81 @@ def analysis_time_view(request):
     }
     return render(request, 'dashboard/analysis/analysis-time-list.html', context)
 
+
+# answers
+def answers_list(request):
+    # Fetch all answers
+    answers = GetAnswer.objects.all()
+
+    # Pagination
+    paginator = Paginator(answers, 10)  # Show 10 answers per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    # Example buttons to be shown in the header
+    
+    return render(request, 'dashboard/analysis/answers/answers.html', {
+        'buttons': buttons,
+        'page_obj': page_obj,
+    })
+    
+    
+def add_answer(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        status = request.POST.get('status')
+        
+        if title and status:
+            # Create a new GetAnswer record
+            GetAnswer.objects.create(title=title, status=status)
+            return redirect('answers_list')  # Redirect to the answers list page
+        
+    return render(request, 'dashboard/analysis/answers/answers_edit.html')
+
+def edit_answer(request, id):
+    answer = get_object_or_404(GetAnswer, id=id)
+    
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        status = request.POST.get('status')
+
+        if title and status:
+            # Update the existing GetAnswer record
+            answer.title = title
+            answer.status = status
+            answer.updated_at = timezone.now()  # Update the updated_at field
+            answer.save()
+            return redirect('answers_list')  # Redirect to the answers list page
+    
+    return render(request, 'dashboard/analysis/answers/answers_edit.html', {'answer': answer})
+
+def delete_answer(request, id):
+    answer = get_object_or_404(GetAnswer, id=id)
+    
+    if request.method == 'POST':
+        answer.deleted_at = timezone.now()  # Set deleted_at timestamp
+        answer.save()
+        return redirect('answers_list')  # Redirect to the answers list page
+    
+    return render(request, 'dashboard/analysis/answers/answers.html', {'answer': answer})
+
+def get_answer_by_id(request, id):
+    answer = get_object_or_404(GetAnswer, id=id)
+    return JsonResponse({'id': answer.id, 'title': answer.title, 'status': answer.status})
+
+
+
+
+def link_analysis_person_list(request):
+    # Fetch the list of all LinkAnalysisPerson objects
+    link_analysis_persons = LinkAnalysisPerson.objects.all()
+
+    # Implement pagination
+    paginator = Paginator(link_analysis_persons, 10)  # 10 items per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    return render(request, 'dashboard/analysis/AnalysisPerson/analysisperson_list.html', {
+        'page_obj': page_obj,
+        'buttons': buttons
+    })

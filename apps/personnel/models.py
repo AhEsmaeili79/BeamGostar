@@ -29,3 +29,5 @@ class Personnel(models.Model):
 
     class Meta:
         db_table = 'personnel'
+    def __str__(self):
+        return f"{self.name} - {self.family}"
