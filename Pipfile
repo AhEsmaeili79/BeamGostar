@@ -10,6 +10,9 @@ django-parsley = "*"
 django-jalali = "*"
 babel = "*"
 pillow = "*"
+mysql-connector-python = "*"
+psycopg2 = "*"
+mysqlclient = "*"
 
 [dev-packages]
 

@@ -1,0 +1,64 @@
+# Django
+*.log
+*.pot
+*.pyc
+*.pyo
+__pycache__/
+db.sqlite3
+/static/
+/media/
+
+# Virtual Environment
+venv/
+env/
+ENV/
+*.env
+
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Python
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Coverage reports
+.coverage
+*.cover
+*.hypothesis/
+
+# mypy
+.mypy_cache/
+
+# pyre type checker
+.pyre/
+
+# Sphinx documentation
+docs/_build/
+
+# Node.js
+node_modules/
+
+# Django Stuff
+*.log
+*.pot
+*.pyc
+*.pyo
+__pycache__/
+db.sqlite3
+/static/
+
+*.jpg
+*.svg
+*.png
