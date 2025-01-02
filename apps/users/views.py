@@ -7,7 +7,7 @@ from django.core.paginator import Paginator
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .utils import generate_captcha
 from .models import UserActivity
-
+from persiantools.jdatetime import JalaliDateTime
 
 def error_404(request):
         data = {}
@@ -201,4 +201,8 @@ def user_activity(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     
+    for activity in page_obj:
+        activity.date = JalaliDateTime(activity.date).strftime('%Y-%m-%d %H:%M:%S')  # Persian date format
+        
+        
     return render(request, 'dashboard/users/activity/activity-list.html', {'page_obj': page_obj})

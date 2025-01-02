@@ -38,7 +38,6 @@ class SubMenu(models.Model):
     state = models.BooleanField(default=True, verbose_name='فعال')
     is_deleted = models.BooleanField(default=False, help_text="Indicates if the record is soft-deleted")
 
-    
     class Meta:
         ordering = ['order']
         db_table = 'submenu'
@@ -63,6 +62,7 @@ class SubItem(models.Model):
     is_deleted = models.BooleanField(default=False, help_text="Indicates if the record is soft-deleted")
 
 
+
     class Meta:
         ordering = ['submenu__order']
         db_table = 'subitem'
@@ -76,3 +76,4 @@ class SubItem(models.Model):
         self.id = self.id or (SubItem.objects.aggregate(models.Max('id'))['id__max'] or 0) + 1
         super().save(*args, **kwargs)
     
+

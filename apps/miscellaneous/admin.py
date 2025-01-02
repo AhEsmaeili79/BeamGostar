@@ -25,3 +25,5 @@ class SubItemAdmin(admin.ModelAdmin):
     list_filter = ('state', 'submenu')  # Filtering based on state  and associated submenu
     search_fields = ('title', 'url')
     ordering = ('submenu__order',)  # Default ordering based on 'submenu' order
+
+

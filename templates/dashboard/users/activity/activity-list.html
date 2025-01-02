@@ -1,5 +1,5 @@
 <!-- useractivity/list.html -->
-{% extends "base.html" %}
+{% extends "../../base.html" %}
 {% load static %}
 
 {% block content %}
@@ -29,9 +29,23 @@
                                 {% for activity in page_obj %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td>{{ activity.user.username }}</td>
+                                    <td>{{ activity.user }}</td>
                                     <td>{{ activity.item_name }}</td>
-                                    <td>{{ activity.get_action_type_display }}</td>
+                                    <td>
+                                        {% if activity.action_type == 'added' %}
+                                            اضافه شده
+                                        {% elif activity.action_type == 'deleted' %}
+                                            حذف شده
+                                        {% elif activity.action_type == 'updated' %}
+                                            به‌روزرسانی شده
+                                        {% elif activity.action_type == 'logged_in' %}
+                                            وارد سیستم شده
+                                        {% elif activity.action_type == 'logged_out' %}
+                                            از سیستم خارج شده
+                                        {% else %}
+                                            {{ activity.action_type }}
+                                        {% endif %}
+                                    </td>
                                     <td>{{ activity.date }}</td>
                                 </tr>
                                 {% endfor %}

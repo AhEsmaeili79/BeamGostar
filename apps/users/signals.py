@@ -6,9 +6,9 @@ from django.utils import timezone
 from .models import UserActivity
 from .models import UserActivity
 from django.contrib.auth.signals import user_logged_in, user_logged_out
+from utils.utils import get_persian_datetime
 
 
-# Function to log an addition (create action)
 # Log Addition Function
 def log_addition(instance, user):
     model_name = instance.__class__.__name__
@@ -53,36 +53,16 @@ def log_model_save(sender, instance, **kwargs):
                 except sender.DoesNotExist:
                     log_addition(instance, user)  # If no old instance, treat as addition
 
-
-# Function to log a user login action
-def log_login(user):
-    user_activity = UserActivity(
-        user=user,
-        action_type='logged_in',  # Action type for login
-        item_name='Logged In',
-        model_name='User'
-    )
-    user_activity.save()
-
-# Function to log a user logout action
-def log_logout(user):
-    user_activity = UserActivity(
-        user=user,
-        action_type='logged_out',  # Action type for logout
-        item_name='Logged Out',
-        model_name='User'
-    )
-    user_activity.save()
-
+# Log any delete for all models
 
 @receiver(user_logged_in)
 def log_user_login(sender, request, user, **kwargs):
     UserActivity.objects.create(
         user=user,
         action_type='logged_in',
-        item_name=user.username,
+        item_name="session",
         model_name='User',
-        date=timezone.now
+        date=timezone.now()
     )
 
 @receiver(user_logged_out)
@@ -90,7 +70,7 @@ def log_user_logout(sender, request, user, **kwargs):
     UserActivity.objects.create(
         user=user,
         action_type='logged_out',
-        item_name=user.username,
+        item_name="session",
         model_name='User',
-        date=timezone.now
+        date=timezone.now()
     )
