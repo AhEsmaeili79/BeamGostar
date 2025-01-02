@@ -3,7 +3,7 @@ from .models import User, UserActivity, AuthAssignment, AuthItem, AuthItemChild,
 
 # User Model Admin
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('username', 'email', 'personnel', 'reg_date', 'state', 'lastactive', 'accounttype_id')
+    list_display = ('username', 'email', 'personnel_id', 'reg_date', 'state', 'lastactive', 'accounttype_id')
     search_fields = ('username', 'email')
     list_filter = ('state', 'accounttype_id', 'reg_date')
     ordering = ('-reg_date',)
@@ -12,7 +12,7 @@ admin.site.register(User, UserAdmin)
 
 # UserActivity Model Admin
 class UserActivityAdmin(admin.ModelAdmin):
-    list_display = ('user', 'item_name', 'date', 'ip', 'lat', 'lng', 'record_id', 'table_name')
+    list_display = ('user_id', 'item_name', 'date', 'ip', 'lat', 'lng', 'record_id', 'table_name')
     search_fields = ('user__username', 'item_name', 'ip')
     list_filter = ('date',)
 
@@ -20,7 +20,7 @@ admin.site.register(UserActivity, UserActivityAdmin)
 
 # AuthAssignment Model Admin
 class AuthAssignmentAdmin(admin.ModelAdmin):
-    list_display = ('item_name', 'user', 'created_at')
+    list_display = ('item_name', 'user_id', 'created_at')
     search_fields = ('item_name', 'user__username')
     list_filter = ('created_at',)
 

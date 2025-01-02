@@ -2,6 +2,7 @@ from django.db import models
 
 # Create your models here.
 class Personnel(models.Model):
+    id = models.IntegerField(primary_key=True, verbose_name='کد')
     town_id = models.IntegerField(null=True, blank=True)
     city_id = models.PositiveSmallIntegerField(default=0)
     city_id_old = models.PositiveSmallIntegerField(default=0)
@@ -27,6 +28,10 @@ class Personnel(models.Model):
     user_in = models.SmallIntegerField(null=True, blank=True)
     post_id = models.SmallIntegerField(null=True, blank=True)
 
+    def save(self, *args, **kwargs):
+        self.id = self.id or (Personnel.objects.aggregate(models.Max('id'))['id__max'] or 0) + 1
+        super().save(*args, **kwargs)
+    
     class Meta:
         db_table = 'personnel'
     def __str__(self):

@@ -7,7 +7,7 @@ persian_date, persian_time = get_persian_datetime()
 datetime = [persian_date, persian_time]
 
 class PaymentMethod(models.Model):
-    
+    id = models.IntegerField(primary_key=True, verbose_name='کد')
     title = models.CharField(max_length=200, verbose_name='عنوان')
     status =  models.BooleanField(default=True, verbose_name='وضعیت ' )
     created_at = models.DateTimeField(default=datetime, verbose_name='تاریخ ایجاد')
@@ -19,6 +19,11 @@ class PaymentMethod(models.Model):
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        self.id = self.id or (PaymentMethod.objects.aggregate(models.Max('id'))['id__max'] or 0) + 1
+        super().save(*args, **kwargs)
+
 
 class Customer(models.Model):
     REAL = 1
@@ -42,7 +47,7 @@ class Customer(models.Model):
         (FOREIGN, 'خارجی'),
     ]
     
-    id = models.AutoField(primary_key=True, verbose_name='کد')
+    id = models.IntegerField(primary_key=True, verbose_name='کد')
     customer_type = models.PositiveSmallIntegerField(choices=CUSTOMER_TYPE_CHOICES, verbose_name='نوع مشتری')
     clearing_type = models.PositiveSmallIntegerField(choices=CLEARING_TYPE_CHOICES, verbose_name='نوع تسویه')
     nationality = models.PositiveSmallIntegerField(choices=NATIONALITY_CHOICES, verbose_name='تابعیت')
@@ -68,11 +73,16 @@ class Customer(models.Model):
     updated_at = models.DateTimeField(default=datetime)
     deleted_at = models.DateTimeField(null=True, blank=True)
 
-    def __str__(self):
-        return self.name_fa + ' ' + self.family_fa
-    
     class Meta:
         db_table = 'customers'
+        
+        
+    def __str__(self):
+        return self.name_fa + ' ' + self.family_fa + ' ' + self.national_code    
+        
+    def save(self, *args, **kwargs):
+        self.id = self.id or (Customer.objects.aggregate(models.Max('id'))['id__max'] or 0) + 1
+        super().save(*args, **kwargs)
 
 
 class PriceAnalysis(models.Model):
@@ -91,7 +101,10 @@ class PriceAnalysis(models.Model):
     def __str__(self):
         return f"آنالیز {self.analyze_id} قیمت {self.price}"
 
- 
+    def save(self, *args, **kwargs):
+        self.id = self.id or (PriceAnalysis.objects.aggregate(models.Max('id'))['id__max'] or 0) + 1
+        super().save(*args, **kwargs)
+    
 class PriceAnalysisCredit(models.Model):
     id = models.AutoField(primary_key=True, verbose_name='کد')
     analyze_id = models.ForeignKey(Analyze, on_delete=models.CASCADE, verbose_name='آنالیز')
@@ -108,3 +121,7 @@ class PriceAnalysisCredit(models.Model):
     
     def __str__(self):
         return f"مشتری {self.customers_id.name_fa} قیمت {self.price}"
+
+    def save(self, *args, **kwargs):
+        self.id = self.id or (PriceAnalysisCredit.objects.aggregate(models.Max('id'))['id__max'] or 0) + 1
+        super().save(*args, **kwargs)

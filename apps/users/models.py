@@ -10,7 +10,8 @@ datetime = [persian_date, persian_time]
 
 # Abstract User model for extending Django's default User model
 class User(AbstractUser):
-    personnel = models.ForeignKey(Personnel, on_delete=models.SET_NULL, null=True, blank=True)
+    id = models.IntegerField(primary_key=True, verbose_name='کد')
+    personnel_id = models.ForeignKey(Personnel, on_delete=models.SET_NULL, null=True, blank=True)
     reg_date = models.DateTimeField(default=datetime)
     remember_token = models.CharField(max_length=100, null=True, blank=True)
     registrator_id = models.IntegerField(null=True, blank=True)
@@ -25,11 +26,16 @@ class User(AbstractUser):
 
     class Meta:
         db_table = 'user'
+        
+    def save(self, *args, **kwargs):
+        self.id = self.id or (User.objects.aggregate(models.Max('id'))['id__max'] or 0) + 1
+        super().save(*args, **kwargs)
 
 
 # User Activity Model
 class UserActivity(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    id = models.IntegerField(primary_key=True, verbose_name='کد')
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     item_name = models.CharField(max_length=64)
     date = models.DateTimeField(default=datetime)
     ip = models.CharField(max_length=15)
@@ -40,20 +46,30 @@ class UserActivity(models.Model):
     
     class Meta:
         db_table = 'useractivity'
+        
+    def save(self, *args, **kwargs):
+        self.id = self.id or (UserActivity.objects.aggregate(models.Max('id'))['id__max'] or 0) + 1
+        super().save(*args, **kwargs)
 
 
 # Auth Assignment Model (Roles/Permissions assignment)
 class AuthAssignment(models.Model):
+    id = models.IntegerField(primary_key=True, verbose_name='کد')
     item_name = models.CharField(max_length=64)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.IntegerField(default=datetime,null=True, blank=True)
 
     class Meta:
         db_table = 'auth_assignment'
+        
+    def save(self, *args, **kwargs):
+        self.id = self.id or (AuthAssignment.objects.aggregate(models.Max('id'))['id__max'] or 0) + 1
+        super().save(*args, **kwargs)
 
 
 # Auth Item Model (Roles/Permissions)
 class AuthItem(models.Model):
+    id = models.IntegerField(primary_key=True, verbose_name='کد')
     name = models.CharField(max_length=64)
     type = models.IntegerField()
     description = models.TextField(null=True, blank=True)
@@ -61,41 +77,59 @@ class AuthItem(models.Model):
     data = models.TextField(null=True, blank=True)
     created_at = models.IntegerField(default=datetime,null=True, blank=True)
     updated_at = models.IntegerField(default=datetime,null=True, blank=True)
-
+        
     class Meta:
         db_table = 'auth_item'
+        
+    def save(self, *args, **kwargs):
+        self.id = self.id or (AuthItem.objects.aggregate(models.Max('id'))['id__max'] or 0) + 1
+        super().save(*args, **kwargs)
 
 
 # Auth Item Child Model (Mapping Parent-Child roles/permissions)
 class AuthItemChild(models.Model):
+    id = models.IntegerField(primary_key=True, verbose_name='کد')
     parent = models.ForeignKey(AuthItem, related_name='parent_items', on_delete=models.CASCADE)
     child = models.ForeignKey(AuthItem, related_name='child_items', on_delete=models.CASCADE)
     updated_at = models.DateTimeField(default=datetime)
-
+        
     class Meta:
         db_table = 'auth_item_child'
+        
+    def save(self, *args, **kwargs):
+        self.id = self.id or (AuthItemChild.objects.aggregate(models.Max('id'))['id__max'] or 0) + 1
+        super().save(*args, **kwargs)
 
 
 # Auth Menu Model (Menus for roles/permissions)
 class AuthMenu(models.Model):
+    id = models.IntegerField(primary_key=True, verbose_name='کد')
     item_name = models.CharField(max_length=64)
     menu = models.ForeignKey(Menu, on_delete=models.CASCADE)  # Corrected reference to Menu model
     updated_at = models.DateTimeField(default=datetime)
 
     class Meta:
         db_table = 'auth_menu'
+        
+    def save(self, *args, **kwargs):
+        self.id = self.id or (AuthMenu.objects.aggregate(models.Max('id'))['id__max'] or 0) + 1
+        super().save(*args, **kwargs)
 
 
 # Auth Rule Model (Custom rules for roles/permissions)
 class AuthRule(models.Model):
+    id = models.IntegerField(primary_key=True, verbose_name='کد')
     name = models.CharField(max_length=64)
     data = models.TextField(null=True, blank=True)
     created_at = models.IntegerField(default=datetime,null=True, blank=True)
     updated_at = models.IntegerField(default=datetime,null=True, blank=True)
-
+        
     class Meta:
         db_table = 'auth_rule'
 
+    def save(self, *args, **kwargs):
+        self.id = self.id or (AuthRule.objects.aggregate(models.Max('id'))['id__max'] or 0) + 1
+        super().save(*args, **kwargs)
 
 
 
