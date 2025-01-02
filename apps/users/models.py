@@ -8,14 +8,15 @@ from utils.utils import get_persian_datetime
 persian_date, persian_time = get_persian_datetime()
 datetime = [persian_date, persian_time]
 
+
 # Abstract User model for extending Django's default User model
 class User(AbstractUser):
     id = models.IntegerField(primary_key=True, verbose_name='کد')
     personnel_id = models.ForeignKey(Personnel, on_delete=models.SET_NULL, null=True, blank=True)
-    reg_date = models.DateTimeField(default=datetime)
+    register_date = models.DateField(default=persian_date)
     remember_token = models.CharField(max_length=100, null=True, blank=True)
     registrator_id = models.IntegerField(null=True, blank=True)
-    accounttype_id = models.PositiveSmallIntegerField()
+    accounttype_id = models.PositiveSmallIntegerField(null=True, blank=True)
     state = models.BooleanField(default=True, help_text="Active: 1, Inactive: 0")
     lastactive = models.DateTimeField(null=True, blank=True)
     
@@ -34,22 +35,31 @@ class User(AbstractUser):
 
 # User Activity Model
 class UserActivity(models.Model):
-    id = models.IntegerField(primary_key=True, verbose_name='کد')
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    item_name = models.CharField(max_length=64)
+    ACTION_TYPES = [
+        ('added', 'Added'),
+        ('updated', 'Updated'),
+        ('deleted', 'Deleted'),
+        ('logged_in', 'Logged In'),
+        ('logged_out', 'Logged Out')
+    ]
+
+    id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='activities')
+    action_type = models.CharField(max_length=20, choices=ACTION_TYPES)
+    item_name = models.CharField(max_length=255)  # Name of the model being acted upon
+    model_name = models.CharField(max_length=255)  # The model name (e.g., User, Product, etc.)
     date = models.DateTimeField(default=datetime)
-    ip = models.CharField(max_length=15)
-    lat = models.FloatField(null=True, blank=True)
-    lng = models.FloatField(null=True, blank=True)
-    record_id = models.IntegerField(null=True, blank=True)
-    table_name = models.CharField(max_length=50, null=True, blank=True)
-    
+
     class Meta:
         db_table = 'useractivity'
-        
+        ordering = ['-date']
+
     def save(self, *args, **kwargs):
         self.id = self.id or (UserActivity.objects.aggregate(models.Max('id'))['id__max'] or 0) + 1
         super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.user.username} {self.action_type} on {self.model_name} at {self.date}"
 
 
 # Auth Assignment Model (Roles/Permissions assignment)

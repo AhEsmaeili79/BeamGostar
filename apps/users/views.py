@@ -6,6 +6,7 @@ from django.views import View
 from django.core.paginator import Paginator
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .utils import generate_captcha
+from .models import UserActivity
 
 
 def error_404(request):
@@ -191,3 +192,13 @@ def accounts_list(request):
     page_obj = paginator.get_page(page_number)
 
     return render(request, 'dashboard/users/accounts/accounts_list.html', {'accounts': page_obj.object_list, 'page_obj': page_obj, 'buttons':buttons})
+
+
+
+def user_activity_log(request):
+    activities = UserActivity.objects.all()
+    paginator = Paginator(activities, 10)  # Show 10 activities per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    return render(request, 'dashboard/users/activity/user_activity_log.html', {'page_obj': page_obj})

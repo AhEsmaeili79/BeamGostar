@@ -3,19 +3,22 @@ from .models import User, UserActivity, AuthAssignment, AuthItem, AuthItemChild,
 
 # User Model Admin
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('username', 'email', 'personnel_id', 'reg_date', 'state', 'lastactive', 'accounttype_id')
+    list_display = ('username', 'email', 'personnel_id', 'state', 'lastactive', 'accounttype_id')
     search_fields = ('username', 'email')
-    list_filter = ('state', 'accounttype_id', 'reg_date')
-    ordering = ('-reg_date',)
+    list_filter = ('state', 'accounttype_id')
 
 admin.site.register(User, UserAdmin)
 
 # UserActivity Model Admin
 class UserActivityAdmin(admin.ModelAdmin):
-    list_display = ('user_id', 'item_name', 'date', 'ip', 'lat', 'lng', 'record_id', 'table_name')
-    search_fields = ('user__username', 'item_name', 'ip')
-    list_filter = ('date',)
+    list_display = ('user', 'action_type', 'item_name', 'model_name', 'date')
+    list_filter = ('action_type', 'model_name', 'user', 'date')
+    search_fields = ('user__username', 'item_name', 'model_name')
+    date_hierarchy = 'date'  # Adds a date filter by 'date' field in the admin panel
 
+    ordering = ['-date']  # Order by latest first
+    list_per_page = 20
+    
 admin.site.register(UserActivity, UserActivityAdmin)
 
 # AuthAssignment Model Admin
