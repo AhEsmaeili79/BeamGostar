@@ -12,7 +12,6 @@ admin.site.register(User, UserAdmin)
 # UserActivity Model Admin
 class UserActivityAdmin(admin.ModelAdmin):
     list_display = ('user', 'action_type', 'item_name', 'model_name', 'date')
-    list_filter = ('action_type', 'model_name', 'user', 'date')
     search_fields = ('user__username', 'item_name', 'model_name')
     date_hierarchy = 'date'  # Adds a date filter by 'date' field in the admin panel
 

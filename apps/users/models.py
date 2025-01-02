@@ -2,7 +2,7 @@ from django.db import models
 from apps.personnel.models import Personnel
 from apps.miscellaneous.models import Menu
 from django.contrib.auth.models import AbstractUser
-
+from django.utils import timezone
 from utils.utils import get_persian_datetime
 
 persian_date, persian_time = get_persian_datetime()
@@ -19,6 +19,8 @@ class User(AbstractUser):
     accounttype_id = models.PositiveSmallIntegerField(null=True, blank=True)
     state = models.BooleanField(default=True, help_text="Active: 1, Inactive: 0")
     lastactive = models.DateTimeField(null=True, blank=True)
+    is_deleted = models.BooleanField(default=False, help_text="Indicates if the record is soft-deleted")
+
     
     groups = models.ManyToManyField(
         'auth.Group', related_name='custom_user_set', blank=True)
@@ -29,26 +31,29 @@ class User(AbstractUser):
         db_table = 'user'
         
     def save(self, *args, **kwargs):
+        if self.is_deleted:
+            self.state = False
         self.id = self.id or (User.objects.aggregate(models.Max('id'))['id__max'] or 0) + 1
         super().save(*args, **kwargs)
 
 
 # User Activity Model
 class UserActivity(models.Model):
-    ACTION_TYPES = [
+    ACTIONS = (
         ('added', 'Added'),
         ('updated', 'Updated'),
         ('deleted', 'Deleted'),
         ('logged_in', 'Logged In'),
-        ('logged_out', 'Logged Out')
-    ]
+        ('logged_out', 'Logged Out'),
+    )
 
     id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='activities')
-    action_type = models.CharField(max_length=20, choices=ACTION_TYPES)
-    item_name = models.CharField(max_length=255)  # Name of the model being acted upon
-    model_name = models.CharField(max_length=255)  # The model name (e.g., User, Product, etc.)
-    date = models.DateTimeField(default=datetime)
+    user = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
+    item_name = models.CharField(max_length=255)
+    action_type = models.CharField(max_length=50, choices=ACTIONS)
+    date = models.DateTimeField(default=timezone.now)
+    model_name = models.CharField(max_length=255)
+    is_deleted = models.BooleanField(default=False, help_text="Indicates if the record is soft-deleted")
 
     class Meta:
         db_table = 'useractivity'
@@ -68,6 +73,8 @@ class AuthAssignment(models.Model):
     item_name = models.CharField(max_length=64)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.IntegerField(default=datetime,null=True, blank=True)
+    is_deleted = models.BooleanField(default=False, help_text="Indicates if the record is soft-deleted")
+
 
     class Meta:
         db_table = 'auth_assignment'
@@ -87,6 +94,8 @@ class AuthItem(models.Model):
     data = models.TextField(null=True, blank=True)
     created_at = models.IntegerField(default=datetime,null=True, blank=True)
     updated_at = models.IntegerField(default=datetime,null=True, blank=True)
+    is_deleted = models.BooleanField(default=False, help_text="Indicates if the record is soft-deleted")
+
         
     class Meta:
         db_table = 'auth_item'
@@ -102,6 +111,8 @@ class AuthItemChild(models.Model):
     parent = models.ForeignKey(AuthItem, related_name='parent_items', on_delete=models.CASCADE)
     child = models.ForeignKey(AuthItem, related_name='child_items', on_delete=models.CASCADE)
     updated_at = models.DateTimeField(default=datetime)
+    is_deleted = models.BooleanField(default=False, help_text="Indicates if the record is soft-deleted")
+
         
     class Meta:
         db_table = 'auth_item_child'
@@ -117,6 +128,8 @@ class AuthMenu(models.Model):
     item_name = models.CharField(max_length=64)
     menu = models.ForeignKey(Menu, on_delete=models.CASCADE)  # Corrected reference to Menu model
     updated_at = models.DateTimeField(default=datetime)
+    is_deleted = models.BooleanField(default=False, help_text="Indicates if the record is soft-deleted")
+
 
     class Meta:
         db_table = 'auth_menu'
@@ -133,6 +146,8 @@ class AuthRule(models.Model):
     data = models.TextField(null=True, blank=True)
     created_at = models.IntegerField(default=datetime,null=True, blank=True)
     updated_at = models.IntegerField(default=datetime,null=True, blank=True)
+    is_deleted = models.BooleanField(default=False, help_text="Indicates if the record is soft-deleted")
+
         
     class Meta:
         db_table = 'auth_rule'

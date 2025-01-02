@@ -195,10 +195,10 @@ def accounts_list(request):
 
 
 
-def user_activity_log(request):
-    activities = UserActivity.objects.all()
-    paginator = Paginator(activities, 10)  # Show 10 activities per page
+def user_activity(request):
+    activities = UserActivity.objects.all()  # Fetch all activities
+    paginator = Paginator(activities, 10)  # 10 activities per page
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     
-    return render(request, 'dashboard/users/activity/user_activity_log.html', {'page_obj': page_obj})
+    return render(request, 'dashboard/users/activity/activity-list.html', {'page_obj': page_obj})

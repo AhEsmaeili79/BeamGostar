@@ -8,8 +8,10 @@ class Menu(models.Model):
     description = models.TextField(blank=True, verbose_name='توضیحات')
     icon = models.CharField(max_length=100, verbose_name='آیکون', blank=True)
     order = models.PositiveIntegerField(verbose_name='ترتیب نمایش', default=0)
-    is_active = models.BooleanField(default=True, verbose_name='فعال')
+    state  = models.BooleanField(default=True, verbose_name='فعال')
     url = models.CharField(max_length=255, verbose_name='آدرس لینک', blank=True)
+    is_deleted = models.BooleanField(default=False, help_text="Indicates if the record is soft-deleted")
+
         
     class Meta:
         ordering = ['order']
@@ -19,6 +21,8 @@ class Menu(models.Model):
         return self.title
     
     def save(self, *args, **kwargs):
+        if self.is_deleted:
+            self.state = False
         self.id = self.id or (Menu.objects.aggregate(models.Max('id'))['id__max'] or 0) + 1
         super().save(*args, **kwargs)
 
@@ -31,7 +35,9 @@ class SubMenu(models.Model):
     url = models.CharField(max_length=255, verbose_name='آدرس لینک', blank=True)
     icon = models.CharField(max_length=100, verbose_name='آیکون', blank=True)
     order = models.PositiveIntegerField(verbose_name='ترتیب نمایش', default=0)
-    is_active = models.BooleanField(default=True, verbose_name='فعال')
+    state = models.BooleanField(default=True, verbose_name='فعال')
+    is_deleted = models.BooleanField(default=False, help_text="Indicates if the record is soft-deleted")
+
     
     class Meta:
         ordering = ['order']
@@ -41,6 +47,8 @@ class SubMenu(models.Model):
         return self.title
     
     def save(self, *args, **kwargs):
+        if self.is_deleted:
+            self.state = False
         self.id = self.id or (SubMenu.objects.aggregate(models.Max('id'))['id__max'] or 0) + 1
         super().save(*args, **kwargs)
         
@@ -51,7 +59,9 @@ class SubItem(models.Model):
     submenu = models.ForeignKey(SubMenu, related_name='subitems', on_delete=models.CASCADE, verbose_name='آیتم زیر منو')
     title = models.CharField(max_length=150, verbose_name='عنوان زیر منو')
     url = models.CharField(max_length=255, verbose_name='آدرس لینک', blank=True)
-    is_active = models.BooleanField(default=True, verbose_name='فعال')
+    state = models.BooleanField(default=True, verbose_name='فعال')
+    is_deleted = models.BooleanField(default=False, help_text="Indicates if the record is soft-deleted")
+
 
     class Meta:
         ordering = ['submenu__order']
@@ -61,6 +71,8 @@ class SubItem(models.Model):
         return self.title
     
     def save(self, *args, **kwargs):
+        if self.is_deleted:
+            self.state = False
         self.id = self.id or (SubItem.objects.aggregate(models.Max('id'))['id__max'] or 0) + 1
         super().save(*args, **kwargs)
     

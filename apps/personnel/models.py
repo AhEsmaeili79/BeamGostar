@@ -27,8 +27,12 @@ class Personnel(models.Model):
     work_range = models.SmallIntegerField(null=True, blank=True)
     user_in = models.SmallIntegerField(null=True, blank=True)
     post_id = models.SmallIntegerField(null=True, blank=True)
+    is_deleted = models.BooleanField(default=False, help_text="Indicates if the record is soft-deleted")
+
 
     def save(self, *args, **kwargs):
+        if self.is_deleted:
+            self.state = False
         self.id = self.id or (Personnel.objects.aggregate(models.Max('id'))['id__max'] or 0) + 1
         super().save(*args, **kwargs)
     
