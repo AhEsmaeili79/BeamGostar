@@ -8,6 +8,8 @@ from .models import UserActivity
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 from utils.utils import get_persian_datetime
 
+persian_date, persian_time, now  = get_persian_datetime()
+datetime = [persian_date, persian_time]
 
 # Log Addition Function
 def log_addition(instance, user):
@@ -28,7 +30,8 @@ def log_addition(instance, user):
         action_type=action_type,
         item_name=item_name,
         model_name=model_name,
-        date=timezone.now()  # Corrected to call the function
+        date=timezone.now(),  # Corrected to call the function
+        time= persian_time
     )
     user_activity.save()
 
@@ -62,7 +65,8 @@ def log_user_login(sender, request, user, **kwargs):
         action_type='logged_in',
         item_name="session",
         model_name='User',
-        date=timezone.now()
+        date=timezone.now(),
+        time= persian_time
     )
 
 @receiver(user_logged_out)
@@ -72,5 +76,6 @@ def log_user_logout(sender, request, user, **kwargs):
         action_type='logged_out',
         item_name="session",
         model_name='User',
-        date=timezone.now()
+        date=timezone.now(),  # Corrected to call the function
+        time= persian_time
     )

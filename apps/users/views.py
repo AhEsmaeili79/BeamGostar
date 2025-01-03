@@ -201,7 +201,6 @@ def user_activity(request):
     page_obj = paginator.get_page(page_number)
     
     for activity in page_obj:
-        activity.date = JalaliDateTime(activity.date).strftime('%Y-%m-%d %H:%M:%S')  # Persian date format
-        
-        
+        activity.date = JalaliDateTime(activity.date).strftime('%Y-%m-%d')
+    
     return render(request, 'dashboard/users/activity/activity-list.html', {'page_obj': page_obj})

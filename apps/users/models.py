@@ -51,7 +51,8 @@ class UserActivity(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
     item_name = models.CharField(max_length=255)
     action_type = models.CharField(max_length=50, choices=ACTIONS)
-    date = models.DateTimeField(default=timezone.now)
+    date = models.DateTimeField(default=datetime)
+    time = models.TimeField(default=persian_time)
     model_name = models.CharField(max_length=255)
     is_deleted = models.BooleanField(default=False, help_text="Indicates if the record is soft-deleted")
 
