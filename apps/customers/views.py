@@ -170,3 +170,11 @@ def customer_detail(request, customer_id):
         return render(request, 'dashboard/customers/customers/customer_detail.html', {'customer': customer})
     except Customer.DoesNotExist:
         return render(request, 'dashboard/customers/customers/customer_list.html', {'error': 'Customer not found'})
+
+
+def customer_test(request, customer_id):
+    try:
+        customer = Customer.objects.get(id=customer_id)
+        return render(request, 'dashboard/customers/customers/customer_test.html', {'customer': customer})
+    except Customer.DoesNotExist:
+        return render(request, 'dashboard/customers/customers/customer_list.html', {'error': 'Customer not found'})
