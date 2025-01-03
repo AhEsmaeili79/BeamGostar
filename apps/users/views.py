@@ -60,12 +60,10 @@ def user_logout(request):
     logout(request)
     return redirect('login')
 
-# Dashboard redirect 
-class DashboardView(LoginRequiredMixin, View):
-    login_url = '/login'
-    
-    def get(self, request):
-        return render(request, 'dashboard/dashboard.html')
+# Dashboard redirect
+@login_required(login_url='/login')
+def DashboardView(request):
+    return render(request, 'dashboard/dashboard.html')
 
 
 @login_required(login_url='/login')
@@ -124,6 +122,7 @@ def users_list(request):
     
 
 
+@login_required(login_url='/login')
 def accounts_list(request):
     # Sample data for demonstration
     accounts = [
@@ -194,7 +193,7 @@ def accounts_list(request):
     return render(request, 'dashboard/users/accounts/accounts_list.html', {'accounts': page_obj.object_list, 'page_obj': page_obj, 'buttons':buttons})
 
 
-
+@login_required(login_url='/login')
 def user_activity(request):
     activities = UserActivity.objects.all()  # Fetch all activities
     paginator = Paginator(activities, 10)  # 10 activities per page

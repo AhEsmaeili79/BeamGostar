@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from django.utils import timezone
 from datetime import datetime
 from .models import GetAnswer,LinkAnalysisPerson
+from django.contrib.auth.decorators import login_required
 
 buttons = [
         {'text': 'راهنما', 'url': '#', 'icon': 'solar:question-circle-broken'},
@@ -14,6 +15,7 @@ buttons = [
         {'text': 'تنظیمات', 'url': '#', 'icon': 'solar:settings-outline'},
     ]
 
+@login_required(login_url='/login')
 def analyze_list_view(request):
     # Sample Data
     analyzes = [
@@ -39,6 +41,7 @@ def analyze_list_view(request):
     return render(request, 'dashboard/analysis/analyze-list.html', context)
     
 
+@login_required(login_url='/login')
 def analysis_time_view(request):
     # Mock data - replace with database query
     ANALYSIS_DATA = [
@@ -103,6 +106,8 @@ def analysis_time_view(request):
 
 
 # answers
+
+@login_required(login_url='/login')
 def answers_list(request):
     # Fetch all answers
     answers = GetAnswer.objects.all()
@@ -119,7 +124,8 @@ def answers_list(request):
         'page_obj': page_obj,
     })
     
-    
+
+@login_required(login_url='/login')
 def add_answer(request):
     if request.method == 'POST':
         title = request.POST.get('title')
@@ -132,6 +138,7 @@ def add_answer(request):
         
     return render(request, 'dashboard/analysis/answers/answers_edit.html')
 
+@login_required(login_url='/login')
 def edit_answer(request, id):
     answer = get_object_or_404(GetAnswer, id=id)
     
@@ -149,6 +156,7 @@ def edit_answer(request, id):
     
     return render(request, 'dashboard/analysis/answers/answers_edit.html', {'answer': answer})
 
+@login_required(login_url='/login')
 def delete_answer(request, id):
     answer = get_object_or_404(GetAnswer, id=id)
     
@@ -159,13 +167,13 @@ def delete_answer(request, id):
     
     return render(request, 'dashboard/analysis/answers/answers.html', {'answer': answer})
 
+@login_required(login_url='/login')
 def get_answer_by_id(request, id):
     answer = get_object_or_404(GetAnswer, id=id)
     return JsonResponse({'id': answer.id, 'title': answer.title, 'status': answer.status})
 
 
-
-
+@login_required(login_url='/login')
 def link_analysis_person_list(request):
     # Fetch the list of all LinkAnalysisPerson objects
     link_analysis_persons = LinkAnalysisPerson.objects.all()
