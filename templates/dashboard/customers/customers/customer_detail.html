@@ -3,7 +3,7 @@
 
 {% block content %}
 <div class="container-fluid">
-    <form id="customerForm" method="POST" action="{% if customer %}{% url 'customer_edit' customer.id %}{% else %}{% url 'customer_add' %}{% endif %}">
+    <form id="customerForm" method="POST" action="#">
         {% csrf_token %}
         <div class="row">
             <div class="col-xl-12">
@@ -12,75 +12,49 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-lg-4">
-                                <label for="customer-type" class="form-label">نوع مشتری</label>
-                                <div class="d-flex align-items-center gap-2">
-                                    <div class="form-check ps-4">
-                                        <input type="radio" class="form-check-input rounded-circle mt-0 fs-18" value="real" name="customer-type" id="customer-real" {% if customer and customer.customer_type == 1 %}checked{% endif %}>
-                                        <label class="form-check-label" for="customer-real">حقیقی</label>
-                                    </div>
-                                    <div class="form-check ps-4">
-                                        <input type="radio" class="form-check-input rounded-circle mt-0 fs-18" value="legal" name="customer-type" id="customer-legal" {% if customer and customer.customer_type == 2 %}checked{% endif %}>
-                                        <label class="form-check-label" for="customer-legal">حقوقی</label>
-                                    </div>
-                                </div>
+                                <label for="customer-type" id="customer-legal" class="form-label" data-customer-type="{% if customer and customer.customer_type == 1 %}حقیقی{% else %}حقوقی{% endif %}">
+                                    نوع مشتری: {% if customer and customer.customer_type == 1 %}حقیقی{% else %}حقوقی {% endif %}
+                                </label>
                             </div>
                             <!-- Nationality -->
                             <div class="col-lg-4">
-                                <label for="nationality" class="form-label">تابعیت</label>
-                                <div class="d-flex align-items-center gap-2">
-                                    <div class="form-check ps-4">
-                                        <input type="radio" class="form-check-input rounded-circle mt-0 fs-18" value="iranian" name="nationality" id="iranian" {% if customer and customer.nationality == 1 %}checked{% endif %}>
-                                        <label class="form-check-label" for="iranian">ایرانی</label>
-                                    </div>
-                                    <div class="form-check ps-4">
-                                        <input type="radio" class="form-check-input rounded-circle mt-0 fs-18" value="foreign" name="nationality" id="foreign" {% if customer and customer.nationality == 2 %}checked{% endif %}>
-                                        <label class="form-check-label" for="foreign">خارجی</label>
-                                    </div>
-                                </div>
+                                <label for="nationality" id="foreign" class="form-label" data-nationality="{% if customer and customer.nationality == 1 %}ایرانی{% else %}خارجی{% endif %}">
+                                    تابعیت: {% if customer and customer.nationality == 1 %}ایرانی{% else %}خارجی{% endif %}
+                                </label>
                             </div>
                             <!-- Payment Type -->
                             <div class="col-lg-4">
-                                <label for="payment-type" class="form-label">نوع تسویه</label>
-                                <div class="d-flex align-items-center gap-2">
-                                    <div class="form-check ps-4">
-                                        <input type="radio" class="form-check-input rounded-circle mt-0 fs-18" value="cash" name="payment-type" id="cash" {% if customer and customer.clearing_type == 1 %}checked{% endif %}>
-                                        <label class="form-check-label" for="cash">نقدی</label>
-                                    </div>
-                                    <div class="form-check ps-4">
-                                        <input type="radio" class="form-check-input rounded-circle mt-0 fs-18" value="credit" name="payment-type" id="credit" {% if customer and customer.clearing_type == 2 %}checked{% endif %}>
-                                        <label class="form-check-label" for="credit">اعتباری</label>
-                                    </div>
-                                </div>
+                                <label for="payment-type" class="form-label">نوع تسویه: {% if customer and customer.clearing_type == 1 %}نقدی{% else %}اعتباری{% endif %} </label>
                             </div>
-                            
+
                             <div class="mb-1"></div>
                             <!-- Name Fields (Persian and English) -->
                             <div class="col-lg-6" id="first-name-container">
                                 <div class="mb-3"></div>
                                 <label for="first-name" class="form-label">نام(فارسی)</label>
-                                <input type="text" id="first-name" class="form-control" name="first-name" value="{% if customer %}{{ customer.name_fa }}{% endif %}" placeholder="نام را وارد کنید" />
+                                <input type="text" id="first-name" class="form-control" name="first-name" value="{% if customer %}{{ customer.name_fa }}{% endif %}" placeholder="نام را وارد کنید" disabled />
                             </div>
                             <div class="col-lg-6" id="last-name-container">
                                 <div class="mb-3"></div>
                                 <label for="last-name" class="form-label">نام خانوادگی(فارسی)</label>
-                                <input type="text" id="last-name" class="form-control" name="last-name" value="{% if customer %}{{ customer.family_fa }}{% endif %}" placeholder="نام خانوادگی را وارد کنید" />
+                                <input type="text" id="last-name" class="form-control" name="last-name" value="{% if customer %}{{ customer.family_fa }}{% endif %}" placeholder="نام خانوادگی را وارد کنید" disabled />
                             </div>
                             <div class="col-lg-6" id="first-name-en-container">
                                 <div class="mb-3"></div>
                                 <label for="first-name-en" class="form-label">نام (انگلیسی)</label>
-                                <input type="text" id="first-name-en" class="form-control" name="first-name-en" value="{% if customer %}{{ customer.name_en }}{% endif %}" placeholder="نام را به انگلیسی وارد کنید" />
+                                <input type="text" id="first-name-en" class="form-control" name="first-name-en" value="{% if customer %}{{ customer.name_en }}{% endif %}" placeholder="نام را به انگلیسی وارد کنید" disabled />
                             </div>
                             <div class="col-lg-6" id="last-name-en-container">
                                 <div class="mb-3"></div>
                                 <label for="last-name-en" class="form-label">نام خانوادگی(انگلیسی)</label>
-                                <input type="text" id="last-name-en" class="form-control" name="last-name-en" value="{% if customer %}{{ customer.family_en }}{% endif %}" placeholder="نام خانوادگی را به انگلیسی وارد کنید" />
+                                <input type="text" id="last-name-en" class="form-control" name="last-name-en" value="{% if customer %}{{ customer.family_en }}{% endif %}" placeholder="نام خانوادگی را به انگلیسی وارد کنید" disabled />
                             </div>
                             <div class="col-lg-4" id="national-id-container">
                                 <div class="mb-3"></div>
                                 <label for="national-id" class="form-label" id="id-label">کد ملی</label>
                                 <div class="input-group mb-1">
                                     <span class="input-group-text fs-20"><iconify-icon icon="solar:user-bold" class="fs-20"></iconify-icon></span>
-                                    <input type="text" id="national-id" class="form-control" name="national-id" value="{% if customer %}{{ customer.national_id }}{% endif %}" placeholder="کد ملی را وارد کنید" />
+                                    <input type="text" id="national-id" class="form-control" name="national-id" value="{% if customer %}{{ customer.national_id }}{% endif %}" placeholder="کد ملی را وارد کنید" disabled />
                                 </div>
                             </div>
                             <div class="col-lg-4">
@@ -88,7 +62,7 @@
                                 <label for="birth-date" class="form-label">تاریخ تولد</label>
                                 <div class="input-group mb-1">
                                     <span class="input-group-text fs-20"><iconify-icon icon="solar:calendar-linear" class="fs-20"></iconify-icon></span>
-                                    <input type="date" id="birth-date" class="form-control" name="birth-date" value="{% if customer %}{{ customer.birth_date }}{% endif %}" />
+                                    <input type="date" id="birth-date" class="form-control" name="birth-date" value="{% if customer %}{{ customer.birth_date }}{% endif %}" disabled />
                                 </div>
                             </div>
                             <div class="col-lg-4">
@@ -96,7 +70,7 @@
                                 <label for="phone-number" class="form-label">شماره همراه</label>
                                 <div class="input-group mb-1">
                                     <span class="input-group-text fs-20"><iconify-icon icon="solar:outgoing-call-rounded-bold-duotone" class="fs-20"></iconify-icon></span>
-                                    <input type="text" id="phone-number" class="form-control" name="phone-number" value="{% if customer %}{{ customer.mobile }}{% endif %}" placeholder="شماره همراه" />
+                                    <input type="text" id="phone-number" class="form-control" name="phone-number" value="{% if customer %}{{ customer.mobile }}{% endif %}" placeholder="شماره همراه" disabled />
                                 </div>
                             </div>
                         </div>
@@ -113,7 +87,7 @@
                                     <span class="input-group-text fs-20">
                                         <iconify-icon icon="solar:letter-bold-duotone" class="fs-18"></iconify-icon>
                                     </span>
-                                    <input type="text" id="email" class="form-control" name="email" value="{% if customer %}{{ customer.email }}{% endif %}" placeholder="ایمیل را اضافه کنید" />
+                                    <input type="text" id="email" class="form-control" name="email" value="{% if customer %}{{ customer.email }}{% endif %}" placeholder="ایمیل را اضافه کنید" disabled />
                                 </div>
                             </div>
                             <div class="col-lg-6">
@@ -122,26 +96,16 @@
                                     <span class="input-group-text fs-20">
                                         <iconify-icon icon="solar:mailbox-outline" class="fs-18"></iconify-icon>
                                     </span>
-                                    <input type="text" id="zipcode" class="form-control" name="zipcode" value="{% if customer %}{{ customer.postal_code }}{% endif %}" placeholder="کد پستی را اضافه کنید" />
+                                    <input type="text" id="zipcode" class="form-control" name="zipcode" value="{% if customer %}{{ customer.postal_code }}{% endif %}" placeholder="کد پستی را اضافه کنید" disabled />
                                 </div>
                             </div>
                             <div class="col-lg-12">
                                 <label for="address" class="form-label">آدرس</label>
                                 <div class="input-group mb-1">
                                     <span class="input-group-text fs-20"><iconify-icon icon="solar:point-on-map-bold-duotone" class="fs-18"></iconify-icon></span>
-                                    <input type="text" id="address" class="form-control" name="address" value="{% if customer %}{{ customer.address }}{% endif %}" placeholder="آدرس را اضافه کنید" />
+                                    <input type="text" id="address" class="form-control" name="address" value="{% if customer %}{{ customer.address }}{% endif %}" placeholder="آدرس را اضافه کنید" disabled />
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="p-3 bg-light mb-1 rounded">
-                    <div class="row justify-content-end g-2">
-                        <div class="col-lg-2">
-                            <button type="submit" class="btn btn-outline-secondary w-100">ذخیره تغییرات</button>
-                        </div>
-                        <div class="col-lg-2">
-                            <a href="#!" class="btn btn-primary w-100">لغو</a>
                         </div>
                     </div>
                 </div>
@@ -149,11 +113,12 @@
         </div>
     </form>
 </div>
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         function updateFieldsBasedOnCustomerType() {
-            const isLegal = document.getElementById('customer-legal').checked;
-            const isForeign = document.getElementById('foreign').checked;
+            const isLegal = document.getElementById('customer-legal').getAttribute('data-customer-type');
+            const isForeign = document.getElementById('foreign').getAttribute('data-nationality');
             const firstNameLabel = document.querySelector('#first-name-container label');
             const lastNameLabel = document.querySelector('#last-name-container label');
             const firstNameEnLabel = document.querySelector('#first-name-en-container label');
@@ -165,11 +130,11 @@
 
             document.querySelectorAll('.dynamic-field').forEach(field => field.remove());
 
-            if (isLegal) {
+            if (isLegal  === 'حقوقی') {
                 const legalFields = [
-                    { id: 'legal-field-1', label: 'نام رابط (انگلیسی)', placeholder: 'نام رابط را به انگلیسی وارد کنید', name: 'fname_en' },
-                    { id: 'legal-field-2', label: 'نام خانوادگی رابط (انگلیسی)', placeholder: 'نام خانوادگی رابط را به انگلیسی وارد کنید', name: 'lname_en' },
-                    { id: 'legal-field-3', label: 'کد اقتصادی', placeholder: 'کد اقتصادی را وارد کنید' ,name:'economy_code' }
+                    { id: 'legal-field-1', label: 'نام رابط (انگلیسی)', placeholder: 'نام رابط را به انگلیسی وارد کنید', name: 'fname_en' value : "{% if customer %}{{ customer.name_en }}{% endif %}" },
+                    { id: 'legal-field-2', label: 'نام خانوادگی رابط (انگلیسی)', placeholder: 'نام خانوادگی رابط را به انگلیسی وارد کنید', name: 'lname_en' value : "{% if customer %}{{ customer.family_en }}{% endif %}" },
+                    { id: 'legal-field-3', label: 'کد اقتصادی', placeholder: 'کد اقتصادی را وارد کنید' ,name:'economy_code' value : "{% if customer %}{{ customer.economy_code }}{% endif %}" }
                 ];
 
                 legalFields.forEach(field => {
@@ -178,7 +143,7 @@
                     newInputContainer.innerHTML = `
                         <div class="mb-3"></div>
                         <label for="${field.id}" class="form-label">${field.label}</label>
-                        <input type="text" id="${field.id}" name="${field.name}" class="form-control" placeholder="${field.placeholder}" value="{% if customer %}{{ customer.economy_code }}{% endif %}" />
+                        <input type="text" id="${field.id}" name="${field.name}" class="form-control" placeholder="${field.placeholder}" value="${field.value}" disabled />
                     `;
 
                     // Insert the field before the شناسه ملی field
@@ -199,7 +164,7 @@
                     <label for="company-phone" class="form-label">شماره تماس شرکت</label>
                     <div class="input-group mb-1">
                         <span class="input-group-text fs-20"><iconify-icon icon="solar:outgoing-call-rounded-bold-duotone" class="fs-20"></iconify-icon></span>
-                        <input type="text" id="company-phone" class="form-control" value="{% if customer %}{{ customer.company_phone }}{% endif %}" placeholder="شماره تماس شرکت را وارد کنید" />
+                        <input type="text" id="company-phone" class="form-control" value="{% if customer %}{{ customer.company_phone }}{% endif %}" placeholder="شماره تماس شرکت را وارد کنید" disabled />
                     </div>
                 `;
                 rowContainer.appendChild(phoneContainer); 
@@ -216,7 +181,7 @@
                 if (birthDateField) birthDateField.style.display = 'block';
             }
 
-            if (isForeign && !isLegal) {
+            if (isForeign === 'خارجی' && isLegal  === 'حقیقی') {
                 idLabel.innerText = 'شماره گذرنامه';
                 nationalIdInput.setAttribute('placeholder', 'شماره گذرنامه را وارد کنید');
             }

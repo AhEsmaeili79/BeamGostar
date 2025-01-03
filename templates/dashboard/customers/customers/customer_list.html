@@ -23,13 +23,12 @@
                                         <th>نوع مشتری</th>
                                         <th>نوع تسویه</th>
                                         <th>تابعیت</th>
-                                        <th>شماره گذرنامه</th>
-                                        <th>کد ملی</th>
-                                        <th>شناسه ملی</th>
                                         <th>نام(فارسی)</th>
                                         <th>نام خانوادگی (فارسی)</th>
                                         <th>نام شرکت (فارسی)</th>
+                                        <th>کد گذرنامه ، شناسه ملی ، کد ملی </th>
                                         <th>شماره همراه</th>
+                                        <th>تاریخ ایجاد</th>
                                         <th>عملیات</th>
                                     </tr>
                                     <tr>
@@ -62,13 +61,7 @@
                                         </th>
                                         {% endfor %}
                                         <th>
-                                            <input type="text" class="form-control form-control-sm" placeholder="کد گذرنامه" id="filterNationalCode">
-                                        </th>
-                                        <th>
-                                            <input type="text" class="form-control form-control-sm" placeholder="کد ملی" id="filterNationalCode">
-                                        </th>
-                                        <th>
-                                            <input type="text" class="form-control form-control-sm" placeholder="شناسه ملی" id="filterNationalCode">
+                                            <input type="text" class="form-control form-control-sm" placeholder="کد گذرنامه ، شناسه ملی ، کد ملی " id="filterNationalCode">
                                         </th>
                                         <th>
                                             <input type="text" class="form-control form-control-sm" placeholder="نام" id="filterFirstName">
@@ -81,6 +74,9 @@
                                         </th>
                                         <th>
                                             <input type="text" class="form-control form-control-sm" placeholder="شماره همراه" id="filterLastName">
+                                        </th>
+                                        <th>
+                                            <input type="text" class="form-control form-control-sm" placeholder="تاریخ ایجاد" id="filterLastName">
                                         </th>
                                         <th>
                                             <button type="button" class="btn btn-sm btn-outline-secondary" id="clearFilters">پاک کردن فیلترها</button>
@@ -96,7 +92,7 @@
                                                 <label class="form-check-label" for="customCheck{{ forloop.counter }}"></label>
                                             </div>
                                         </td>
-                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ customer.id }}</td>
                                         <td>
                                             <span class="badge {% if customer.customer_type == 1 %}bg-success-subtle text-success{% else %}bg-danger-subtle text-danger{% endif %} py-1 px-2">
                                                 {% if customer.customer_type == 1 %}حقیقی{% else %}حقوقی{% endif %}
@@ -107,19 +103,31 @@
                                         </td>
                                         <td>
                                             {% if customer.nationality == 1 %}ایرانی{% else %}خارجی{% endif %}
-                                        </td> <!-- شماره گذرنامه -->
-                                        <td>{{ customer.national_code }}</td> <!-- کد ملی -->
-                                        <td>{{ customer.national_id }}</td> <!-- شناسه ملی -->
+                                        </td> 
                                         <td>{{ customer.name_fa }}</td> <!-- نام (فارسی) -->
                                         <td>{{ customer.family_fa }}</td> <!-- نام خانوادگی (فارسی) -->
-                                        <td>{{ customer.company_fa }}</td> <!-- نام شرکت (فارسی) -->
+                                        <td>{% if customer.company_fa == None %}-{% else %}{{ customer.company_fa }}{% endif %}</td> <!-- نام شرکت (فارسی) -->
+                                        <td>
+                                            {% if customer.passport %}
+                                            شماره گذرنامه : {{ customer.passport }} 
+                                            {% elif customer.national_code %}
+                                            شناسه ملی : {{ customer.national_code }}
+                                            {% else %}
+                                            کد ملی : {{ customer.national_id }}
+                                            {% endif %}
                                         <td>{{ customer.mobile }}</td>
-                                        <td>{{ customer.created_at |date:"Y/m/d" }}</td>
+                                        <td>{{ customer.created_at}}</td>
                                         <td>
                                             <div class="d-flex gap-2">
-                                                <a href="#!" class="btn btn-light btn-sm"><iconify-icon icon="solar:eye-broken" class="align-middle fs-18"></iconify-icon></a>
-                                                <a href="#!" class="btn btn-soft-primary btn-sm" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><iconify-icon icon="solar:pen-2-broken" class="align-middle fs-18"></iconify-icon></a>
-                                                <a href="#!" class="btn btn-soft-danger btn-sm"><iconify-icon icon="solar:trash-bin-minimalistic-2-broken" class="align-middle fs-18"></iconify-icon></a>
+                                                <a href="{% url 'customer_detail' customer.id %}" class="btn btn-light btn-sm">
+                                                    <iconify-icon icon="solar:eye-broken" class="align-middle fs-18"></iconify-icon>
+                                                </a>
+                                                <a href="{% url 'customer_edit' customer.id %}" class="btn btn-soft-primary btn-sm">
+                                                    <iconify-icon icon="solar:pen-2-broken" class="align-middle fs-18"></iconify-icon>
+                                                </a>
+                                                <a href="{% url 'customer_delete' customer.id %}" class="btn btn-soft-danger btn-sm">
+                                                    <iconify-icon icon="solar:trash-bin-minimalistic-2-broken" class="align-middle fs-18"></iconify-icon>
+                                                </a>
                                             </div>
                                         </td>
                                     </tr>

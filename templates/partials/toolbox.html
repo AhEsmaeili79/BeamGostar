@@ -1,6 +1,6 @@
 <div class="list_toolbox">
     {% for button in buttons %}
-        <a href="{{ button.url }}" class="btn btn-light btn-sm rounded" title="{{ button.title }}">
+        <a href="{% if button.url|first == '#' %}{{ button.url }}{% else %}{% url button.url %}{% endif %}" class="btn btn-light btn-sm rounded" title="{{ button.title }}">
             <iconify-icon icon="{{ button.icon }}" class="fs-28 align-middle"></iconify-icon>
         </a>
     {% endfor %}

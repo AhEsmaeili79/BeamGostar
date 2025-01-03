@@ -9,11 +9,12 @@ datetime = [persian_date, persian_time]
 class PaymentMethod(models.Model):
     id = models.IntegerField(primary_key=True, verbose_name='کد')
     title = models.CharField(max_length=200, verbose_name='عنوان')
-    status =  models.BooleanField(default=True, verbose_name='وضعیت ' )
+    state =  models.BooleanField(default=True, verbose_name='وضعیت ' )
     created_at = models.DateTimeField(default=datetime, verbose_name='تاریخ ایجاد')
     updated_at = models.DateTimeField(default=datetime, verbose_name='تاریخ ویرایش')
     deleted_at = models.DateTimeField(null=True, blank=True, verbose_name='تاریخ حذف')
-
+    is_deleted = models.BooleanField(default=False, help_text="Indicates if the record is soft-deleted")
+        
     class Meta:
         db_table = 'payment_method'
 
@@ -21,6 +22,8 @@ class PaymentMethod(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
+        if self.is_deleted:
+            self.state = False
         self.id = self.id or (PaymentMethod.objects.aggregate(models.Max('id'))['id__max'] or 0) + 1
         super().save(*args, **kwargs)
 
@@ -69,18 +72,24 @@ class Customer(models.Model):
     email = models.EmailField(max_length=170, null=True, blank=True, verbose_name='پست الکترونیک')
     postal_code = models.CharField(max_length=10, null=True, blank=True, verbose_name='کد پستی')
     address = models.CharField(max_length=255, null=True, blank=True, verbose_name='آدرس')
+    state =  models.BooleanField(default=True, verbose_name='وضعیت')
     created_at = models.DateTimeField(default=datetime)
     updated_at = models.DateTimeField(default=datetime)
     deleted_at = models.DateTimeField(null=True, blank=True)
+    is_deleted = models.BooleanField(default=False, help_text="Indicates if the record is soft-deleted")
+        
 
     class Meta:
         db_table = 'customers'
+        ordering = ['created_at']
         
         
     def __str__(self):
-        return self.name_fa + ' ' + self.family_fa + ' ' + self.national_code    
+        return self.name_fa + ' ' + self.family_fa
         
     def save(self, *args, **kwargs):
+        if self.is_deleted:
+            self.state = False
         self.id = self.id or (Customer.objects.aggregate(models.Max('id'))['id__max'] or 0) + 1
         super().save(*args, **kwargs)
 
@@ -91,9 +100,12 @@ class PriceAnalysis(models.Model):
     price = models.CharField(max_length=10, verbose_name='قیمت(ریال)')
     date = models.DateField(default=persian_date, null=True, blank=True, verbose_name='تاریخ ثبت')
     time = models.TimeField(default=persian_time ,null=True, blank=True, verbose_name='زمان ثبت')
+    state =  models.BooleanField(default=True, verbose_name='وضعیت')
     created_at = models.DateTimeField(default=datetime)
     updated_at = models.DateTimeField(default=datetime)
     deleted_at = models.DateTimeField(null=True, blank=True)
+    is_deleted = models.BooleanField(default=False, help_text="Indicates if the record is soft-deleted")
+        
 
     class Meta:
         db_table = 'price_analysis'
@@ -102,6 +114,8 @@ class PriceAnalysis(models.Model):
         return f"آنالیز {self.analyze_id} قیمت {self.price}"
 
     def save(self, *args, **kwargs):
+        if self.is_deleted:
+            self.state = False
         self.id = self.id or (PriceAnalysis.objects.aggregate(models.Max('id'))['id__max'] or 0) + 1
         super().save(*args, **kwargs)
     
@@ -112,9 +126,12 @@ class PriceAnalysisCredit(models.Model):
     price = models.CharField(max_length=10, verbose_name='قیمت(ریال)')
     date = models.DateField(default=persian_date,null=True, blank=True, verbose_name='تاریخ ثبت')
     time = models.TimeField(default=persian_time,null=True, blank=True, verbose_name='زمان ثبت')
+    state =  models.BooleanField(default=True, verbose_name='وضعیت')
     created_at = models.DateTimeField(default=datetime)
     updated_at = models.DateTimeField(default=datetime)
     deleted_at = models.DateTimeField(null=True, blank=True)
+    is_deleted = models.BooleanField(default=False, help_text="Indicates if the record is soft-deleted")
+        
 
     class Meta:
         db_table = 'price_analysis_credit'
@@ -123,5 +140,7 @@ class PriceAnalysisCredit(models.Model):
         return f"مشتری {self.customers_id.name_fa} قیمت {self.price}"
 
     def save(self, *args, **kwargs):
+        if self.is_deleted:
+            self.state = False
         self.id = self.id or (PriceAnalysisCredit.objects.aggregate(models.Max('id'))['id__max'] or 0) + 1
         super().save(*args, **kwargs)

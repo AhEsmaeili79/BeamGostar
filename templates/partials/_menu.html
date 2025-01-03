@@ -15,7 +15,7 @@
                         {% for submenu in menu.submenus %}
                             <li class="nav-item">
                                 {% if submenu.subitems %}
-                                    <a class="nav-link menu-arrow" href="{% if submenu.url|first == '#' %}{{ submenu.url }}{% else %}{% url submenu.url %}{% endif %}"" 
+                                    <a class="nav-link menu-arrow" href="{% if submenu.url|first == '#' %}{{ submenu.url }}{% else %}{% url submenu.url %}{% endif %}"
                                     data-bs-toggle="collapse" role="button" 
                                     aria-expanded="false" aria-controls="{{ submenu.name }}">
                                         <span class="nav-icon">
