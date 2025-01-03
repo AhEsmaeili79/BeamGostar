@@ -3,7 +3,7 @@ from django.db import models
 from apps.analysis.models import Analyze
 from utils.utils import get_persian_datetime
 
-persian_date, persian_time = get_persian_datetime()
+persian_date, persian_time ,now = get_persian_datetime()
 datetime = [persian_date, persian_time]
 
 class PaymentMethod(models.Model):

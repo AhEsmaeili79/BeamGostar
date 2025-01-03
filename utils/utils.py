@@ -15,4 +15,4 @@ def get_persian_datetime():
     # Format time in Iran's timezone
     persian_time = now.strftime('%H:%M:%S')
     
-    return persian_date, persian_time
+    return persian_date, persian_time , now

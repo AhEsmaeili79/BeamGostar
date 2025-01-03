@@ -2,7 +2,7 @@ from django.db import models
 from apps.personnel.models import Personnel
 from utils.utils import get_persian_datetime
 from apps.users.models import User
-persian_date, persian_time = get_persian_datetime()
+persian_date, persian_time ,now = get_persian_datetime()
 datetime = [persian_date, persian_time]
 
 class Analyze(models.Model):

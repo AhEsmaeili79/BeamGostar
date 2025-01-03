@@ -5,7 +5,7 @@ from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 from utils.utils import get_persian_datetime
 
-persian_date, persian_time = get_persian_datetime()
+persian_date, persian_time,now = get_persian_datetime()
 datetime = [persian_date, persian_time]
 
 

@@ -1,0 +1,228 @@
+{% extends "../../base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid">
+    <form id="customerForm" method="POST" action="{% url 'customer_add' %}">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-header"><h4 class="card-title">اطلاعات مشتریان</h4></div>
+                    <div class="card-body">
+                        <div class="row">
+                            <!-- Customer Type -->
+                            <div class="col-lg-4">
+                                <label for="customer-type" class="form-label">نوع مشتری</label>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="form-check ps-4">
+                                        <input type="radio" class="form-check-input rounded-circle mt-0 fs-18" name="customer-type-real" id="customer-real" checked>
+                                        <label class="form-check-label" for="customer-real">حقیقی</label>
+                                    </div>
+                                    <div class="form-check ps-4">
+                                        <input type="radio" class="form-check-input rounded-circle mt-0 fs-18" name="customer-type-legal" id="customer-legal">
+                                        <label class="form-check-label" for="customer-legal">حقوقی</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Nationality -->
+                            <div class="col-lg-4">
+                                <label for="nationality" class="form-label">تابعیت</label>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="form-check ps-4">
+                                        <input type="radio" class="form-check-input rounded-circle mt-0 fs-18" name="nationality-iranian" id="iranian" checked>
+                                        <label class="form-check-label" for="iranian">ایرانی</label>
+                                    </div>
+                                    <div class="form-check ps-4">
+                                        <input type="radio" class="form-check-input rounded-circle mt-0 fs-18" name="nationality-foreign" id="foreign">
+                                        <label class="form-check-label" for="foreign">خارجی</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Payment Type -->
+                            <div class="col-lg-4">
+                                <label for="payment-type" class="form-label">نوع تسویه</label>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="form-check ps-4">
+                                        <input type="radio" class="form-check-input rounded-circle mt-0 fs-18" name="payment-type-cash" id="cash" checked>
+                                        <label class="form-check-label" for="cash">نقدی</label>
+                                    </div>
+                                    <div class="form-check ps-4">
+                                        <input type="radio" class="form-check-input rounded-circle mt-0 fs-18" name="payment-type-credit" id="credit">
+                                        <label class="form-check-label" for="credit">اعتباری</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-1"></div>
+                            <!-- Name Fields (Persian and English) -->
+                            <div class="col-lg-6" id="first-name-container">
+                                <div class="mb-3"></div>
+                                <label for="first-name" class="form-label">نام(فارسی)</label>
+                                <input type="text" id="first-name" class="form-control" name="first-name" placeholder="نام را وارد کنید" />
+                            </div>
+                            <div class="col-lg-6" id="last-name-container">
+                                <div class="mb-3"></div>
+                                <label for="last-name" class="form-label">نام خانوادگی(فارسی)</label>
+                                <input type="text" id="last-name" class="form-control" name="last-name" placeholder="نام خانوادگی را وارد کنید" />
+                            </div>
+                            <div class="col-lg-6" id="first-name-en-container">
+                                <div class="mb-3"></div>
+                                <label for="first-name-en" class="form-label">نام (انگلیسی)</label>
+                                <input type="text" id="first-name-en" class="form-control" name="first-name-en" placeholder="نام را به انگلیسی وارد کنید" />
+                            </div>
+                            <div class="col-lg-6" id="last-name-en-container">
+                                <div class="mb-3"></div>
+                                <label for="last-name-en" class="form-label">نام خانوادگی(انگلیسی)</label>
+                                <input type="text" id="last-name-en" class="form-control" name="last-name-en" placeholder="نام خانوادگی را به انگلیسی وارد کنید" />
+                            </div>
+                            <div class="col-lg-4" id="national-id-container">
+                                <div class="mb-3"></div>
+                                <label for="national-id" class="form-label" id="id-label">کد ملی</label>
+                                <input type="text" id="national-id" class="form-control" name="national-id" placeholder="کد ملی را وارد کنید" />
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="mb-3"></div>
+                                <label for="birth-date" class="form-label">تاریخ تولد</label>
+                                <div class="input-group mb-1">
+                                    <span class="input-group-text fs-20"><iconify-icon icon="solar:outgoing-call-rounded-bold-duotone" class="fs-20"></iconify-icon></span>
+                                    <input type="date" id="birth-date" class="form-control" name="birth-date" placeholder="تاریخ تولد" />
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="mb-3"></div>
+                                <label for="phone-number" class="form-label">شماره همراه</label>
+                                <div class="input-group mb-1">
+                                    <span class="input-group-text fs-20"><iconify-icon icon="solar:outgoing-call-rounded-bold-duotone" class="fs-20"></iconify-icon></span>
+                                    <input type="text" id="phone-number" class="form-control" name="phone-number" placeholder="شماره همراه" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header"><h4 class="card-title">سایر اطلاعات</h4></div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <label for="email" class="form-label">ایمیل</label>
+                                <div class="input-group mb-1">
+                                    <span class="input-group-text fs-20">
+                                        <iconify-icon icon="solar:letter-bold-duotone" class="fs-18"></iconify-icon>
+                                    </span>
+                                    <input type="text" id="email" class="form-control" name="email" placeholder="ایمیل را اضافه کنید" />
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <label for="zipcode" class="form-label">کد پستی</label>
+                                <div class="input-group mb-1">
+                                    <span class="input-group-text fs-20">
+                                        <iconify-icon icon="solar:letter-bold-duotone" class="fs-18"></iconify-icon>
+                                    </span>
+                                    <input type="text" id="zipcode" class="form-control" name="zipcode" placeholder="کد پستی را اضافه کنید" />
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <label for="address" class="form-label">آدرس</label>
+                                <div class="input-group mb-1">
+                                    <span class="input-group-text fs-20"><iconify-icon icon="solar:point-on-map-bold-duotone" class="fs-18"></iconify-icon></span>
+                                    <input type="text" id="address" class="form-control" name="address" placeholder="آدرس را اضافه کنید" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-3 bg-light mb-1 rounded">
+                    <div class="row justify-content-end g-2">
+                        <div class="col-lg-2">
+                            <button type="submit" class="btn btn-outline-secondary w-100">ذخیره تغییرات</button>
+                        </div>
+                        <div class="col-lg-2">
+                            <a href="#!" class="btn btn-primary w-100">لغو</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        function updateFieldsBasedOnCustomerType() {
+            const isLegal = document.getElementById('customer-legal').checked;
+            const isForeign = document.getElementById('foreign').checked;
+            const firstNameLabel = document.querySelector('#first-name-container label');
+            const lastNameLabel = document.querySelector('#last-name-container label');
+            const firstNameEnLabel = document.querySelector('#first-name-en-container label');
+            const lastNameEnLabel = document.querySelector('#last-name-en-container label');
+            const idLabel = document.getElementById('id-label');
+            const nationalIdInput = document.getElementById('national-id');
+            const birthDateField = document.getElementById('birth-date')?.closest('.col-lg-4');
+            const rowContainer = document.querySelector('.card-body .row');
+
+            document.querySelectorAll('.dynamic-field').forEach(field => field.remove());
+
+            if (isLegal) {
+                firstNameLabel.innerText = 'نام شرکت';
+                lastNameLabel.innerText = 'نام شرکت (انگلیسی)';
+                firstNameEnLabel.innerText = 'نام رابط (فارسی)';
+                lastNameEnLabel.innerText = 'نام خانوادگی رابط (فارسی)';
+                idLabel.innerText = 'شناسه ملی';
+                nationalIdInput.setAttribute('placeholder', 'شناسه ملی را وارد کنید');
+
+                const phoneContainer = document.createElement('div');
+                phoneContainer.classList.add('col-lg-4', 'dynamic-field');
+                phoneContainer.innerHTML = `
+                    <div class="mb-3"></div>
+                    <label for="company-phone" class="form-label">شماره تماس شرکت</label>
+                    <div class="input-group mb-1">
+                        <span class="input-group-text fs-20"><iconify-icon icon="solar:outgoing-call-rounded-bold-duotone" class="fs-20"></iconify-icon></span>
+                        <input type="text" id="company-phone" class="form-control" placeholder="شماره تماس شرکت را وارد کنید" />
+                    </div>
+                `;
+                rowContainer.appendChild(phoneContainer);
+
+                const legalFields = [
+                    { id: 'legal-field-1', label: 'نام رابط (انگلیسی)', placeholder: 'نام رابط را به انگلیسی وارد کنید' },
+                    { id: 'legal-field-2', label: 'نام خانوادگی رابط (انگلیسی)', placeholder: 'نام خانوادگی رابط را به انگلیسی وارد کنید' },
+                    { id: 'legal-field-3', label: 'کد اقتصادی', placeholder: 'کد اقتصادی را وارد کنید' }
+                ];
+
+                legalFields.forEach(field => {
+                    const newInputContainer = document.createElement('div');
+                    newInputContainer.classList.add('col-lg-4', 'dynamic-field');
+                    newInputContainer.innerHTML = `
+                        <div class="mb-3"></div>
+                        <label for="${field.id}" class="form-label">${field.label}</label>
+                        <input type="text" id="${field.id}" name="${field.id}" class="form-control" placeholder="${field.placeholder}" />
+                    `;
+                    rowContainer.appendChild(newInputContainer);
+                });
+
+                if (birthDateField) birthDateField.style.display = 'none';
+            } else {
+                firstNameLabel.innerText = 'نام(فارسی)';
+                lastNameLabel.innerText = 'نام خانوادگی(فارسی)';
+                firstNameEnLabel.innerText = 'نام (انگلیسی)';
+                lastNameEnLabel.innerText = 'نام خانوادگی(انگلیسی)';
+                idLabel.innerText = 'کد ملی';
+                nationalIdInput.setAttribute('placeholder', 'کد ملی را وارد کنید');
+
+                if (birthDateField) birthDateField.style.display = 'block';
+            }
+
+            if (isForeign && !isLegal) {
+                idLabel.innerText = 'شماره گذرنامه';
+                nationalIdInput.setAttribute('placeholder', 'شماره گذرنامه را وارد کنید');
+            }
+        }
+
+        document.querySelectorAll('.form-check-input[name="customer-type"], .form-check-input[name="nationality"]').forEach(item => {
+            item.addEventListener('change', updateFieldsBasedOnCustomerType);
+        });
+
+        updateFieldsBasedOnCustomerType();
+    });
+</script>
+{% endblock %}
