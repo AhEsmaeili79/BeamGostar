@@ -1,0 +1,20 @@
+<!-- مودال -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">هشدار</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+            </div>
+            <div class="modal-body">
+                <p>آیا مطمئنید که می‌خواهید این مشتری ({{ customer.name_fa }} {{ customer.family_fa }}) را حذف کنید؟ </p>
+                <!-- Hidden input to store customer id -->
+                <input type="hidden" id="customerId">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+                <a href="{% url 'customer_delete' customer.id %}" class="btn btn-danger" id="confirmDelete">حذف</a> <!-- Changed to <a> -->
+            </div>
+        </div>
+    </div>
+</div>

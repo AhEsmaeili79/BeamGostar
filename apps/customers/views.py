@@ -172,9 +172,21 @@ def customer_detail(request, customer_id):
         return render(request, 'dashboard/customers/customers/customer_list.html', {'error': 'Customer not found'})
 
 
-def customer_test(request, customer_id):
-    try:
-        customer = Customer.objects.get(id=customer_id)
-        return render(request, 'dashboard/customers/customers/customer_test.html', {'customer': customer})
-    except Customer.DoesNotExist:
-        return render(request, 'dashboard/customers/customers/customer_list.html', {'error': 'Customer not found'})
+def customer_test(request):
+     # Initialize the default values
+    customer_type = 'real'
+    nationality = 'iranian'
+    payment_type = 'cash'
+
+    if request.method == 'POST':
+        # Get selected values from POST data
+        customer_type = request.POST.get('customer-type', 'real')
+        nationality = request.POST.get('nationality', 'iranian')
+        payment_type = request.POST.get('payment-type', 'cash')
+
+    # Pass the selected values to the template
+    return render(request, 'dashboard/customers/customers/customer_test.html', {
+        'customer_type': customer_type,
+        'nationality': nationality,
+        'payment_type': payment_type,
+    })
