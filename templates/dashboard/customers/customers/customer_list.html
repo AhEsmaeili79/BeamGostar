@@ -111,9 +111,9 @@
                                             {% if customer.passport %}
                                             شماره گذرنامه : {{ customer.passport }} 
                                             {% elif customer.national_code %}
-                                            شناسه ملی : {{ customer.national_code }}
+                                            کد ملی : {{ customer.national_code }}
                                             {% else %}
-                                            کد ملی : {{ customer.national_id }}
+                                            شناسه ملی : {{ customer.national_id }}
                                             {% endif %}
                                         <td>{{ customer.mobile }}</td>
                                         <td>{{ customer.created_at}}</td>

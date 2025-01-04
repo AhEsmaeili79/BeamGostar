@@ -75,7 +75,7 @@
                                         <label for="national-id" class="form-label" id="id-label">کد ملی</label>
                                         <div class="input-group mb-1">
                                             <span class="input-group-text fs-20"><iconify-icon icon="solar:user-bold" class="fs-20"></iconify-icon></span>
-                                            <input type="text" id="national-id" class="form-control" name="national-id" value="{% if customer.national_id == None %}-{% else %}{{ customer.national_id }}{% endif %}"  disabled />
+                                            <input type="text" id="national-id" class="form-control" name="national-id" value="{% if customer.national_code == None %}-{% else %}{{ customer.national_code }}{% endif %}"  disabled />
                                         </div>
                                     {% else %}
                                         <label for="national-id" class="form-label" id="id-label">شماره گذرنامه</label>
@@ -92,7 +92,7 @@
                                     <label for="birth-date" class="form-label">تاریخ تولد</label>
                                     <div class="input-group mb-1">
                                         <span class="input-group-text fs-20"><iconify-icon icon="solar:calendar-linear" class="fs-20"></iconify-icon></span>
-                                        <input type="date" id="birth-date" class="form-control" name="birth-date" value="{% if customer.birth_date == None %}-{% else %}{{ customer.birth_date }}{% endif %}" disabled />
+                                        <input type="text" id="birth-date" class="form-control" name="birth-date" value="{% if customer.birth_date == None %}-{% else %}{{ customer.birth_date }}{% endif %}" disabled />
                                     </div>
                                 </div>
 
@@ -163,7 +163,7 @@
                                     <label for="national-id" class="form-label" id="id-label">شناسه ملی</label>
                                     <div class="input-group mb-1">
                                         <span class="input-group-text fs-20"><iconify-icon icon="solar:user-bold" class="fs-20"></iconify-icon></span>
-                                        <input type="text" id="national-id" class="form-control" name="national-id" value="{% if customer.national_code == None %}-{% else %}{{ customer.national_code }}{% endif %}"  disabled />
+                                        <input type="text" id="national-id" class="form-control" name="national-id" value="{% if customer.national_id == None %}-{% else %}{{ customer.national_id }}{% endif %}"  disabled />
                                     </div>
                                 </div>
 

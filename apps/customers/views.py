@@ -87,29 +87,44 @@ def customer_add(request):
             nationality = 1 if data.get('nationality') == 'iranian' else 2
             clearing_type = 1 if data.get('payment-type') == 'cash' else 2
             birth_date = None if customer_type == 2 else data.get('birth-date')
-
+            
+            # All Customer
             customer_data = {
                 "customer_type": customer_type,
                 "nationality": nationality,
                 "clearing_type": clearing_type,
-                "name_fa": data.get('first-name') if customer_type == 1 else data.get('first-name-en'),
-                "family_fa": data.get('last-name') if customer_type == 1 else data.get('last-name-en'),
-                "name_en": data.get('first-name-en'),
-                "family_en": data.get('last-name-en'),
-                "national_id": data.get('national-id') if nationality == 1 else None,
-                "national_code": data.get('national-id') if customer_type == 2 else None,
-                "passport": data.get('national-id') if nationality == 2 else None,
-                "economy_code": data.get('economy_code') if customer_type == 2 else None,
-                "company_fa": data.get('first-name') if customer_type == 2 else None,
-                "company_en": data.get('last-name') if customer_type == 2 else None,
                 "mobile": data.get('phone-number'),
                 "email": data.get('email'),
                 "postal_code": data.get('zipcode'),
                 "address": data.get('address'),
-                "birth_date": birth_date,
                 "created_at": now,
                 "updated_at": now,
             }
+
+            # Real Customer
+            if customer_type == 1:
+                customer_data.update({
+                    "national_code": data.get('national-code') if nationality == 1 else None,
+                    "passport": data.get('passport') if nationality == 2 else None,
+                    "name_fa": data.get('first-name'),
+                    "family_fa": data.get('last-name'),
+                    "name_en": data.get('first-name-en'),
+                    "family_en": data.get('last-name-en'),
+                    "birth_date": birth_date,
+                })
+            else:
+                # Legal Customer
+                customer_data.update({
+                    "national_id": data.get('national_id'),
+                    "economy_code": data.get('economy_code'),
+                    "company_fa": data.get('company_name'),
+                    "company_en": data.get('company_name_en'),
+                    "phone": data.get('company_phone'),
+                    "name_fa": data.get('contact_name_fa'),
+                    "family_fa": data.get('contact_lastname_fa'),
+                    "name_en": data.get('contact_name_en'),
+                    "family_en": data.get('contact_lastname_en'),
+                })
 
             Customer.objects.create(**customer_data)
 
@@ -117,6 +132,14 @@ def customer_add(request):
             return render(request, 'dashboard/customers/customers/customer_add.html', {'error': str(e)})
 
     return render(request, 'dashboard/customers/customers/customer_add.html')
+
+
+def customer_detail(request, customer_id):
+    try:
+        customer = Customer.objects.get(id=customer_id)
+        return render(request, 'dashboard/customers/customers/customer_detail.html', {'customer': customer})
+    except Customer.DoesNotExist:
+        return render(request, 'dashboard/customers/customers/customer_list.html', {'error': 'Customer not found'})
 
 
 def customer_delete(request, customer_id):
@@ -163,30 +186,3 @@ def customer_edit(request, customer_id):
     except Customer.DoesNotExist:
         return render(request, 'dashboard/customers/customers/customer_list.html', {'error': 'Customer not found'})
 
-
-def customer_detail(request, customer_id):
-    try:
-        customer = Customer.objects.get(id=customer_id)
-        return render(request, 'dashboard/customers/customers/customer_detail.html', {'customer': customer})
-    except Customer.DoesNotExist:
-        return render(request, 'dashboard/customers/customers/customer_list.html', {'error': 'Customer not found'})
-
-
-def customer_test(request):
-     # Initialize the default values
-    customer_type = 'real'
-    nationality = 'iranian'
-    payment_type = 'cash'
-
-    if request.method == 'POST':
-        # Get selected values from POST data
-        customer_type = request.POST.get('customer-type', 'real')
-        nationality = request.POST.get('nationality', 'iranian')
-        payment_type = request.POST.get('payment-type', 'cash')
-
-    # Pass the selected values to the template
-    return render(request, 'dashboard/customers/customers/customer_test.html', {
-        'customer_type': customer_type,
-        'nationality': nationality,
-        'payment_type': payment_type,
-    })

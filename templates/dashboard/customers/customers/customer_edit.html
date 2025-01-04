@@ -83,20 +83,20 @@
                                     <input type="text" id="national-id" class="form-control" name="national-id" value="{% if customer %}{{ customer.national_id }}{% endif %}" placeholder="کد ملی را وارد کنید" />
                                 </div>
                             </div>
-                            <div class="col-lg-4">
-                                <div class="mb-3"></div>
+                            <div class="col-lg-4" id="birth-date-container">
+                                <div class="mb-2"></div>
                                 <label for="birth-date" class="form-label">تاریخ تولد</label>
                                 <div class="input-group mb-1">
                                     <span class="input-group-text fs-20"><iconify-icon icon="solar:calendar-linear" class="fs-20"></iconify-icon></span>
-                                    <input type="date" id="birth-date" class="form-control" name="birth-date" value="{% if customer %}{{ customer.birth_date }}{% endif %}" />
+                                    <input type="date" id="birth-date" class="form-control" name="birth-date" placeholder="تاریخ تولد" />
                                 </div>
                             </div>
-                            <div class="col-lg-4">
-                                <div class="mb-3"></div>
+                            <div class="col-lg-4" id="phone-number-container">
+                                <div class="mb-2"></div>
                                 <label for="phone-number" class="form-label">شماره همراه</label>
                                 <div class="input-group mb-1">
                                     <span class="input-group-text fs-20"><iconify-icon icon="solar:outgoing-call-rounded-bold-duotone" class="fs-20"></iconify-icon></span>
-                                    <input type="text" id="phone-number" class="form-control" name="phone-number" value="{% if customer %}{{ customer.mobile }}{% endif %}" placeholder="شماره همراه" />
+                                    <input type="text" id="phone-number" class="form-control" name="phone-number" placeholder="شماره همراه" />
                                 </div>
                             </div>
                         </div>
