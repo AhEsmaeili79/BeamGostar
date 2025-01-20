@@ -1,0 +1,25 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class bank_account extends Model
+{
+    use HasFactory, SoftDeletes;
+
+    protected $table = 'bank_account';
+
+    protected $fillable = [
+        'account_type',
+        'account_number',
+        'card_number',
+        'shaba_number',
+        'account_holder_name',
+    ];
+    protected $casts = [
+        'account_type' => 'integer',
+    ];
+}
