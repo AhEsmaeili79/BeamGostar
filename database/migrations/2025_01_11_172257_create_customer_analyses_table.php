@@ -34,6 +34,7 @@ return new class extends Migration
             $table->text('description')->nullable()->comment('توضیحات پذیرش');
             $table->tinyInteger('priority')->nullable()->comment('اولویت');
             $table->tinyInteger('status')->comment('وضعیت پذیرش');
+            $table->tinyInteger('state')->nullable()->comment('وضعیت');
             $table->string('tracking_code', 20)->nullable()->comment('کد پیگیری');
             $table->string('date_answer', 10)->nullable()->comment('تاریخ جوابدهی');
             $table->string('upload_answer', 20)->nullable()->comment('تاریخ جوابده');

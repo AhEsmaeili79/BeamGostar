@@ -22,7 +22,15 @@ class LinkAnalysisPersonResource extends Resource
     protected static ?string $model = LinkAnalysisPerson::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $navigationLabel = 'Link Analysis Persons';
+    protected static ?string $label = 'لینک';
+
+    protected static ?string $navigationGroup = 'اطلاعات پایه';
+
+    protected static ?string $navigationLabel = 'مدیریت لینک آنالیزگر به آنالیز';
+
+    protected static ?string $pluralLabel = 'مدیریت لینک آنالیزگر به آنالیز';
+
+    protected static ?string $singularLabel = 'لینک';
 
     public static function form(Form $form): Form
     {
@@ -50,7 +58,7 @@ class LinkAnalysisPersonResource extends Resource
                     ->searchable(),
                 Select::make('analyze_id')
                     ->label('آنالیز')
-                    ->relationship('analyze', 'title') // Assuming `name` is the column in the analyzes table
+                    ->relationship('analyze', 'title')
                     ->required(),
             ]);
     }

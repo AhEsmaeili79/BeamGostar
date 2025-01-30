@@ -17,13 +17,17 @@ class PaymentAnalyzeResource extends Resource
 {
     protected static ?string $model = PaymentAnalyze::class;
 
-    protected static ?string $navigationIcon = '';
+    
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $navigationLabel = 'آنالیزهای پرداخت';
+    protected static ?string $navigationLabel = 'مدیریت پرداخت مشتریان';
 
-    protected static ?string $pluralLabel = 'آنالیزهای پرداخت';
+    protected static ?string $pluralLabel = 'مدیریت مالی';
 
-    protected static ?string $modelLabel = 'آنالیز پرداخت';
+    protected static ?string $modelLabel = 'چک مالی';
+
+    protected static ?string $navigationGroup = 'امور مالی';
+
     public static function form(Form $form): Form
     {
         return $form
@@ -36,20 +40,19 @@ class PaymentAnalyzeResource extends Resource
                         ->selectRaw('CONCAT(customers.name_fa, " ", customers.family_fa) AS full_name, analyze.title AS analyze_title, customer_analysis.id')
                         ->get()
                         ->mapWithKeys(function ($item) {
-                            // ترکیب نام کامل مشتری و عنوان آنالیز
                             return [$item->id => $item->full_name . ' - ' . $item->analyze_title];
                         });
                 })
                 ->required()
                 ->label('آنالیز مشتریان'),
                 Forms\Components\TextInput::make('upload_fish')
-                    ->label('آپلود ماهی')
+                    ->label('آپلود فیش پرداخت')
                     ->nullable(),
                 Forms\Components\TextInput::make('transaction_id')
                     ->label('شناسه تراکنش')
                     ->nullable(),
                 Forms\Components\TextInput::make('uniq_id')
-                    ->label('شناسه منحصر به فرد')
+                    ->label('شناسه')
                     ->nullable(),
                 Forms\Components\TextInput::make('datepay')
                     ->label('تاریخ پرداخت')
@@ -71,12 +74,12 @@ class PaymentAnalyzeResource extends Resource
                         return $record->customerAnalysis->customer->name_fa . ' ' . $record->customerAnalysis->customer->family_fa . ' - ' . $record->customerAnalysis->analyze->title;
                     }),
                 Tables\Columns\TextColumn::make('upload_fish')
-                    ->label('آپلود ماهی')
+                    ->label('فیش پرداخت')
                     ->limit(20),
                 Tables\Columns\TextColumn::make('transaction_id')
                     ->label('شناسه تراکنش'),
                 Tables\Columns\TextColumn::make('uniq_id')
-                    ->label('شناسه منحصر به فرد'),
+                    ->label('شناسه'),
                 Tables\Columns\TextColumn::make('datepay')
                     ->label('تاریخ پرداخت'),
             ])

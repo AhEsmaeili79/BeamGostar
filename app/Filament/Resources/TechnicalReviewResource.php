@@ -25,7 +25,18 @@ class TechnicalReviewResource extends Resource
 {
     protected static ?string $model = TechnicalReview::class;
 
+    protected static ?string $label = 'تایید';
+
+    protected static ?string $navigationGroup = 'مدیریت فنی';
+
+    protected static ?string $navigationLabel = 'مدیریت فنی آنالیز مشتریان';
+
+    protected static ?string $pluralLabel = 'مدیریت فنی آنالیز مشتریان';
+
+    protected static ?string $singularLabel = 'مدیریت فنی آنالیز مشتریان';
+
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    
 
     public static function form(Form $form): Form
     {

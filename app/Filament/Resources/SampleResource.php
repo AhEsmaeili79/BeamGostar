@@ -17,7 +17,8 @@ class SampleResource extends Resource
 {
     protected static ?string $model = Sample::class;
 
-    protected static ?string $navigationIcon = '';
+    
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationGroup = 'نمونه ها';
 

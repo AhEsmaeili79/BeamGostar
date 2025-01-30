@@ -18,11 +18,11 @@ class FinancialCheckResource extends Resource
 {
     protected static ?string $model = FinancialCheck::class;
 
-    protected static ?string $navigationIcon = '';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $navigationLabel = 'مدیریت مالی';
+    protected static ?string $navigationLabel = 'چک مالی';
 
-    protected static ?string $pluralLabel = 'مدیریت مالی';
+    protected static ?string $pluralLabel = 'چک مالی';
 
     protected static ?string $modelLabel = 'چک مالی';
 

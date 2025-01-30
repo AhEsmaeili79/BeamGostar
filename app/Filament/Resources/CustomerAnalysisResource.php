@@ -20,7 +20,7 @@ class CustomerAnalysisResource extends Resource
     protected static ?string $model = CustomerAnalysis::class;
 
 
-    // protected static ?string $navigationIcon = 'uni-analysis';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationLabel = 'مدیریت پذیرش آنالیز مشتریان';
 
