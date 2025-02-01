@@ -22,7 +22,7 @@ class PriceAnalysisCreditResource extends Resource
     protected static ?string $model = price_analysis_credit::class;
 
     
-    protected static ?string $label = 'هزینه';
+    protected static ?string $label = 'هزینه آنالیز مشتریان اعتباری';
 
     protected static ?string $navigationGroup = 'اطلاعات پایه';
 

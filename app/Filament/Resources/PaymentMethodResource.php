@@ -20,6 +20,7 @@ class PaymentMethodResource extends Resource
 {
     protected static ?string $model = payment_method::class;
     protected static ?string $pluralLabel = 'نحوه پرداخت';
+    protected static ?string $label = 'نحوه پرداخت';
     protected static ?string $navigationGroup = 'اطلاعات پایه';
     protected static ?string $navigationLabel = 'نحوه پرداخت';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';

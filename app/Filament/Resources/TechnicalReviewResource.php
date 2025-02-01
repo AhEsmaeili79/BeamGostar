@@ -25,7 +25,7 @@ class TechnicalReviewResource extends Resource
 {
     protected static ?string $model = TechnicalReview::class;
 
-    protected static ?string $label = 'تایید';
+    protected static ?string $label = 'تایید فنی ';
 
     protected static ?string $navigationGroup = 'مدیریت فنی';
 

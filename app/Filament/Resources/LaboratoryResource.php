@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class LaboratoryResource extends Resource
 {
     protected static ?string $model = Laboratory::class;
-
+    protected static ?string $label = 'آزمایشگاه';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $pluralLabel = 'اپراتور آزمایشگاه ';
     protected static ?string $navigationGroup = 'آزمایشگاه ';

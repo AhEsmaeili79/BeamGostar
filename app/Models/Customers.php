@@ -50,11 +50,11 @@ class Customers extends Model
         static::created(function ($customer) {
             // Generate username and password
             $username = $customer->national_code ?? $customer->national_id ?? $customer->passport;
-            $password = bcrypt($customer->password);
+            $password = bcrypt($username);
         
             // Create the User record
             $user = \App\Models\User::create([
-                'name' => $username, // Or any suitable email logic
+                'name' => $username, 
                 'password' => $password,
             ]);
         

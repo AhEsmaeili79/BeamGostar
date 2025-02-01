@@ -22,7 +22,7 @@ class LinkAnalysisPersonResource extends Resource
     protected static ?string $model = LinkAnalysisPerson::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $label = 'لینک';
+    protected static ?string $label = 'آنالیزگر به آنالیز';
 
     protected static ?string $navigationGroup = 'اطلاعات پایه';
 

@@ -12,6 +12,7 @@
         "filament/filament": "^3.2",
         "laravel/framework": "^11.31",
         "laravel/tinker": "^2.9",
+        "maatwebsite/excel": "^3.1",
         "rawilk/filament-password-input": "^2.0"
     },
     "require-dev": {

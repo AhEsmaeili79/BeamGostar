@@ -13,10 +13,6 @@ use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Table;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\TextInput;
-use Rawilk\FilamentPasswordInput\Password;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Role;
 class CustomersResource extends Resource
 {
     protected static ?string $model = Customers::class;
@@ -151,17 +147,6 @@ class CustomersResource extends Resource
                     ->regex('/^\d{4}-\d{2}-\d{2}$/') // Date format: YYYY-MM-DD
                     ->nullable()
                     ->visible(fn ($state, $get) => $get('customer_type') == 0 && $get('nationality') == 0),  // Show for حقیقی & ایرانی
-
-                Password::make('password')
-                    ->label('رمز عبور')
-                    ->required()
-                    ->reactive(),
-                
-                Password::make('re_password')
-                    ->label('تکرار رمز عبور')
-                    ->required()
-                    ->same('password')
-                    ->reactive(),
                     
                 TextInput::make('mobile')
                     ->label('شماره همراه')
