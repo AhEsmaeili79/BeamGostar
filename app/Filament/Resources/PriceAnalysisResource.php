@@ -28,7 +28,7 @@ class PriceAnalysisResource extends Resource
     protected static ?string $pluralLabel = 'هزینه آنالیز مشتریان عادی';
 
     protected static ?string $singularLabel = 'هزینه ها';
-
+    protected static ?int $navigationSort = 8;
     public static function form(Form $form): Form
     {
         return $form

@@ -19,11 +19,14 @@ class PersonnelResource extends Resource
 {
     protected static ?string $model = Personnel::class;
 
-    protected static ?string $pluralLabel =  'پرسنل';
+    protected static ?string $pluralLabel =  'مدیریت اشخاص';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationGroup = 'اطلاعات پایه';
-    protected static ?string $navigationLabel = 'پرسنل';
-    protected static ?string $label = 'پرسنل';
+    protected static ?string $navigationLabel = 'مدیریت اشخاص';
+    protected static ?string $label = 'مدیریت اشخاص';
+
+    
+    protected static ?int $navigationSort =1;
 
 
     public static function form(Form $form): Form

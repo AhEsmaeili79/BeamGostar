@@ -20,10 +20,12 @@ class AnalysisTimeResource extends Resource
     protected static ?string $model = AnalysisTime::class;
 
     protected static ?string $navigationGroup = 'اطلاعات پایه';
-    protected static ?string $pluralLabel = 'مدیریت زمان آنالیز ها';
-    protected static ?string $navigationLabel = 'مدیریت زمان آنالیز ها';
+    protected static ?string $pluralLabel = 'مدیریت زمان آنالیزها';
+    protected static ?string $navigationLabel = 'مدیریت زمان آنالیزها';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $label = 'مدیریت زمان آنالیز ها';
+    protected static ?string $label = 'مدیریت زمان آنالیزها';
+    
+    protected static ?int $navigationSort = 4;
     
     public static function form(Form $form): Form
     {

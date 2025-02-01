@@ -24,6 +24,7 @@ class PaymentMethodResource extends Resource
     protected static ?string $navigationGroup = 'اطلاعات پایه';
     protected static ?string $navigationLabel = 'نحوه پرداخت';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?int $navigationSort =7;
 
     public static function form(Form $form): Form
     {
@@ -38,14 +39,14 @@ class PaymentMethodResource extends Resource
                         ->reactive()
                         ->afterStateUpdated(fn($state) => $state ? 1 : 0)
                         ->offIcon('')
-                        ->helperText('وضعیت آنالیز را انتخاب کنید')
+                        ->helperText('وضعیت پرداخت را انتخاب کنید')
                         ->columnSpan(1), // It will take 1/2 of the available space
     
                     TextInput::make('title')
-                        ->label('عنوان آنالیز')
+                        ->label('عنوان')
                         ->maxLength(250)
                         ->required()
-                        ->placeholder('عنوان آنالیز را وارد کنید')
+                        ->placeholder('عنوان را وارد کنید')
                         ->columnSpan(2), // It will take 1/2 of the available space
                 ]),
             ]);
@@ -60,7 +61,7 @@ class PaymentMethodResource extends Resource
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('title')
-                    ->label('عنوان آنالیز')
+                    ->label('عنوان')
                     ->searchable()
                     ->wrap()
                     ->toggleable()

@@ -22,14 +22,14 @@ class CustomerAnalysisResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $navigationLabel = 'مدیریت پذیرش آنالیز مشتریان';
+    protected static ?string $navigationLabel = 'مدیریت آنالیز مشتریان';
 
     protected static ?string $navigationGroup = 'پذیرش';
 
-
-    protected static ?string $pluralModelLabel = 'مدیریت پذیرش آنالیز مشتریان';
+    protected static ?string $pluralModelLabel = 'مدیریت آنالیز مشتریان';
 
     protected static ?string $slug = 'customer-analysis';
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
@@ -106,7 +106,7 @@ class CustomerAnalysisResource extends Resource
                     ->options([
                         1 => 'در انتظار',
                         2 => 'در حال پیشرفت',
-                        3 => 'تکمیل شده',
+                        7 => 'تکمیل شده',
                     ])
                     ->required(),
                 Forms\Components\TextInput::make('tracking_code')
@@ -139,7 +139,7 @@ class CustomerAnalysisResource extends Resource
                 ->formatStateUsing(fn ($state) => match ($state) {
                     1 => 'در انتظار',
                     2 => 'در حال پیشرفت',
-                    3 => 'تکمیل شده',
+                    7 => 'تکمیل شده',
                     default => 'نامشخص',
                 }),
             Tables\Columns\TextColumn::make('tracking_code')
@@ -157,7 +157,7 @@ class CustomerAnalysisResource extends Resource
                         ->options([
                             1 => 'در انتظار',
                             2 => 'در حال پیشرفت',
-                            3 => 'تکمیل شده',
+                            7 => 'تکمیل شده',
                         ]),
                 ]),
         ])

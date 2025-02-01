@@ -22,15 +22,17 @@ class LinkAnalysisPersonResource extends Resource
     protected static ?string $model = LinkAnalysisPerson::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $label = 'آنالیزگر به آنالیز';
+    protected static ?string $label = ' مشتری به آنالیزگر';
 
     protected static ?string $navigationGroup = 'اطلاعات پایه';
 
-    protected static ?string $navigationLabel = 'مدیریت لینک آنالیزگر به آنالیز';
+    protected static ?string $navigationLabel = ' مشتری به آنالیزگر';
 
-    protected static ?string $pluralLabel = 'مدیریت لینک آنالیزگر به آنالیز';
+    protected static ?string $pluralLabel = ' مشتری به آنالیزگر';
 
-    protected static ?string $singularLabel = 'لینک';
+    protected static ?string $singularLabel = 'آنالیزگر';
+    protected static ?int $navigationSort =6;
+
 
     public static function form(Form $form): Form
     {

@@ -20,6 +20,7 @@ class GetAnswersResource extends Resource
     protected static ?string $navigationGroup = 'اطلاعات پایه';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationLabel = 'نحوه جوابدهی';
+    protected static ?int $navigationSort =5;
 
     public static function form(Form $form): Form
     {
