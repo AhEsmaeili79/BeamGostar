@@ -37,13 +37,17 @@ class LinkAnalysisPersonResource extends Resource
         return $form
             ->schema([
                 TextInput::make('date')
-                    ->label('تاریخ ثبت')
-                    ->maxLength(10)
-                    ->required(),
-                TextInput::make('time')
-                    ->label('زمان ثبت')
-                    ->maxLength(10)
-                    ->required(),
+                ->label('تاریخ ثبت')
+                ->maxLength(10)
+                ->required()
+                ->default(now()->format('Y-m-d')) // Set the default to the current date
+                ->hidden(), // Hide the field from the user
+            TextInput::make('time')
+                ->label('زمان ثبت')
+                ->maxLength(10)
+                ->required()
+                ->default(now()->format('H:i:s')) // Set the default to the current time
+                ->hidden(), 
                 Select::make('customers_id')
                     ->label('مشتری')
                     ->options(
@@ -61,6 +65,15 @@ class LinkAnalysisPersonResource extends Resource
                     ->relationship('analyze', 'title')
                     ->required(),
             ]);
+    }
+
+    public static function create(Form $form, array $data)
+    {
+        // Automatically set the current date and time if they were not set
+        $data['date'] = now()->format('Y-m-d');
+        $data['time'] = now()->format('H:i:s');
+
+        return parent::create($form, $data);
     }
 
     public static function table(Table $table): Table

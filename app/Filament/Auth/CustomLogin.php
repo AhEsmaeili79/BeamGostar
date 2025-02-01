@@ -5,28 +5,47 @@ namespace App\Filament\Auth;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Components\TextInput;
 use Filament\Pages\Auth\Login;
-use Illuminate\Validation\ValidationException;
 use Filament\Forms\Components\Checkbox;
 use Filament\Facades\Notification;
+use Illuminate\Validation\ValidationException;
 
 class CustomLogin extends Login
 {
+    /**
+     * Get the form configuration for the login page.
+     *
+     * @return array
+     */
     protected function getForms(): array
     {
         return [
             'form' => $this->form(
                 $this->makeForm()
-                    ->schema([
-                        $this->getLoginFormComponent(),
-                        $this->getPasswordFormComponent(),
-                        $this->getRememberFormComponent(),
-                    ])
+                    ->schema($this->getFormSchema())
                     ->statePath('data')
             ),
         ];
     }
 
-    // Custom login field with error handling
+    /**
+     * Define the form schema.
+     *
+     * @return array
+     */
+    protected function getFormSchema(): array
+    {
+        return [
+            $this->getLoginFormComponent(),
+            $this->getPasswordFormComponent(),
+            $this->getRememberFormComponent(),
+        ];
+    }
+
+    /**
+     * Custom login field with error handling.
+     *
+     * @return \Filament\Forms\Components\Component
+     */
     protected function getLoginFormComponent(): Component
     {
         return TextInput::make('login')
@@ -35,10 +54,14 @@ class CustomLogin extends Login
             ->autocomplete('off')
             ->autofocus()
             ->extraInputAttributes(['tabindex' => 1])
-            ->reactive(); // Enables real-time validation updates
+            ->reactive();
     }
 
-    // Password field
+    /**
+     * Password field.
+     *
+     * @return \Filament\Forms\Components\Component
+     */
     protected function getPasswordFormComponent(): Component
     {
         return TextInput::make('password')
@@ -49,7 +72,11 @@ class CustomLogin extends Login
             ->extraInputAttributes(['tabindex' => 2]);
     }
 
-    // Remember me checkbox
+    /**
+     * Remember me checkbox.
+     *
+     * @return \Filament\Forms\Components\Component
+     */
     protected function getRememberFormComponent(): Component
     {
         return Checkbox::make('remember')
@@ -57,41 +84,70 @@ class CustomLogin extends Login
             ->extraInputAttributes(['tabindex' => 3]);
     }
 
-    // Credentials extracted from the form data
+    /**
+     * Extract credentials from the form data.
+     *
+     * @param array $data
+     * @return array
+     */
     protected function getCredentialsFromFormData(array $data): array
     {
         return [
-            'name' => $data['login'], // Correct field name to 'login' for the username
+            'name' => $data['login'],
             'password' => $data['password'],
         ];
     }
 
-    // Custom error handling with Laravel validation
+    /**
+     * Validate credentials with custom validation.
+     *
+     * @param array $credentials
+     * @throws \Illuminate\Validation\ValidationException
+     */
     protected function validateCredentials(array $credentials)
     {
-        $validator = \Validator::make($credentials, [
-            'name' => 'required|string|exists:users,name', // Adjust according to your database
-            'password' => 'required|string',
-        ], [
-            'name.required' => __('auth.username_required'),
-            'name.exists' => __('auth.username_exists'),
-            'password.required' => __('auth.password_required'),
-        ]);
+        $validator = $this->getCredentialsValidator($credentials);
 
         if ($validator->fails()) {
             throw ValidationException::withMessages($validator->errors()->toArray());
         }
     }
 
-    // Custom failure validation exception
-    protected function throwFailureValidationException(): never
+    /**
+     * Create the validator for credentials.
+     *
+     * @param array $credentials
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
+    protected function getCredentialsValidator(array $credentials)
     {
-        throw ValidationException::withMessages([
-            'data.login' => __('auth.login_failed'), // Custom error message for username/password mismatch
+        return \Validator::make($credentials, [
+            'name' => 'required|string|exists:users,name',
+            'password' => 'required|string',
+        ], [
+            'name.required' => __('auth.username_required'),
+            'name.exists' => __('auth.username_exists'),
+            'password.required' => __('auth.password_required'),
         ]);
     }
 
-    // Custom success notification after successful login
+    /**
+     * Custom failure validation exception message.
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    protected function throwFailureValidationException(): never
+    {
+        throw ValidationException::withMessages([
+            'data.login' => __('auth.login_failed'),
+        ]);
+    }
+
+    /**
+     * Send a notification after successful login.
+     *
+     * @return void
+     */
     protected function sendLoginSuccessNotification()
     {
         Notification::make()
@@ -100,10 +156,14 @@ class CustomLogin extends Login
             ->send();
     }
 
-    // Handle the successful login process
+    /**
+     * Handle the successful login process.
+     *
+     * @return void
+     */
     public function handleSuccessfulLogin()
     {
         $this->sendLoginSuccessNotification();
-        // Additional logic for successful login
+        // Additional logic for successful login can be added here
     }
 }

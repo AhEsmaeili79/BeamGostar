@@ -22,6 +22,10 @@ class AnalyzeResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationLabel = 'اطلاعات آنالیز ها';
 
+    protected static ?string $label = 'آنالیز';
+
+    protected static ?string $singularLabel = 'آنالیز';
+
 
     public static function form(Form $form): Form
     {
