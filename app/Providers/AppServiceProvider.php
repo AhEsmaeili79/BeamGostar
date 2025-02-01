@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use BezhanSalleh\FilamentLanguageSwitch\LanguageSwitch;
 use Illuminate\Support\ServiceProvider;
 use Filament\Facades\Filament;
 use Filament\Navigation\NavigationGroup;
@@ -22,38 +23,50 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Language switch configuration
+        LanguageSwitch::configureUsing(function (LanguageSwitch $switch) {
+            $switch
+                ->locales(['fa', 'en'])
+                ->visible(outsidePanels: true);  // Set to true if you want to show it outside the panels
+        });
+        app()->setLocale('fa');
+        
+        // Register navigation groups and items with translated labels
         Filament::serving(function () {
             Filament::registerNavigationGroups([
                 NavigationGroup::make()
-                    ->label('اطلاعات پایه')
+                    ->label(__('اطلاعات پایه')) // Translated label
                     ->icon('heroicon-s-shopping-cart')
-                    ->collapsed() // This will keep the group collapsed
+                    ->collapsed() // Keep the group collapsed
                     ->items([
-                        NavigationItem::make('مدیریت زمان آنالیز')->url('/path1'),
-                        NavigationItem::make('Item 2')->url('/path2'),
+                        NavigationItem::make(__('مدیریت زمان آنالیز'))->url('/path1'), // Translated item label
+                        NavigationItem::make(__('Item 2'))->url('/path2'), // Translated item label
                     ]),
+                
                 NavigationGroup::make()
-                    ->label('پذیرش')
+                    ->label(__('پذیرش')) // Translated label
                     ->icon('heroicon-s-cog')
-                    ->collapsed() // This will keep the group collapsed
+                    ->collapsed() // Keep the group collapsed
                     ->items([
-                        NavigationItem::make('Item 3')->url('/path3'),
-                        NavigationItem::make('Item 4')->url('/path4'),
+                        NavigationItem::make(__('Item 3'))->url('/path3'), // Translated item label
+                        NavigationItem::make(__('Item 4'))->url('/path4'), // Translated item label
                     ]),
+
                 NavigationGroup::make()
-                    ->label('مدیریت کابران')
+                    ->label(__('مدیریت کابران')) // Translated label
                     ->icon('heroicon-o-users')
-                    ->collapsed() // This will keep the group collapsed
+                    ->collapsed() // Keep the group collapsed
                     ->items([
-                        NavigationItem::make('Item 5')->url('/path5'),
+                        NavigationItem::make(__('Item 5'))->url('/path5'), // Translated item label
                     ]),
+
                 NavigationGroup::make()
-                    ->label('امور مالی')
+                    ->label(__('امور مالی')) // Translated label
                     ->icon('heroicon-s-credit-card')
-                    ->collapsed() // This will keep the group collapsed
+                    ->collapsed() // Keep the group collapsed
                     ->items([
-                        NavigationItem::make('Item 6')->url('/path6'),
-                        NavigationItem::make('Item 7')->url('/path7'),
+                        NavigationItem::make(__('Item 6'))->url('/path6'), // Translated item label
+                        NavigationItem::make(__('Item 7'))->url('/path7'), // Translated item label
                     ]),
             ]);
         });

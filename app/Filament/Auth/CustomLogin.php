@@ -2,11 +2,11 @@
 
 namespace App\Filament\Auth;
 
-use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Components\TextInput;
 use Filament\Pages\Auth\Login;
 use Illuminate\Validation\ValidationException;
+use Filament\Forms\Components\Checkbox;
 use Filament\Facades\Notification;
 
 class CustomLogin extends Login
@@ -26,66 +26,56 @@ class CustomLogin extends Login
         ];
     }
 
-    /**
-     * Create the login form field.
-     */
+    // Custom login field with error handling
     protected function getLoginFormComponent(): Component
     {
         return TextInput::make('login')
-            ->label(__('نام کاربری'))
+            ->label(__('auth.username'))
             ->required()
             ->autocomplete('off')
             ->autofocus()
             ->extraInputAttributes(['tabindex' => 1])
-            ->reactive();
+            ->reactive(); // Enables real-time validation updates
     }
 
-    /**
-     * Create the password form field.
-     */
+    // Password field
     protected function getPasswordFormComponent(): Component
     {
         return TextInput::make('password')
-            ->label(__('رمز عبور'))
+            ->label(__('auth.password'))
             ->required()
             ->password()
             ->autocomplete('off')
             ->extraInputAttributes(['tabindex' => 2]);
     }
 
-    /**
-     * Create the "remember me" checkbox.
-     */
+    // Remember me checkbox
     protected function getRememberFormComponent(): Component
     {
         return Checkbox::make('remember')
-            ->label(__('مرا به خاطر بسپار'))
+            ->label(__('auth.remember'))
             ->extraInputAttributes(['tabindex' => 3]);
     }
 
-    /**
-     * Extract credentials from form data.
-     */
+    // Credentials extracted from the form data
     protected function getCredentialsFromFormData(array $data): array
     {
         return [
-            'name' => $data['login'], // Map 'login' field to the 'name' field in the database
+            'name' => $data['login'], // Correct field name to 'login' for the username
             'password' => $data['password'],
         ];
     }
 
-    /**
-     * Validate the provided credentials.
-     */
-    protected function validateCredentials(array $credentials): void
+    // Custom error handling with Laravel validation
+    protected function validateCredentials(array $credentials)
     {
         $validator = \Validator::make($credentials, [
-            'name' => 'required|string|exists:users,name', // Ensure the username exists
+            'name' => 'required|string|exists:users,name', // Adjust according to your database
             'password' => 'required|string',
         ], [
-            'name.required' => __('نام کاربری را وارد کنید'),
-            'name.exists' => __('نام کاربری وارد شده وجود ندارد'),
-            'password.required' => __('رمز عبور را وارد کنید'),
+            'name.required' => __('auth.username_required'),
+            'name.exists' => __('auth.username_exists'),
+            'password.required' => __('auth.password_required'),
         ]);
 
         if ($validator->fails()) {
@@ -93,33 +83,27 @@ class CustomLogin extends Login
         }
     }
 
-    /**
-     * Throw a validation exception for invalid credentials.
-     */
+    // Custom failure validation exception
     protected function throwFailureValidationException(): never
     {
         throw ValidationException::withMessages([
-            'data.login' => __('نام کاربری یا رمز عبور اشتباه است'),
+            'data.login' => __('auth.login_failed'), // Custom error message for username/password mismatch
         ]);
     }
 
-    /**
-     * Send a notification upon successful login.
-     */
-    protected function sendLoginSuccessNotification(): void
+    // Custom success notification after successful login
+    protected function sendLoginSuccessNotification()
     {
         Notification::make()
-            ->title(__('ورود موفق'))
+            ->title(__('auth.login_success'))
             ->success()
             ->send();
     }
 
-    /**
-     * Handle additional logic for a successful login.
-     */
-    public function handleSuccessfulLogin(): void
+    // Handle the successful login process
+    public function handleSuccessfulLogin()
     {
         $this->sendLoginSuccessNotification();
-        // Add custom logic for successful login, if necessary
+        // Additional logic for successful login
     }
 }
