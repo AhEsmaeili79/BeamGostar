@@ -20,7 +20,7 @@ class FullCustomerAnalysisResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->where('status', 7);
+        return parent::getEloquentQuery()->where('status', 1);
     }
 
     protected static ?string $label = 'مدیریت آنالیز های کامل';
@@ -107,7 +107,13 @@ class FullCustomerAnalysisResource extends Resource
                     Forms\Components\Select::make('status')
                         ->label('وضعیت پذیرش')
                         ->options([
-                            7 => 'تکمیل شده',
+                            0 => 'منتظر پرداخت',
+                            1 => 'پذیرش کامل',
+                            2 => 'در انتظار',
+                            3 => 'کنسل',
+                            4 => 'تایید مالی',
+                            5 => 'منتظر تایید مدیریت فنی',
+                            8 => 'منتظر تایید مدیریت مالی',
                         ])
                         ->required(),
                     Forms\Components\TextInput::make('tracking_code')
@@ -138,7 +144,13 @@ class FullCustomerAnalysisResource extends Resource
             Tables\Columns\TextColumn::make('status')
                 ->label('وضعیت پذیرش')
                 ->formatStateUsing(fn ($state) => match ($state) {
-                    7 => 'تکمیل شده',
+                    0 => 'منتظر پرداخت',
+                    1 => 'پذیرش کامل',
+                    2 => 'در انتظار',
+                    3 => 'کنسل',
+                    4 => 'تایید مالی',
+                    5 => 'منتظر تایید مدیریت فنی',
+                    8 => 'منتظر تایید مدیریت مالی',
                     default => 'نامشخص',
                 }),
             Tables\Columns\TextColumn::make('tracking_code')
