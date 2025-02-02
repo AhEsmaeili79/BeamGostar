@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class sendsms extends Model
+class SendSms extends Model
 {
     protected $table = 'sendsms';
 

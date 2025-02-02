@@ -111,6 +111,7 @@ class CustomerAnalysisResource extends Resource
                 ->default($customerAnalysis->additional_cost ?? 0),
             Forms\Components\TextInput::make('total_cost')
                 ->label('هزینه کل')
+                ->nullable()
                 ->required(),
             Forms\Components\TextInput::make('applicant_share')
                 ->label('سهم متقاضی')
@@ -165,7 +166,8 @@ class CustomerAnalysisResource extends Resource
                 ])
                 ->required(),
             Forms\Components\TextInput::make('tracking_code')
-                ->label('کد پیگیری'),
+                ->label('کد پیگیری')
+                ->nullable(),
             Forms\Components\DatePicker::make('date_answer')
                 ->label('تاریخ جوابدهی'),
             Forms\Components\DatePicker::make('upload_answer')
