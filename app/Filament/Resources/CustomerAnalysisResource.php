@@ -94,28 +94,38 @@ class CustomerAnalysisResource extends Resource
                     ->relationship('analyze', 'title')
                     ->default(1)
                     ->required()
-                    ->reactive()
+                    ->reactive() 
                     ->afterStateUpdated(function ($state, $set, $get) {
+                        $samplesNumber = $get('samples_number') ?? 1;
                         $priceAnalysis = \App\Models\price_analysis::where('analyze_id', $state)->first();
+                        
+                        $additional_cost = $get('additional_cost') ?? 0;
+                        
                         if ($priceAnalysis) {
-                            $samplesNumber = $get('samples_number');
-                            $set('total_cost', $priceAnalysis->price * $samplesNumber);
+                            $new_total_cost = ($samplesNumber * $priceAnalysis->price) + $additional_cost;
+                            $set('total_cost', $new_total_cost);
                         }
                     }),
                 
                 Forms\Components\TextInput::make('samples_number')
-                    ->label('تعداد نمونه')
-                    ->numeric()
-                    ->required()
-                    ->default(1)
-                    ->reactive()
-                    ->afterStateUpdated(function ($state, $set, $get) {
-                        $priceAnalysis = \App\Models\price_analysis::where('analyze_id', $get('analyze_id'))->first();
-                        if ($priceAnalysis) {
-                            $set('total_cost', $priceAnalysis->price * $state);
-                        }
-                    }),
-    
+                ->label('تعداد نمونه')
+                ->numeric()
+                ->required()
+                ->suffix('عدد')
+                ->default(1)
+                ->reactive() 
+                ->afterStateUpdated(function ($state, $set, $get) {
+                    $analyzeId = $get('analyze_id') ?? 1;
+                    $priceAnalysis = \App\Models\price_analysis::where('analyze_id', $analyzeId)->first();
+                    
+                    $additional_cost = $get('additional_cost') ?? 0;
+                    
+                    if ($priceAnalysis) {
+                        $new_total_cost = ($state * $priceAnalysis->price) + $additional_cost;
+                        $set('total_cost', $new_total_cost);
+                    }
+                }),
+
                 Forms\Components\TextInput::make('analyze_time')
                     ->label('کل زمان آنالیز')
                     ->numeric()
@@ -129,22 +139,39 @@ class CustomerAnalysisResource extends Resource
                     ->label('ارزش افزوده')
                     ->id('value_added'),
                 
-                Forms\Components\TextInput::make('additional_cost')
+                    Forms\Components\TextInput::make('additional_cost')
                     ->label('هزینه اضافه')
                     ->numeric()
+                    ->suffix('ریال')
                     ->id('additional_cost')
-                    ->default($customerAnalysis->additional_cost ?? 0),
+                    ->default($customerAnalysis->additional_cost ?? 0)
+                    ->reactive() 
+                    ->afterStateUpdated(function ($state, $set, $get) {
+                        $samplesNumber = $get('samples_number') ?? 1;
+                        $analyzeId = $get('analyze_id') ?? 1;
+                        $priceAnalysis = \App\Models\price_analysis::where('analyze_id', $analyzeId)->first();
+                        $base_cost = $priceAnalysis ? $priceAnalysis->price : 0;
+                
+                        $new_total_cost = ($samplesNumber * $base_cost) + $state;
+                
+                        $set('total_cost', $new_total_cost);
+                    }),
+                
 
                     Forms\Components\TextInput::make('total_cost')
-                    ->label('هزینه کل')
-                    ->nullable()
-                    ->required()
-                    ->extraAttributes(['id' => 'total_cost'])
-                    ->default(function ($get) {
-                        // Set the default price for analyze_id = 1
-                        $priceAnalysis = \App\Models\price_analysis::where('analyze_id', 1)->first();
-                        return $priceAnalysis ? $priceAnalysis->price : 0;
-                    }),
+                        ->label('هزینه کل')
+                        ->nullable()
+                        ->required() 
+                        ->suffix('ریال')
+                        ->extraAttributes(['id' => 'total_cost'])
+                        ->default(function ($get) {
+                            $priceAnalysis = \App\Models\price_analysis::where('analyze_id', 1)->first();
+                            return $priceAnalysis ? $priceAnalysis->price : 0;
+                        })
+                        ->reactive() 
+                        ->afterStateUpdated(function ($state, $set, $get) {
+                        }),
+
 
                     Forms\Components\TextInput::make('applicant_share')
                     ->label('سهم متقاضی')
