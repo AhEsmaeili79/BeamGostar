@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\BankAccountResource\Pages;
-use App\Filament\Resources\BankAccountResource\RelationManagers;
 use App\Models\bank_account;
 use Filament\Forms;
 use Filament\Forms\Components\Grid;
@@ -11,9 +10,6 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Support\RawJs;
 class BankAccountResource extends Resource
 {
     protected static ?string $model = bank_account::class;
@@ -43,42 +39,45 @@ class BankAccountResource extends Resource
                     ->reactive()
                     ->default(1),
 
-                Forms\Components\TextInput::make('account_number')
+                    Forms\Components\TextInput::make('account_number')
                     ->label('شماره حساب')
                     ->required()
                     ->mask('9999999999999999')
                     ->minLength(12)
                     ->maxLength(16)
+                    ->rules([
+                        'required',
+                        'min:12',
+                        'max:16',
+                    ])
                     ->columnSpan([
                         'default' => 2,  
                         'sm' => 1,       
                     ]),
                 
-                    Forms\Components\TextInput::make('card_number')
-    ->label('شماره کارت')
-    ->mask('9999 9999 9999 9999')
-    ->placeholder('xxxx xxxx xxxx xxxx') 
-    ->dehydrateStateUsing(fn ($state) => str_replace(' ', '', $state))  
-    ->columnSpan([
-        'default' => 2, 
-        'sm' => 1,       
-    ]),
-
-Forms\Components\TextInput::make('shaba_number') 
-    ->label('شماره شبا') 
-    ->suffix('IR')
-    ->dehydrateStateUsing(fn ($state) => str_replace(' ', '', $state))  
-    ->mask('99 9999 9999 9999 9999 9999 99') 
-    ->placeholder('xx xxxx xxxx xxxx xxxx xxxx xxxx xx') 
-    ->helperText('شماره شبا را بدون IR وارد کنید') 
-    ->extraInputAttributes(['dir' => 'ltr']) 
-    ->columnSpan([
-        'default' => 2,  
-        'sm' => 1,       
-    ]),
-
-
                 
+                    Forms\Components\TextInput::make('card_number')
+                        ->label('شماره کارت')
+                        ->mask('9999 9999 9999 9999')
+                        ->placeholder('xxxx xxxx xxxx xxxx') 
+                        ->dehydrateStateUsing(fn ($state) => str_replace(' ', '', $state))  
+                        ->columnSpan([
+                            'default' => 2, 
+                            'sm' => 1,       
+                        ]),
+
+                    Forms\Components\TextInput::make('shaba_number') 
+                        ->label('شماره شبا') 
+                        ->suffix('IR')
+                        ->dehydrateStateUsing(fn ($state) => str_replace(' ', '', $state))  
+                        ->mask('99 9999 9999 9999 9999 9999 99') 
+                        ->placeholder('xx xxxx xxxx xxxx xxxx xxxx xxxx xx') 
+                        ->helperText('شماره شبا را بدون IR وارد کنید') 
+                        ->extraInputAttributes(['dir' => 'ltr']) 
+                        ->columnSpan([
+                            'default' => 2,  
+                            'sm' => 1,       
+                        ]),
 
                 Forms\Components\TextInput::make('account_holder_name')
                     ->label('نام دارنده حساب')
@@ -105,24 +104,36 @@ Forms\Components\TextInput::make('shaba_number')
                     ->formatStateUsing(function ($state) {
                         return $state == 0 ? 'غیررسمی' : 'رسمی';
                     })
-                    ->color(fn($state) => $state == 1 ? 'success': 'danger' ) // 'primary' for 'حقیقی' and 'success' for 'حقوقی'
-                    ->icon(fn($state) => $state == 1 ? 'heroicon-o-user' : 'heroicon-o-building-office') // Correct icon name
+                    ->color(fn($state) => $state == 1 ? 'success': 'danger' ) 
+                    ->icon(fn($state) => $state == 1 ? 'heroicon-o-user' : 'heroicon-o-building-office') 
                     ->wrap()
-                    ->badge() // Ensures the state is displayed as a badge
+                    ->badge() 
                     ->searchable(),
                     
                 Tables\Columns\TextColumn::make('account_number')
                     ->label('شماره حساب')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('card_number')
+                    Tables\Columns\TextColumn::make('card_number')
                     ->label('شماره کارت')
                     ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->formatStateUsing(fn ($state) => implode(' ', str_split($state, 4))) , 
+
                 Tables\Columns\TextColumn::make('shaba_number')
                     ->label('شماره شبا')
                     ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->formatStateUsing(fn ($state) => 
+                        substr($state, 0, 2) . ' ' . 
+                        substr($state, 2, 4) . ' ' . 
+                        substr($state, 6, 4) . ' ' . 
+                        substr($state, 10, 4) . ' ' . 
+                        substr($state, 14, 4) . ' ' . 
+                        substr($state, 18, 4) . ' ' . 
+                        substr($state, 22, 2)  
+                                ),
+                
                 Tables\Columns\TextColumn::make('account_holder_name')
                     ->label('نام دارنده حساب')
                     ->sortable()
@@ -141,13 +152,6 @@ Forms\Components\TextInput::make('shaba_number')
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
     }
 
     public static function getPages(): array
