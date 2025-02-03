@@ -25,7 +25,7 @@ class CustomerAnalysisResource extends Resource
 
     protected static ?string $pluralModelLabel = 'مدیریت آنالیز مشتریان';
 
-    protected static ?string $label = 'مدیریت آنالیز مشتریان';
+    protected static ?string $label = 'آنالیز مشتریان';
 
     protected static ?string $pluralLabel = 'مدیریت آنالیز مشتریان';
 
@@ -212,7 +212,7 @@ class CustomerAnalysisResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')->label('کد'),
+                Tables\Columns\TextColumn::make('id')->label('ردیف'),
                 Tables\Columns\TextColumn::make('customer.name_fa')
                     ->label('نام مشتری')
                     ->formatStateUsing(function ($state, $record) {

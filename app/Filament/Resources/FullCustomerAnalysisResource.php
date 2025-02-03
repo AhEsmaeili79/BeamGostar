@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\FullCustomerAnalysisResource\Pages;
-use App\Filament\Resources\FullCustomerAnalysisResource\RelationManagers;
 use App\Models\CustomerAnalysis;
 use App\Models\Customers;
 use Filament\Forms;
@@ -12,7 +11,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\App;
 
 class FullCustomerAnalysisResource extends Resource
 {
@@ -129,14 +128,12 @@ class FullCustomerAnalysisResource extends Resource
     {
         return $table
              ->columns([
-            Tables\Columns\TextColumn::make('id')->label('کد'),
+            Tables\Columns\TextColumn::make('id')->label('ردیف'),
             Tables\Columns\TextColumn::make('customer.name_fa')
                 ->label('نام مشتری')
                 ->formatStateUsing(function ($state, $record) {
                     return $record->customer->name_fa . ' ' . $record->customer->family_fa;
                 }),
-            Tables\Columns\TextColumn::make('acceptance_date')
-                ->label('تاریخ پذیرش'),
             Tables\Columns\TextColumn::make('analyze.title')
                 ->label('آنالیز'),
             Tables\Columns\TextColumn::make('total_cost')
@@ -155,12 +152,12 @@ class FullCustomerAnalysisResource extends Resource
                 }),
             Tables\Columns\TextColumn::make('tracking_code')
                 ->label('کد پیگیری'),
-            Tables\Columns\TextColumn::make('created_at')
-                ->label('تاریخ ایجاد')
-                ->dateTime(),
+            Tables\Columns\TextColumn::make('acceptance_date')
+                ->label('تاریخ پذیرش')
+                ->dateTime()
+                    ->unless(App::isLocale('en'), fn (Tables\Columns\TextColumn $column) => $column->jalaliDate()),
         ])
             ->filters([
-                // Your filters can go here
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

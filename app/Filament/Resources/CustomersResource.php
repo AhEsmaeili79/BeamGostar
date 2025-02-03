@@ -29,8 +29,14 @@ class CustomersResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationGroup = 'پذیرش';
     protected static ?string $navigationLabel = 'مدیریت مشتریان';
-    protected static ?int $navigationSort = 1; 
+    
+    protected static ?string $pluralModelLabel = 'مدیریت مشتریان';
 
+    protected static ?string $label = 'مشتری';
+
+    protected static ?string $singularLabel = 'مدیریت مشتریان';
+
+    protected static ?int $navigationSort = 1; 
 
     public static function form(Form $form): Form
     {

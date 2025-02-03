@@ -70,7 +70,7 @@ class FinancialCheckResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('id')
-                    ->label('کد'),
+                    ->label('ردیف'),
 
                 Tables\Columns\TextColumn::make('customerAnalysis')
                     ->label('آنالیز مشتریان')
