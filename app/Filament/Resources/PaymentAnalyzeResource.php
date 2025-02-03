@@ -22,9 +22,9 @@ class PaymentAnalyzeResource extends Resource
 
     protected static ?string $navigationLabel = 'مدیریت پرداخت مشتریان';
 
-    protected static ?string $pluralLabel = 'مدیریت مالی';
+    protected static ?string $pluralLabel = 'مدیریت پرداخت مشتریان';
 
-    protected static ?string $modelLabel = 'چک مالی';
+    protected static ?string $modelLabel = 'مدیریت پرداخت مشتریان';
 
     protected static ?string $navigationGroup = 'امور مالی';
 
@@ -88,7 +88,6 @@ class PaymentAnalyzeResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
@@ -108,7 +107,6 @@ class PaymentAnalyzeResource extends Resource
         return [
             'index' => Pages\ListPaymentAnalyzes::route('/'),
             'create' => Pages\CreatePaymentAnalyze::route('/create'),
-            'edit' => Pages\EditPaymentAnalyze::route('/{record}/edit'),
         ];
     }
 }

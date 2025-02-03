@@ -77,16 +77,17 @@ class PriceAnalysisCreditResource extends Resource
 
                 // Date field
                 TextInput::make('date')
-                    ->label('تاریخ ثبت')
-                    ->nullable()
-                    ->maxLength(10),
-
-                // Time field
-                TextInput::make('time')
-                    ->label('زمان ثبت')
-                    ->nullable()
-                    ->maxLength(10),
-
+                ->label('تاریخ ثبت')
+                ->maxLength(10)
+                ->required()
+                ->default(now()->format('Y-m-d')) // Set the default to the current date
+                ->hidden(), // Hide the field from the user
+            TextInput::make('time')
+                ->label('زمان ثبت')
+                ->maxLength(10)
+                ->required()
+                ->default(now()->format('H:i:s')) // Set the default to the current time
+                ->hidden(), 
             ]);
     }
 

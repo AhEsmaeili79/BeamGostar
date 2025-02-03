@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('bank_account', function (Blueprint $table) {
             $table->id('id')->comment(comment: 'کد');
             $table->tinyInteger('account_type')->comment('نوع حساب');
-            $table->string('account_number', 15)->comment('شماره حساب');
+            $table->string('account_number', 16)->comment('شماره حساب');
             $table->string('card_number', 16)->comment('شماره کارت');
             $table->string('shaba_number', 24)->comment('شماره شبا');
             $table->string('account_holder_name', 150)->comment('نام دارنده حساب');

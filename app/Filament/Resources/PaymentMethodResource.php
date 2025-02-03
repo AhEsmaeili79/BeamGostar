@@ -87,8 +87,6 @@ class PaymentMethodResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -109,7 +107,6 @@ class PaymentMethodResource extends Resource
         return [
             'index' => Pages\ListPaymentMethods::route('/'),
             'create' => Pages\CreatePaymentMethod::route('/create'),
-            'edit' => Pages\EditPaymentMethod::route('/{record}/edit'),
         ];
     }
 }

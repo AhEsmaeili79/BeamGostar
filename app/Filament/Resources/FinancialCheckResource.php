@@ -20,11 +20,11 @@ class FinancialCheckResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $navigationLabel = 'چک مالی';
+    protected static ?string $navigationLabel = 'مدیریت مالی آنالیز مشتریان';
 
-    protected static ?string $pluralLabel = 'چک مالی';
+    protected static ?string $pluralLabel = 'مدیریت مالی آنالیز مشتریان';
 
-    protected static ?string $modelLabel = 'چک مالی';
+    protected static ?string $modelLabel = 'مدیریت مالی آنالیز مشتریان';
 
     protected static ?string $navigationGroup = 'امور مالی';
 

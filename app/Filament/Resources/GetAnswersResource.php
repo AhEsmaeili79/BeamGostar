@@ -35,14 +35,14 @@ class GetAnswersResource extends Resource
                     ->reactive()
                     ->afterStateUpdated(fn($state) => $state ? 1 : 0)
                     ->offIcon('')
-                    ->helperText('وضعیت آنالیز را انتخاب کنید')
+                    ->helperText('وضعیت را انتخاب کنید')
                     ->columnSpan(1), // It will take 1/2 of the available space
 
                 TextInput::make('title')
-                    ->label('عنوان آنالیز')
+                    ->label('عنوان')
                     ->maxLength(250)
                     ->required()
-                    ->placeholder('عنوان آنالیز را وارد کنید')
+                    ->placeholder('عنوان را وارد کنید')
                     ->columnSpan(2), // It will take 1/2 of the available space
             ]),
     ]);

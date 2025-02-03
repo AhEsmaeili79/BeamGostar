@@ -13,7 +13,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-
+use Filament\Support\RawJs;
 class BankAccountResource extends Resource
 {
     protected static ?string $model = bank_account::class;
@@ -22,14 +22,14 @@ class BankAccountResource extends Resource
     protected static ?string $navigationGroup = 'اطلاعات پایه';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationLabel = 'اطلاعات حساب بانکی';
-
-    protected static ?int $navigationSort =3;
+    protected static ?string $label = 'اطلاعات حساب بانکی';
+    protected static ?string $singularLabel = 'اطلاعات حساب بانکی';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Grid::make(2) // Creates a two-column layout
+                Grid::make(2)
                 ->schema([
                 Forms\Components\Radio::make('account_type')
                     ->options([
@@ -46,34 +46,47 @@ class BankAccountResource extends Resource
                 Forms\Components\TextInput::make('account_number')
                     ->label('شماره حساب')
                     ->required()
-                    ->maxLength(15)
-                    ->columnSpan([
-                        'default' => 2,  // 1 column span on larger screens
-                        'sm' => 1,       // 2 column span on small screens (screens smaller than 600px)
-                    ]),
-                Forms\Components\TextInput::make('card_number')
-                    ->label('شماره کارت')
-                    ->required()
+                    ->mask('9999999999999999')
+                    ->minLength(12)
                     ->maxLength(16)
                     ->columnSpan([
-                        'default' => 2,  // 1 column span on larger screens
-                        'sm' => 1,       // 2 column span on small screens (screens smaller than 600px)
+                        'default' => 2,  
+                        'sm' => 1,       
                     ]),
-                Forms\Components\TextInput::make('shaba_number')
-                    ->label('شماره شبا')
-                    ->required()
-                    ->maxLength(24)
-                    ->columnSpan([
-                        'default' => 2,  // 1 column span on larger screens
-                        'sm' => 1,       // 2 column span on small screens (screens smaller than 600px)
-                    ]),
+                
+                    Forms\Components\TextInput::make('card_number')
+    ->label('شماره کارت')
+    ->mask('9999 9999 9999 9999')
+    ->placeholder('xxxx xxxx xxxx xxxx') 
+    ->dehydrateStateUsing(fn ($state) => str_replace(' ', '', $state))  
+    ->columnSpan([
+        'default' => 2, 
+        'sm' => 1,       
+    ]),
+
+Forms\Components\TextInput::make('shaba_number') 
+    ->label('شماره شبا') 
+    ->suffix('IR')
+    ->dehydrateStateUsing(fn ($state) => str_replace(' ', '', $state))  
+    ->mask('99 9999 9999 9999 9999 9999 99') 
+    ->placeholder('xx xxxx xxxx xxxx xxxx xxxx xxxx xx') 
+    ->helperText('شماره شبا را بدون IR وارد کنید') 
+    ->extraInputAttributes(['dir' => 'ltr']) 
+    ->columnSpan([
+        'default' => 2,  
+        'sm' => 1,       
+    ]),
+
+
+                
+
                 Forms\Components\TextInput::make('account_holder_name')
                     ->label('نام دارنده حساب')
                     ->required()
                     ->maxLength(150)
                     ->columnSpan([
-                        'default' => 2,  // 1 column span on larger screens
-                        'sm' => 1,       // 2 column span on small screens (screens smaller than 600px)
+                        'default' => 2, 
+                        'sm' => 1,       
                     ]),
             ])
         ]);

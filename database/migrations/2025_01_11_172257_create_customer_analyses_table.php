@@ -25,8 +25,8 @@ return new class extends Migration
             $table->string('additional_cost_text', 150)->nullable()->comment('توضیح هزینه اضافه');
             $table->string('total_cost', 20)->comment('هزینه کل');
             $table->string('applicant_share', 20)->comment('سهم متقاضی');
-            $table->string('network_share', 20)->comment('سهم شبکه');
-            $table->string('network_id', 20)->comment('ID شبکه');
+            $table->string('network_share', 20)->comment('سهم شبکه')->nullable();
+            $table->string('network_id', 20)->comment('ID شبکه')->nullable();
             $table->foreignId('payment_method_id')->constrained('payment_method')->onDelete('cascade')->comment('نحوه پرداخت');
             $table->tinyInteger('discount')->nullable()->comment('تخفیف');
             $table->string('discount_num', 10)->nullable()->comment('مبلغ /درصد تخفیف');

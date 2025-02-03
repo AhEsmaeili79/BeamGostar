@@ -31,7 +31,7 @@ class AnalysisTimeResource extends Resource
     {
         return $form
             ->schema([
-                Grid::make(2) // Creates a two-column layout
+                Grid::make(2) 
                 ->schema([
                 Radio::make('accordingto')
                     ->options([
@@ -48,19 +48,18 @@ class AnalysisTimeResource extends Resource
                 Select::make('analyze_id')
                     ->label('آنالیز')
                     ->options(
-                        Analyze::whereNotNull('title')  // Ensure 'title' is not null
-                            ->whereNotNull('title')   // Ensure 'name' is not null
-                            ->pluck('title', 'id') // Assuming 'title' is the key and 'name' is the value
+                        Analyze::whereNotNull('title')  
+                            ->whereNotNull('title')  
+                            ->pluck('title', 'id') 
                     )
                     ->required()
                     ->searchable()
                     ->columnSpan([
-                        'default' => 2,  // 1 column span on larger screens
-                        'sm' => 1,       // 2 column span on small screens (screens smaller than 600px)
+                        'default' => 2,  
+                        'sm' => 1,      
                     ]),
 
 
-                // String: number_done
                 TextInput::make('number_done')
                     ->label('تعداد قابل انجام')
                     ->maxLength(5)
@@ -68,11 +67,10 @@ class AnalysisTimeResource extends Resource
                     ->required()
                     ->numeric()
                     ->columnSpan([
-                        'default' => 2,  // 1 column span on larger screens
-                        'sm' => 1,       // 2 column span on small screens (screens smaller than 600px)
+                        'default' => 2,  
+                        'sm' => 1,       
                     ]),
 
-                // String: number_minutes
                 TextInput::make('number_minutes')
                     ->label('دقیقه قابل انجام')
                     ->maxLength(5)
@@ -80,19 +78,20 @@ class AnalysisTimeResource extends Resource
                     ->nullable()
                     ->numeric()
                     ->columnSpan([
-                        'default' => 2,  // 1 column span on larger screens
-                        'sm' => 1,       // 2 column span on small screens (screens smaller than 600px)
-                    ]),
+                        'default' => 2,  
+                        'sm' => 1,       
+                    ])
+                    ->visible(fn ($get) => $get('accordingto') == 0),
 
-                // Integer: default_number_day
+                
                 TextInput::make('default_number_day')
                     ->label('تعداد روز پیش فرض')
                     ->suffix('روز')
                     ->required()
                     ->numeric()
                     ->columnSpan([
-                        'default' => 2,  // 1 column span on larger screens
-                        'sm' => 1,       // 2 column span on small screens (screens smaller than 600px)
+                        'default' => 2,  
+                        'sm' => 1,      
                     ]),
                 ]),
             ]);
@@ -112,7 +111,7 @@ class AnalysisTimeResource extends Resource
                 ->sortable()
                 ->wrap()
                 ->getStateUsing(function ($record) {
-                    return $record->analyze ? $record->analyze->title : null;  // Use the title from the related model
+                    return $record->analyze ? $record->analyze->title : null;  
                 }),
 
                 TextColumn::make('accordingto')

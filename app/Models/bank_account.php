@@ -22,4 +22,5 @@ class bank_account extends Model
     protected $casts = [
         'account_type' => 'integer',
     ];
+
 }
