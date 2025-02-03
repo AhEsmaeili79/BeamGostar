@@ -6,6 +6,7 @@ use App\Exports\CustomersExport;
 use App\Filament\Resources\CustomersResource\Pages;
 use App\Models\Customers;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -13,6 +14,12 @@ use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Table;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\TextInput;
+use Ysfkaya\FilamentPhoneInput\Forms\PhoneInput;
+use Ysfkaya\FilamentPhoneInput\Tables\PhoneColumn;
+use Ysfkaya\FilamentPhoneInput\Infolists\PhoneEntry;
+use Ysfkaya\FilamentPhoneInput\PhoneInputNumberType;
+
+
 class CustomersResource extends Resource
 {
     protected static ?string $model = Customers::class;
@@ -28,10 +35,8 @@ class CustomersResource extends Resource
     {
         return $form
             ->schema([
-                // Customer Info Section
                 Forms\Components\Section::make('نوع مشتریان')
                 ->schema([
-                    // Customer Type (حقیقی / حقوقی)
                     Radio::make('customer_type')
                         ->options([
                             0 => 'حقیقی',
@@ -46,7 +51,6 @@ class CustomersResource extends Resource
                             'class' => 'p-3 rounded-lg border border-gray-300 shadow-sm hover:border-indigo-500 transition-colors duration-300',
                         ]),
             
-                    // Nationality (ایرانی / خارجی)
                     Radio::make('nationality')
                         ->options([
                             0 => 'ایرانی',
@@ -61,7 +65,6 @@ class CustomersResource extends Resource
                             'class' => 'p-3 rounded-lg border border-gray-300 shadow-sm hover:border-indigo-500 transition-colors duration-300',
                         ]),
             
-                    // Clearing Type (نقدی / اعتباری)
                     Radio::make('clearing_type')
                         ->options([
                             0 => 'نقدی',
@@ -77,7 +80,7 @@ class CustomersResource extends Resource
                         ]),
                 ])
                 ->extraAttributes([
-                    'class' => 'flex space-x-4 items-center', // Flexbox for a single row with horizontal spacing
+                    'class' => 'flex space-x-4 items-center', 
                 ]),
 
                 TextInput::make('company_fa')
@@ -85,14 +88,14 @@ class CustomersResource extends Resource
                     ->prefix('نام شرکت (فارسی)')
                     ->suffix('نام شرکت (فارسی)')
                     ->nullable()
-                    ->visible(fn ($state, $get) => $get('customer_type') == 1),  // Show for حقوقی
+                    ->visible(fn ($state, $get) => $get('customer_type') == 1),  
 
                 TextInput::make('company_en')
                     ->label('نام شرکت (انگلیسی)')
                     ->prefixIcon('heroicon-m-globe-alt')
                     ->suffixIcon('heroicon-m-globe-alt')
                     ->nullable()
-                    ->visible(fn ($state, $get) => $get('customer_type') == 1),  // Show for حقوقی
+                    ->visible(fn ($state, $get) => $get('customer_type') == 1), 
 
                 TextInput::make('name_fa')
                     ->label(fn ($get) => $get('customer_type') == 1 && $get('nationality') == 0 ? 'نام رابط' : 'نام (فارسی)')
@@ -110,7 +113,6 @@ class CustomersResource extends Resource
                     ->label(fn ($get) => $get('customer_type') == 1 && $get('nationality') == 0 ? 'نام خانوادگی رابط (انگلیسی)' : 'نام خانوادگی (انگلیسی)')
                     ->nullable(),
 
-                // Conditional fields based on customer_type and nationality
                 TextInput::make('national_code')
                     ->label('کد ملی')
                     ->numeric()
@@ -142,20 +144,36 @@ class CustomersResource extends Resource
                     ->nullable()
                     ->visible(fn ($state, $get) => $get('customer_type') == 1 && $get('nationality') == 0),  // Show for حقوقی & ایرانی
 
-                TextInput::make('birth_date')
+                    
+                DatePicker::make('birth_date')
                     ->label('تاریخ تولد')
                     ->jalali()
-                    ->regex('/^\d{4}-\d{2}-\d{2}$/') // Date format: YYYY-MM-DD
                     ->nullable()
                     ->visible(fn ($state, $get) => $get('customer_type') == 0 && $get('nationality') == 0),  // Show for حقیقی & ایرانی
-                    
-                TextInput::make('mobile')
-                    ->label('شماره همراه')
-                    ->tel() 
-                    ->telRegex('/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\.\/0-9]{0,11}$/') // Limits to 11 digits
-                    ->maxLength(11)
-                    ->required(),
-
+                
+                PhoneInput::make('mobile')
+                    ->label('شماره همراه') // Maximum length for the phone number
+                    ->placeholder('9121234567') // Placeholder for the phone number input
+                    ->required() // Make the field required
+                    ->countrySearch(true) // Allow searching by country
+                    ->allowDropdown(true) // Allow country dropdown selection
+                    ->autoPlaceholder('polite') // Auto-placeholders (polite mode, shows placeholder when the field is empty)
+                    ->initialCountry('ir') // Set the initial country to Iran (IR) for the phone number input
+                    ->nationalMode(true) // Enable national mode for phone numbers
+                    ->showFlags(true) // Show country flags in the dropdown
+                    ->separateDialCode(true) // Display the dial code separately from the phone number
+                    ->formatAsYouType(true) // Automatically format the number as you type
+                    ->locale('fa') // Set the locale to Persian (Farsi) language for the input
+                    ->i18n([
+                        'en' => 'English',
+                        'fa' => 'فارسی', // Customize the country selector language (here Persian)
+                    ])
+                    ->validateFor('ir', ['lenient' => false, 'type' => 'mobile', 'length' => 10]) // Validate to accept only 10 digits for Iran's mobile numbers
+                    ->strictMode(true)
+                    ->extraAttributes([
+                        'oninput' => "if (this.value.startsWith('0')) { this.value = this.value.substring(1); }"
+                    ]),
+                                    
                 TextInput::make('phone')
                     ->label('شماره تماس شرکت')
                     ->tel()
@@ -164,7 +182,6 @@ class CustomersResource extends Resource
                     ->nullable()
                     ->visible(fn ($state, $get) => $get('customer_type') == 1),  // Show for حقوقی
                 
-                // Fields that should always be displayed
                 TextInput::make('email')
                     ->label('پست الکترونیک')
                     ->email()

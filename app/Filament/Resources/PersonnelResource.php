@@ -34,27 +34,26 @@ class PersonnelResource extends Resource
         return $form
             ->schema([
             TextInput::make('name')
-                ->label('Name')
+                ->label('نام')
                 ->required()
                 ->maxLength(40),
             TextInput::make('family')
-                ->label('Family')
+                ->label('نام خانوادگی')
                 ->required()
                 ->maxLength(40),
             TextInput::make('national_code')
-                ->label('National Code')
+                ->label('کد ملی')
                 ->required()
                 ->unique('personnel', 'name')
                 ->unique('users', 'name')
                 ->maxLength(15),
             
                 Select::make('role_id')
-                ->label('Role')
+                ->label('نقش')
                 ->required()
                 ->hiddenOn(['edit'])
                 ->options(function () {
-                    // Fetch all roles from the Role model and return them as options
-                    return Role::all()->pluck('name', 'id'); // `id` will be the value and `name` will be the label
+                    return Role::all()->pluck('name', 'id'); 
                 })
                 ->searchable(),
             ]);
@@ -70,21 +69,21 @@ class PersonnelResource extends Resource
                     ->searchable(),
 
                 TextColumn::make('name')
-                    ->label('Name')
+                    ->label('نام')
                     ->sortable()
                     ->searchable(),
 
                 TextColumn::make('family')
-                    ->label('Family Name')
+                    ->label('نام خانوادگی')
                     ->sortable()
                     ->searchable(),
 
                 TextColumn::make('national_code')
-                    ->label('National Code')
+                    ->label('کد ملی')
                     ->searchable(),
                 
                 TextColumn::make('user.roles.name') 
-                    ->label('User Roles')
+                    ->label('نقش ها')
                     ->wrap(),
             ])
             ->filters([
