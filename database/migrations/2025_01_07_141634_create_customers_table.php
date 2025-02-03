@@ -28,7 +28,7 @@ return new class extends Migration
             $table->string('birth_date', 10)->nullable()->comment('تاریخ تولد');
             $table->string('company_fa', 255)->nullable()->comment('نام شرکت (فارسی)');
             $table->string('company_en', 255)->nullable()->comment('نام شرکت (انگلیسی)');
-            $table->string('mobile', 11)->comment('شماره همراه');
+            $table->string('mobile', 15)->comment('شماره همراه');
             $table->string('phone', 11)->nullable()->comment('شماره تماس شرکت');
             $table->string('password', 255)->nullable()->comment('رمز عبور');
             $table->string('re_password', 255)->nullable()->comment('تکرار رمز عبور');

@@ -85,15 +85,13 @@ class CustomersResource extends Resource
 
                 TextInput::make('company_fa')
                     ->label('نام شرکت (فارسی)')
-                    ->prefix('نام شرکت (فارسی)')
-                    ->suffix('نام شرکت (فارسی)')
+                    ->prefixIcon('heroicon-m-globe-alt')
                     ->nullable()
                     ->visible(fn ($state, $get) => $get('customer_type') == 1),  
 
                 TextInput::make('company_en')
                     ->label('نام شرکت (انگلیسی)')
                     ->prefixIcon('heroicon-m-globe-alt')
-                    ->suffixIcon('heroicon-m-globe-alt')
                     ->nullable()
                     ->visible(fn ($state, $get) => $get('customer_type') == 1), 
 
@@ -119,12 +117,13 @@ class CustomersResource extends Resource
                     ->nullable()
                     ->unique('users', 'name')
                     ->reactive()
+                    ->required()
                     ->visible(fn ($state, $get) => $get('customer_type') == 0 && $get('nationality') == 0),  
                 
                 TextInput::make('national_id')
                     ->label('شناسه ملی')
                     ->numeric()
-                    ->nullable()
+                    ->required()
                     ->unique('users', 'name')
                     ->reactive()
                     ->visible(fn ($state, $get) => $get('customer_type') == 1),  
@@ -132,7 +131,7 @@ class CustomersResource extends Resource
                     TextInput::make('passport')
                     ->label('شماره گذرنامه')
                     ->numeric()
-                    ->nullable()
+                    ->required()
                     ->unique('users', 'name')
                     ->same('password')
                     ->visible(fn ($state, $get) => $get('nationality') == 1)
@@ -141,7 +140,7 @@ class CustomersResource extends Resource
                 TextInput::make('economy_code')
                     ->label('کد اقتصادی')
                     ->numeric()
-                    ->nullable()
+                    ->required()
                     ->visible(fn ($state, $get) => $get('customer_type') == 1 && $get('nationality') == 0),  // Show for حقوقی & ایرانی
 
                     
@@ -152,31 +151,33 @@ class CustomersResource extends Resource
                     ->visible(fn ($state, $get) => $get('customer_type') == 0 && $get('nationality') == 0),  // Show for حقیقی & ایرانی
                 
                 PhoneInput::make('mobile')
-                    ->label('شماره همراه') // Maximum length for the phone number
-                    ->placeholder('9121234567') // Placeholder for the phone number input
-                    ->required() // Make the field required
-                    ->countrySearch(true) // Allow searching by country
-                    ->allowDropdown(true) // Allow country dropdown selection
-                    ->autoPlaceholder('polite') // Auto-placeholders (polite mode, shows placeholder when the field is empty)
-                    ->initialCountry('ir') // Set the initial country to Iran (IR) for the phone number input
-                    ->nationalMode(true) // Enable national mode for phone numbers
-                    ->showFlags(true) // Show country flags in the dropdown
-                    ->separateDialCode(true) // Display the dial code separately from the phone number
-                    ->formatAsYouType(true) // Automatically format the number as you type
-                    ->locale('fa') // Set the locale to Persian (Farsi) language for the input
+                    ->label('شماره همراه')
+                    ->placeholder('9121234567')
+                    ->required()
+                    ->countrySearch(true)
+                    ->allowDropdown(true)
+                    ->autoPlaceholder('polite')
+                    ->initialCountry('ir')
+                    ->nationalMode(true)
+                    ->showFlags(true)
+                    ->separateDialCode(true)
+                    ->formatAsYouType(true)
+                    ->locale('fa')
                     ->i18n([
                         'en' => 'English',
-                        'fa' => 'فارسی', // Customize the country selector language (here Persian)
+                        'fa' => 'فارسی',
                     ])
-                    ->validateFor('ir', ['lenient' => false, 'type' => 'mobile', 'length' => 10]) // Validate to accept only 10 digits for Iran's mobile numbers
+                    ->validateFor('ir', ['lenient' => false, 'type' => 'mobile', 'length' => 10])
                     ->strictMode(true)
                     ->extraAttributes([
                         'oninput' => "if (this.value.startsWith('0')) { this.value = this.value.substring(1); }"
                     ]),
+                
                                     
                 TextInput::make('phone')
                     ->label('شماره تماس شرکت')
                     ->tel()
+                    ->numeric()
                     ->telRegex('/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\.\/0-9]{0,11}$/') // Limits to 11 digits
                     ->maxLength(11)
                     ->nullable()
@@ -212,7 +213,7 @@ class CustomersResource extends Resource
                 ->color(fn($state) => $state == 0 ? 'success': 'danger' ) // 'primary' for 'حقیقی' and 'success' for 'حقوقی'
                 ->icon(fn($state) => $state == 0 ? 'heroicon-o-user' : 'heroicon-o-building-office') // Correct icon name
                 ->wrap()
-                ->badge() // Ensures the state is displayed as a badge
+                ->badge() 
                 ->searchable(),
                 
                 Tables\Columns\TextColumn::make('nationality')
@@ -265,8 +266,8 @@ class CustomersResource extends Resource
                     ->getStateUsing(function ($record) {
                         return $record->passport ?: '-';
                     }),
-
-                Tables\Columns\TextColumn::make('mobile')
+                PhoneColumn::make('mobile')
+                    ->displayFormat(PhoneInputNumberType::NATIONAL)
                     ->label('شماره همراه')
                     ->wrap()
                     ->searchable(),
