@@ -144,6 +144,7 @@ class CustomersResource extends Resource
 
                 TextInput::make('birth_date')
                     ->label('تاریخ تولد')
+                    ->jalali()
                     ->regex('/^\d{4}-\d{2}-\d{2}$/') // Date format: YYYY-MM-DD
                     ->nullable()
                     ->visible(fn ($state, $get) => $get('customer_type') == 0 && $get('nationality') == 0),  // Show for حقیقی & ایرانی

@@ -26,7 +26,7 @@ class GetAnswersResource extends Resource
     {
         return $form
         ->schema([
-            Grid::make(2) // Creates a two-column layout
+            Grid::make(2) 
             ->schema([
                 Toggle::make('status')
                     ->label('وضعیت')
@@ -36,14 +36,14 @@ class GetAnswersResource extends Resource
                     ->afterStateUpdated(fn($state) => $state ? 1 : 0)
                     ->offIcon('')
                     ->helperText('وضعیت را انتخاب کنید')
-                    ->columnSpan(1), // It will take 1/2 of the available space
+                    ->columnSpan(1), 
 
                 TextInput::make('title')
                     ->label('عنوان')
                     ->maxLength(250)
                     ->required()
                     ->placeholder('عنوان را وارد کنید')
-                    ->columnSpan(2), // It will take 1/2 of the available space
+                    ->columnSpan(2), 
             ]),
     ]);
     }
@@ -64,7 +64,7 @@ class GetAnswersResource extends Resource
             ->sortable(),
 
         Tables\Columns\IconColumn::make('status')
-            ->label('وضعیت') // Optional: You can remove this if you don't want any column label.
+            ->label('وضعیت') 
             ->icon(fn($state) => $state ? 'heroicon-o-check-circle' : 'heroicon-o-x-circle') // Use any icon as per your preference
             ->color(fn($state) => $state ? 'success' : 'danger')
             ->sortable()

@@ -11,6 +11,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\App;
 
 class CustomerAnalysisResource extends Resource
 {
@@ -23,7 +24,6 @@ class CustomerAnalysisResource extends Resource
     protected static ?string $navigationGroup = 'پذیرش';
 
     protected static ?string $pluralModelLabel = 'مدیریت آنالیز مشتریان';
-
 
     protected static ?string $label = 'مدیریت آنالیز مشتریان';
 
@@ -78,13 +78,17 @@ class CustomerAnalysisResource extends Resource
                     )
                     ->required()
                     ->searchable(),
+
                 Forms\Components\DatePicker::make('acceptance_date')
                     ->label('تاریخ پذیرش')
-                    ->required(),
+                    ->required()
+                    ->jalali(),
+
                 Forms\Components\Select::make('get_answers_id')
                     ->label('نحوه دریافت جواب آنالیز')
                     ->relationship('getAnswers', 'title')
                     ->required(),
+                    
                 Forms\Components\Select::make('analyze_id')
                     ->label('آنالیز')
                     ->relationship('analyze', 'title')
@@ -195,10 +199,12 @@ class CustomerAnalysisResource extends Resource
                     ->nullable(),
 
                 Forms\Components\DatePicker::make('date_answer')
-                    ->label('تاریخ جوابدهی'),
+                    ->label('تاریخ جوابدهی')
+                    ->jalali(),
 
                 Forms\Components\DatePicker::make('upload_answer')
-                    ->label('تاریخ بارگذاری جواب'),
+                    ->label('تاریخ بارگذاری جواب')
+                    ->jalali(),
             ]);
     }
 
@@ -236,7 +242,8 @@ class CustomerAnalysisResource extends Resource
                     ->label('کد پیگیری'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('تاریخ ایجاد')
-                    ->dateTime(),
+                    ->dateTime()
+                    ->unless(App::isLocale('en'), fn (Tables\Columns\TextColumn $column) => $column->jalaliDateTime()),
             ])
             ->filters([
                 Filter::make('status')

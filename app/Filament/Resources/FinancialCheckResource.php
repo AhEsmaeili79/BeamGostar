@@ -59,6 +59,7 @@ class FinancialCheckResource extends Resource
 
                 Forms\Components\TextInput::make('date_success')
                     ->label('تاریخ تایید')
+                    ->jalali()
                     ->nullable(),
 
             ]);
