@@ -35,30 +35,28 @@ class PriceAnalysisResource extends Resource
             ->schema([
                 Select::make('analyze_id')
                     ->label('آنالیز')
-                    ->options(Analyze::all()->pluck('title', 'id')) // Fetch all Analyze titles
+                    ->options(Analyze::all()->pluck('title', 'id')) 
                     ->searchable()
                     ->required()
                     ->placeholder('انتخاب آنالیز'),
 
-                // Price field
                 TextInput::make('price')
                     ->label('قیمت(ریال)')
                     ->required()
                     ->maxLength(10),
 
-                // Date field
-            TextInput::make('date')
-                ->label('تاریخ ثبت')
-                ->maxLength(10)
-                ->required()
-                ->default(now()->format('Y-m-d')) // Set the default to the current date
-                ->hidden(), // Hide the field from the user
-            TextInput::make('time')
-                ->label('زمان ثبت')
-                ->maxLength(10)
-                ->required()
-                ->default(now()->format('H:i:s')) // Set the default to the current time
-                ->hidden(), 
+                TextInput::make('date')
+                    ->label('تاریخ ثبت')
+                    ->maxLength(10)
+                    ->required()
+                    ->default(now()->format('Y-m-d')) 
+                    ->hidden(), 
+                TextInput::make('time')
+                    ->label('زمان ثبت')
+                    ->maxLength(10)
+                    ->required()
+                    ->default(now()->format('H:i:s')) 
+                    ->hidden(), 
             ]);
     }
 

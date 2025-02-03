@@ -92,19 +92,30 @@ class CustomerAnalysisResource extends Resource
                 Forms\Components\Select::make('analyze_id')
                     ->label('آنالیز')
                     ->relationship('analyze', 'title')
-                    ->required(),
+                    ->default(1)
+                    ->required()
+                    ->reactive()
+                    ->afterStateUpdated(function ($state, $set, $get) {
+                        $priceAnalysis = \App\Models\price_analysis::where('analyze_id', $state)->first();
+                        if ($priceAnalysis) {
+                            $samplesNumber = $get('samples_number');
+                            $set('total_cost', $priceAnalysis->price * $samplesNumber);
+                        }
+                    }),
                 
                 Forms\Components\TextInput::make('samples_number')
                     ->label('تعداد نمونه')
                     ->numeric()
                     ->required()
-                    ->id('samples_number')
-                    ->default($customerAnalysis->samples_number ?? 0)
-                    ->extraAttributes([
-                        'x-bind:max' => '50',
-                        'x-on:input' => 'if($event.target.value > 50) $event.target.value = 50', 
-                    ]),
-
+                    ->default(1)
+                    ->reactive()
+                    ->afterStateUpdated(function ($state, $set, $get) {
+                        $priceAnalysis = \App\Models\price_analysis::where('analyze_id', $get('analyze_id'))->first();
+                        if ($priceAnalysis) {
+                            $set('total_cost', $priceAnalysis->price * $state);
+                        }
+                    }),
+    
                 Forms\Components\TextInput::make('analyze_time')
                     ->label('کل زمان آنالیز')
                     ->numeric()
@@ -124,19 +135,25 @@ class CustomerAnalysisResource extends Resource
                     ->id('additional_cost')
                     ->default($customerAnalysis->additional_cost ?? 0),
 
-                Forms\Components\TextInput::make('total_cost')
+                    Forms\Components\TextInput::make('total_cost')
                     ->label('هزینه کل')
                     ->nullable()
                     ->required()
-                    ->default($customerAnalysis->total_cost ?? 0)
-                    ->extraAttributes(['id' => 'total_cost']),
+                    ->extraAttributes(['id' => 'total_cost'])
+                    ->default(function ($get) {
+                        // Set the default price for analyze_id = 1
+                        $priceAnalysis = \App\Models\price_analysis::where('analyze_id', 1)->first();
+                        return $priceAnalysis ? $priceAnalysis->price : 0;
+                    }),
 
-                Forms\Components\TextInput::make('applicant_share')
+                    Forms\Components\TextInput::make('applicant_share')
                     ->label('سهم متقاضی')
                     ->required()
                     ->numeric()
-                    ->id('applicant_share')
-                    ->default($customerAnalysis->applicant_share ?? 0),
+                    ->default(0)
+                    ->extraAttributes([
+                        'x-bind:value' => 'grant == 0 ? total_cost : applicant_share',
+                    ]),
 
                 Forms\Components\TextInput::make('network_share')
                     ->label('سهم شبکه')
