@@ -18,7 +18,8 @@ use Ysfkaya\FilamentPhoneInput\Forms\PhoneInput;
 use Ysfkaya\FilamentPhoneInput\Tables\PhoneColumn;
 use Ysfkaya\FilamentPhoneInput\Infolists\PhoneEntry;
 use Ysfkaya\FilamentPhoneInput\PhoneInputNumberType;
-
+use App\Rules\ValidNationalCode;
+use Illuminate\Validation\Rule; 
 
 class CustomersResource extends Resource
 {
@@ -115,11 +116,20 @@ class CustomersResource extends Resource
                     ->label('کد ملی')
                     ->numeric()
                     ->nullable()
-                    ->unique('users', 'name')
                     ->reactive()
                     ->required()
-                    ->visible(fn ($state, $get) => $get('customer_type') == 0 && $get('nationality') == 0),  
-                
+                    ->mask(9999999999)
+                    ->visible(fn ($state, $get) => $get('customer_type') == 0 && $get('nationality') == 0)
+                    ->rules(function ($get) {
+                        return [
+                            'required', 
+                            'numeric',   
+                            'digits:10', 
+                            Rule::unique('users', 'name')->ignore($get('name')),  // Ensure the national code is unique (check against name column)
+                            new ValidNationalCode(), 
+                        ];
+                    }),
+
                 TextInput::make('national_id')
                     ->label('شناسه ملی')
                     ->numeric()
@@ -289,12 +299,6 @@ class CustomersResource extends Resource
             ]);
     }
 
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
 
     public static function getPages(): array
     {
