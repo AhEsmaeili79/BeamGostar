@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\CustomerAnalysisResource\Pages;
 use App\Models\CustomerAnalysis;
 use App\Models\Customers;
+use App\Models\Analyze;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -78,11 +79,10 @@ class CustomerAnalysisResource extends Resource
                     )
                     ->required()
                     ->searchable(),
-
                 Forms\Components\DatePicker::make('acceptance_date')
                     ->label('تاریخ پذیرش')
                     ->required()
-                    ->jalali(),
+                    ->default(now()),
 
                 Forms\Components\Select::make('get_answers_id')
                     ->label('نحوه دریافت جواب آنالیز')
@@ -91,9 +91,10 @@ class CustomerAnalysisResource extends Resource
                     
                 Forms\Components\Select::make('analyze_id')
                     ->label('آنالیز')
-                    ->relationship('analyze', 'title')
+                    ->options(Analyze::all()->pluck('title', 'id')) 
                     ->default(1)
                     ->required()
+                    ->searchable()
                     ->reactive() 
                     ->afterStateUpdated(function ($state, $set, $get) {
                         $samplesNumber = $get('samples_number') ?? 1;
@@ -264,6 +265,10 @@ class CustomerAnalysisResource extends Resource
                     }),
                 Tables\Columns\TextColumn::make('acceptance_date')
                     ->label('تاریخ پذیرش'),
+                Tables\Columns\TextColumn::make('date_answer')
+                    ->label('تاریخ جوابدهی')
+                    ->dateTime()
+                    ->unless(App::isLocale('en'), fn (Tables\Columns\TextColumn $column) => $column->jalaliDate()),
                 Tables\Columns\TextColumn::make('analyze.title')
                     ->label('آنالیز'),
                 Tables\Columns\TextColumn::make('total_cost')

@@ -155,7 +155,7 @@ class FullCustomerAnalysisResource extends Resource
             Tables\Columns\TextColumn::make('acceptance_date')
                 ->label('تاریخ پذیرش')
                 ->dateTime()
-                    ->unless(App::isLocale('en'), fn (Tables\Columns\TextColumn $column) => $column->jalaliDate()),
+                ->unless(App::isLocale('en'), fn (Tables\Columns\TextColumn $column) => $column->jalaliDate()),
         ])
             ->filters([
             ])

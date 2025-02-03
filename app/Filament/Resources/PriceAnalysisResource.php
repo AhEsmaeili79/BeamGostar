@@ -77,15 +77,6 @@ class PriceAnalysisResource extends Resource
                 TextColumn::make('date')
                     ->label('تاریخ ثبت')
                     ->sortable(),
-
-                TextColumn::make('time')
-                    ->label('زمان ثبت')
-                    ->sortable(),
-
-                TextColumn::make('created_at')
-                    ->label('تاریخ ثبت')
-                    ->formatStateUsing(fn ($state) => \Carbon\Carbon::parse($state)->diffForHumans())
-                    ->sortable(),
             ])
             ->filters([
                 //
