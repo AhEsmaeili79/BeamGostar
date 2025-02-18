@@ -58,16 +58,45 @@ class CustomerAnalysisResource extends Resource
                         ->default($customerAnalysis->grant ?? 0),
 
                 Forms\Components\Radio::make('discount')
-                        ->options([
-                            0 => 'ندارد',
-                            1 => 'درصد',
-                            2 => 'مبلغ',
-                        ])
-                        ->label('تخفیف')
-                        ->inline()
-                        ->required()
-                        ->reactive()
-                        ->default($customerAnalysis->discount ?? 0),
+                ->options([
+                    0 => 'ندارد',
+                    1 => 'درصد',
+                    2 => 'مبلغ',
+                ])
+                ->label('تخفیف')
+                ->inline()
+                ->required()
+                ->reactive()
+                ->default(0)
+                ->afterStateUpdated(function ($state, $set, $get) {
+                    // Get current values of other relevant fields
+                    $samplesNumber = $get('samples_number') ?? 1;
+                    $analyzeId = $get('analyze_id') ?? 1;
+                    $priceAnalysis = \App\Models\price_analysis::where('analyze_id', $analyzeId)->first();
+                    
+                    $base_cost = $priceAnalysis ? $priceAnalysis->price : 0;
+                    $additional_cost = $get('additional_cost') ?? 0;
+                    $value_added = $get('value_added') == 1 ? ($samplesNumber * $base_cost * 10) / 100 : 0;
+                    
+                    // Get discount-related values
+                    $discountType = $state;
+                    $discountNum = $get('discount_num') ?? 0;
+                    
+                    // Calculate total cost based on discount type
+                    $totalCost = 0;
+            
+                    if ($discountType == 0) {  // No discount
+                        $totalCost = ($samplesNumber * $base_cost) + $value_added;
+                    } elseif ($discountType == 2) {  // Fixed discount (discount_num is amount)
+                        $totalCost = (($samplesNumber * $base_cost) + $value_added) - $discountNum;
+                    } elseif ($discountType == 1) {  // Percentage discount
+                        $totalCost = (($samplesNumber * $base_cost) + $value_added) - (($samplesNumber * $base_cost + $value_added) * $discountNum) / 100;
+                    }
+            
+                    // Update the total cost field
+                    $set('total_cost', $totalCost);
+                }),
+            
 
                 Forms\Components\Select::make('customers_id')
                     ->label('مشتری')
@@ -235,18 +264,71 @@ class CustomerAnalysisResource extends Resource
                     ->relationship('paymentMethod', 'title')
                     ->required(),
                     
-                Forms\Components\TextInput::make('discount_num')
+                    Forms\Components\TextInput::make('discount_num')
                     ->label('درصد تخفیف')
                     ->numeric()
-                    ->id('discount_num')
                     ->nullable()
-                    ->visible(fn ($state, $get) => $get('discount') == 1),
+                    ->visible(fn ($state, $get) => $get('discount') == 1)  // Only visible if discount is set to 'درصد'
+                    ->afterStateUpdated(function ($state, $set, $get) {
+                        // Recalculate total cost whenever the discount_num changes
+                        $samplesNumber = $get('samples_number') ?? 1;
+                        $analyzeId = $get('analyze_id') ?? 1;
+                        $priceAnalysis = \App\Models\price_analysis::where('analyze_id', $analyzeId)->first();
+                        
+                        $base_cost = $priceAnalysis ? $priceAnalysis->price : 0;
+                        $additional_cost = $get('additional_cost') ?? 0;
+                        $value_added = $get('value_added') == 1 ? ($samplesNumber * $base_cost * 10) / 100 : 0;
+                
+                        $discountType = $get('discount') ?? 0;
+                        $discountNum = $state ?? 0;
+                
+                        // Calculate total cost based on discount type
+                        $totalCost = 0;
+                
+                        if ($discountType == 0) {  // No discount
+                            $totalCost = ($samplesNumber * $base_cost) + $value_added;
+                        } elseif ($discountType == 1) {  // Fixed discount (discount_num is amount)
+                            $totalCost = (($samplesNumber * $base_cost) + $value_added) - $discountNum;
+                        } elseif ($discountType == 2) {  // Percentage discount
+                            $totalCost = (($samplesNumber * $base_cost) + $value_added) - (($samplesNumber * $base_cost + $value_added) * $discountNum) / 100;
+                        }
+                
+                        // Update the total cost field
+                        $set('total_cost', $totalCost);
+                    }),
 
-                Forms\Components\TextInput::make('discount_num')
+                    Forms\Components\TextInput::make('discount_num')
                     ->label('مبلغ تخفیف')
                     ->numeric()
                     ->nullable()
-                    ->visible(fn ($state, $get) => $get('discount') == 2),
+                    ->visible(fn ($state, $get) => $get('discount') == 2)  // Only visible if discount is set to 'مبلغ'
+                    ->afterStateUpdated(function ($state, $set, $get) {
+                        // Recalculate total cost whenever the discount_num changes
+                        $samplesNumber = $get('samples_number') ?? 1;
+                        $analyzeId = $get('analyze_id') ?? 1;
+                        $priceAnalysis = \App\Models\price_analysis::where('analyze_id', $analyzeId)->first();
+                        
+                        $base_cost = $priceAnalysis ? $priceAnalysis->price : 0;
+                        $additional_cost = $get('additional_cost') ?? 0;
+                        $value_added = $get('value_added') == 1 ? ($samplesNumber * $base_cost * 10) / 100 : 0;
+                
+                        $discountType = $get('discount') ?? 0;
+                        $discountNum = $state ?? 0;
+                
+                        // Calculate total cost based on discount type
+                        $totalCost = 0;
+                
+                        if ($discountType == 0) {  // No discount
+                            $totalCost = ($samplesNumber * $base_cost) + $value_added;
+                        } elseif ($discountType == 1) {  // Fixed discount (discount_num is amount)
+                            $totalCost = (($samplesNumber * $base_cost) + $value_added) - $discountNum;
+                        } elseif ($discountType == 2) {  // Percentage discount
+                            $totalCost = (($samplesNumber * $base_cost) + $value_added) - (($samplesNumber * $base_cost + $value_added) * $discountNum) / 100;
+                        }
+                
+                        // Update the total cost field
+                        $set('total_cost', $totalCost);
+                    }),
 
                 // Forms\Components\FileUpload::make('scan_form')
                 //     ->label('اسکن فرم')
