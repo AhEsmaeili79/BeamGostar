@@ -79,10 +79,13 @@ class CustomerAnalysisResource extends Resource
                     )
                     ->required()
                     ->searchable(),
+                    
                 Forms\Components\DatePicker::make('acceptance_date')
                     ->label('تاریخ پذیرش')
                     ->required()
+                    ->jalali()
                     ->default(now()),
+                    
 
                 Forms\Components\Select::make('get_answers_id')
                     ->label('نحوه دریافت جواب آنالیز')

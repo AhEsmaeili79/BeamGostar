@@ -13,7 +13,7 @@ class ListFinancialChecks extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            
         ];
     }
 }
