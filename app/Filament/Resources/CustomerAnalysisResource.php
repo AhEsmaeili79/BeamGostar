@@ -149,7 +149,31 @@ class CustomerAnalysisResource extends Resource
 
                 Forms\Components\Toggle::make('value_added')
                     ->label('ارزش افزوده')
-                    ->id('value_added'),
+                    ->id('value_added')
+                    ->reactive() // Makes it reactive
+                    ->afterStateUpdated(function ($state, $set, $get) {
+                        // Get current values of other relevant fields
+                        $samplesNumber = $get('samples_number') ?? 1;
+                        $analyzeId = $get('analyze_id') ?? 1;
+                        $priceAnalysis = \App\Models\price_analysis::where('analyze_id', $analyzeId)->first();
+                        
+                        $base_cost = $priceAnalysis ? $priceAnalysis->price : 0;
+                        $additional_cost = $get('additional_cost') ?? 0;
+                
+                        // Calculate value added based on 'value_added' toggle
+                        if ($state == 1) {  // if value_added is enabled
+                            $valueadded = ($samplesNumber * $base_cost * 10) / 100;
+                        } else {  // if value_added is disabled
+                            $valueadded = 0;
+                        }
+                
+                        // Calculate the new total cost
+                        $new_total_cost = ($samplesNumber * $base_cost) + $additional_cost + $valueadded;
+                
+                        // Update the total_cost field
+                        $set('total_cost', $new_total_cost);
+                    }),
+                
                 
                     Forms\Components\TextInput::make('additional_cost')
                     ->label('هزینه اضافه')
