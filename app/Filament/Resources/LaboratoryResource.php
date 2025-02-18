@@ -142,10 +142,20 @@ class LaboratoryResource extends Resource
                     ->label('اولویت')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('status')
-                    ->label('وضعیت')
-                    ->numeric()
-                    ->sortable(),
+                    Tables\Columns\TextColumn::make('status')
+                    ->label('وضعیت پذیرش')
+                    ->formatStateUsing(fn ($state) => match ($state) {
+                        0 => 'منتظر پرداخت',
+                        1 => 'پذیرش کامل',
+                        2 => 'در انتظار',
+                        3 => 'کنسل',
+                        4 => 'تایید مالی',
+                        5 => 'منتظر تایید مدیریت فنی',
+                        6 => 'تایید مدیریت فنی',
+                        7 => 'آنالیز تکمیل',
+                        8 => 'منتظر تایید مدیریت مالی',
+                        default => 'نامشخص',
+                    }),
                 Tables\Columns\TextColumn::make('state')
                     ->label('وضعیت داخلی')
                     ->numeric()
