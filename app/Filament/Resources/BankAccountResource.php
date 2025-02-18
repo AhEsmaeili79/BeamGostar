@@ -21,6 +21,8 @@ class BankAccountResource extends Resource
     protected static ?string $label = 'اطلاعات حساب بانکی';
     protected static ?string $singularLabel = 'اطلاعات حساب بانکی';
 
+    protected static ?int $navigationSort = 3;
+
     public static function form(Form $form): Form
     {
         return $form

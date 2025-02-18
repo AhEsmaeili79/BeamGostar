@@ -10,8 +10,9 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Ysfkaya\FilamentPhoneInput\Tables\PhoneColumn;
+use Ysfkaya\FilamentPhoneInput\PhoneInputNumberType;
+use Illuminate\Support\Facades\App;
 
 class LaboratoryResource extends Resource
 {
@@ -32,8 +33,12 @@ class LaboratoryResource extends Resource
                 Forms\Components\TextInput::make('full_name_en')
                     ->label('نام کامل انگلیسی')
                     ->maxLength(81),
-                Forms\Components\TextInput::make('national')
+                Forms\Components\TextInput::make('national_code')
                     ->label('کد ملی')
+                    ->required()
+                    ->maxLength(6),
+                Forms\Components\TextInput::make('national')
+                    ->label('ملیت')
                     ->required()
                     ->maxLength(6),
                 Forms\Components\TextInput::make('mobile')
@@ -100,9 +105,13 @@ class LaboratoryResource extends Resource
                     ->label('نام کامل انگلیسی')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('national')
+                    ->label('ملیت')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('national_code')
                     ->label('کد ملی')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('mobile')
+                    PhoneColumn::make('mobile')
+                    ->displayFormat(PhoneInputNumberType::NATIONAL)
                     ->label('موبایل')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('customer_type')
@@ -115,7 +124,8 @@ class LaboratoryResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('acceptance_date')
                     ->label('تاریخ پذیرش')
-                    ->date()
+                    ->dateTime()
+                    ->unless(App::isLocale('en'), fn (Tables\Columns\TextColumn $column) => $column->jalaliDate())
                     ->sortable(),
                 Tables\Columns\TextColumn::make('samples_number')
                     ->label('تعداد نمونه')
@@ -141,7 +151,9 @@ class LaboratoryResource extends Resource
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('date_success')
-                    ->label('تاریخ موفقیت')
+                    ->label('تاریخ ثبت')
+                    ->dateTime()
+                    ->unless(App::isLocale('en'), fn (Tables\Columns\TextColumn $column) => $column->jalaliDate())
                     ->searchable(),
             ])
             ->filters([ 

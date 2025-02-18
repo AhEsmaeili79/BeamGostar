@@ -65,7 +65,7 @@ class GetAnswersResource extends Resource
 
         Tables\Columns\IconColumn::make('status')
             ->label('وضعیت') 
-            ->icon(fn($state) => $state ? 'heroicon-o-check-circle' : 'heroicon-o-x-circle') // Use any icon as per your preference
+            ->icon(fn($state) => $state ? 'heroicon-o-check-circle' : 'heroicon-o-x-circle') 
             ->color(fn($state) => $state ? 'success' : 'danger')
             ->sortable()
             ->wrap()
