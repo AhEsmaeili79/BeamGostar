@@ -47,15 +47,33 @@ class CustomerAnalysisResource extends Resource
             ->schema([
 
                 Forms\Components\Radio::make('grant')
-                        ->options([
-                            0 => 'ندارد',
-                            1 => 'دارد',
-                        ])
-                        ->label('گرنت')
-                        ->inline()
-                        ->required()
-                        ->reactive()
-                        ->default($customerAnalysis->grant ?? 0),
+    ->options([
+        0 => 'ندارد',
+        1 => 'دارد',
+    ])
+    ->label('گرنت')
+    ->inline()
+    ->required()
+    ->reactive()
+    ->default($customerAnalysis->grant ?? 0)
+    ->afterStateUpdated(function ($state, $set, $get) {
+        // Get the total cost value
+        $total = $get('total_cost') ?? 0;
+        
+        // If grant is 0, set applicant_share to total and reset network_share and network_id
+        if ($state == 0) {
+            $set('applicant_share', $total);
+            $set('network_share', null);
+            $set('network_id', null);
+        } else if ($state == 1) {
+            // If grant is 1, calculate applicant_share based on network_share
+            $networkShare = $get('network_share') ?? 0;
+            $applicantShare = $total - $networkShare;
+            $set('applicant_share', $applicantShare);
+            $set('network_share', $networkShare);
+        }
+    }),
+
 
                 Forms\Components\Radio::make('discount')
                 ->options([
@@ -238,20 +256,33 @@ class CustomerAnalysisResource extends Resource
                         }),
 
 
-                    Forms\Components\TextInput::make('applicant_share')
-                    ->label('سهم متقاضی')
-                    ->required()
-                    ->numeric()
-                    ->default(0)
-                    ->extraAttributes([
-                        'x-bind:value' => 'grant == 0 ? total_cost : applicant_share',
-                    ]),
+                        Forms\Components\TextInput::make('applicant_share')
+                        ->label('سهم متقاضی')
+                        ->required()
+                        ->numeric()
+                        ->default(0)
+                        ->reactive() // React when applicant_share changes
+                        ->afterStateUpdated(function ($state, $set, $get) {
+                            // Get total cost and update network_share based on applicant_share
+                            $total = $get('total_cost') ?? 0;
+                            $networkShare = $total - $state; // Subtract applicant_share from total cost to get network_share
+                            $set('network_share', $networkShare);
+                        }),
 
-                Forms\Components\TextInput::make('network_share')
-                    ->label('سهم شبکه')
-                    ->required()
-                    ->id('network_share')
-                    ->visible(fn ($state, $get) => $get('grant') == 1),
+
+                        Forms\Components\TextInput::make('network_share')
+                        ->label('سهم شبکه')
+                        ->required()
+                        ->id('network_share')
+                        ->visible(fn ($state, $get) => $get('grant') == 1)  // Only visible if grant == 1
+                        ->reactive() // React when network_share changes
+                        ->afterStateUpdated(function ($state, $set, $get) {
+                            // Get total cost and update applicant_share based on network_share
+                            $total = $get('total_cost') ?? 0;
+                            $applicantShare = $total - $state; // Subtract network_share from total cost to get applicant_share
+                            $set('applicant_share', $applicantShare);
+                        }),
+                    
 
                 Forms\Components\TextInput::make('network_id')
                     ->label('ID شبکه')
