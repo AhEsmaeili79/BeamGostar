@@ -26,7 +26,7 @@ class InvoiceSetResource extends Resource
 
     public static function getnavigationGroup(): string
     {
-        return __('filament.labels.invoice_management');
+        return __('filament.labels.base_info');
     }
 
     // Move this dynamic property to a method

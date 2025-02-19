@@ -17,7 +17,7 @@ class InvoiceRuleResource extends Resource
     protected static ?string $navigationGroup = null;
     public static function getnavigationGroup(): string
     {
-        return __('filament.labels.invoice_management');
+        return __('filament.labels.customers');
     }
     public static function getNavigationLabel(): string
     {
