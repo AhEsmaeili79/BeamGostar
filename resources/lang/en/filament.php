@@ -105,7 +105,26 @@ return [
         'financial_approval' => 'Financial Approval',
         'waiting_for_technical_approval' => 'Waiting for Technical Approval',
         'waiting_for_financial_approval' => 'Waiting for Financial Approval',
-        'unknown' => "unknown"
+        'unknown' => "unknown",
+        'get_answers_management' => 'Get Answers Management',
+        'choose_status' => 'Choose Status',
+        'laboratory' => 'Laboratory',
+        'laboratory_operator' => 'Laboratory Operator',
+        'laboratory_operators' => 'Laboratory Operators',
+        'full_name_fa' => 'Full Name (FA)',
+        'full_name_en' => 'Full Name (EN)',
+        'national' => 'Nationality',
+        'samples_number' => 'Samples Number',
+        'analyze_id' => 'Analyze ID',
+        'internal_status' => 'Internal Status',
+        'success_date' => 'Success Date',
+        'description' => 'Description',
+        'acceptance_status' => 'acceptance status',
+        'link_analysis_person_management' => 'Link Analysis Person Management',
+        'analyzer' => 'Analyzer',
+        'registration_date' => 'Registration Date',
+        'registration_time' => 'Registration Time',
+        'customer_name' => 'Customer Name',
     ],
 
     'placeholders' => [
@@ -117,6 +136,7 @@ return [
         'create' => 'Create Customer',
         'edit' => 'Edit Customer',
         'delete' => 'Delete Customer',
+        'view' => 'View',
     ],
 
     'fields' => [
@@ -139,5 +159,17 @@ return [
         'email' => 'Email Address',
         'postal_code' => 'Postal Code',
         'address' => 'Address',
+    ],
+    'status' => [
+        'waiting_for_payment' => 'Waiting for Payment',
+        'full_acceptance' => 'Fully Accepted',
+        'awaiting' => 'Awaiting',
+        'cancelled' => 'Cancelled',
+        'financial_approval' => 'Financial Approval',
+        'waiting_for_technical_management_approval' => 'Waiting for Technical Management Approval',
+        'technical_management_approved' => 'Technical Management Approved',
+        'analysis_completed' => 'Analysis Completed',
+        'waiting_for_financial_management_approval' => 'Waiting for Financial Management Approval',
+        'unknown' => 'Unknown',
     ],
 ];

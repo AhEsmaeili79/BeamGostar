@@ -16,80 +16,91 @@ use Filament\Tables\Table;
 class GetAnswersResource extends Resource
 {
     protected static ?string $model = get_answers::class;
-    protected static ?string $pluralLabel = 'نحوه جوابدهی';
     protected static ?string $navigationGroup = 'اطلاعات پایه';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $navigationLabel = 'نحوه جوابدهی';
-    protected static ?int $navigationSort =5;
+    protected static ?int $navigationSort = 5;
+
+    // Remove dynamic translations from here
+    protected static ?string $navigationLabel = null;  // To be set by a method
+
+    public static function getLabel(): string
+    {
+        return __('filament.labels.get_answers_management');
+    }
+
+    // Move this dynamic property to a method
+    public static function getNavigationLabel(): string
+    {
+        return __('filament.labels.get_answers_management');
+    }
 
     public static function form(Form $form): Form
     {
         return $form
-        ->schema([
-            Grid::make(2) 
             ->schema([
-                Toggle::make('status')
-                    ->label('وضعیت')
-                    ->required()
-                    ->default(false)
-                    ->reactive()
-                    ->afterStateUpdated(fn($state) => $state ? 1 : 0)
-                    ->offIcon('')
-                    ->helperText('وضعیت را انتخاب کنید')
-                    ->columnSpan(1), 
+                Grid::make(2)
+                    ->schema([
+                        Toggle::make('status')
+                            ->label(__('filament.labels.status'))
+                            ->required()
+                            ->default(false)
+                            ->reactive()
+                            ->afterStateUpdated(fn($state) => $state ? 1 : 0)
+                            ->offIcon('')
+                            ->helperText(__('filament.labels.choose_status'))
+                            ->columnSpan(1),
 
-                TextInput::make('title')
-                    ->label('عنوان')
-                    ->maxLength(250)
-                    ->required()
-                    ->placeholder('عنوان را وارد کنید')
-                    ->columnSpan(2), 
-            ]),
-    ]);
+                        TextInput::make('title')
+                            ->label(__('filament.labels.title'))
+                            ->maxLength(250)
+                            ->required()
+                            ->placeholder(__('filament.labels.title'))
+                            ->columnSpan(2),
+                    ]),
+            ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
-        ->columns([
-            Tables\Columns\TextColumn::make('id')
-            ->label('ردیف')
-            ->sortable(),
-            
-            Tables\Columns\TextColumn::make('title')
-            ->label('عنوان')
-            ->searchable()
-            ->wrap()
-            ->toggleable()
-            ->sortable(),
+            ->columns([
+                Tables\Columns\TextColumn::make('id')
+                    ->label(__('filament.labels.row'))
+                    ->sortable(),
 
-        Tables\Columns\IconColumn::make('status')
-            ->label('وضعیت') 
-            ->icon(fn($state) => $state ? 'heroicon-o-check-circle' : 'heroicon-o-x-circle') 
-            ->color(fn($state) => $state ? 'success' : 'danger')
-            ->sortable()
-            ->wrap()
-            ->toggleable()
-            ->searchable(),
-        
-        Tables\Columns\TextColumn::make('created_at')
-            ->label('تاریخ ایجاد')
-            ->wrap()
-            ->toggleable()
-            ->sortable(),
-        ])
-        ->filters([
-            //
-        ])
-        ->actions([
-            Tables\Actions\ViewAction::make(),
-            Tables\Actions\EditAction::make(),
-            Tables\Actions\DeleteAction::make(),
-        ])
-        
-        ->bulkActions([
+                Tables\Columns\TextColumn::make('title')
+                    ->label(__('filament.labels.title'))
+                    ->searchable()
+                    ->wrap()
+                    ->toggleable()
+                    ->sortable(),
+
+                Tables\Columns\IconColumn::make('status')
+                    ->label(__('filament.labels.status'))
+                    ->icon(fn($state) => $state ? 'heroicon-o-check-circle' : 'heroicon-o-x-circle')
+                    ->color(fn($state) => $state ? 'success' : 'danger')
+                    ->sortable()
+                    ->wrap()
+                    ->toggleable()
+                    ->searchable(),
+
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('filament.labels.created_at'))
+                    ->wrap()
+                    ->toggleable()
+                    ->sortable(),
+            ])
+            ->filters([
+                //
+            ])
+            ->actions([
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+            ])
+            ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
-        ]);
+            ]);
     }
 
     public static function getRelations(): array

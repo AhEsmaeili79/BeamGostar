@@ -105,7 +105,26 @@ return [
         'financial_approval' => 'تایید مالی',
         'waiting_for_technical_approval' => 'منتظر تایید مدیریت فنی',
         'waiting_for_financial_approval' => 'منتظر تایید مدیریت مالی',
-        'unknown' => 'نامشخص'
+        'unknown' => 'نامشخص',
+        'get_answers_management' => 'نحوه جوابدهی',
+        'choose_status' => 'وضعیت را انتخاب کنید',
+        'laboratory' => 'آزمایشگاه',
+        'laboratory_operator' => 'اپراتور آزمایشگاه',
+        'laboratory_operators' => 'اپراتورهای آزمایشگاه',
+        'full_name_fa' => 'نام کامل فارسی',
+        'full_name_en' => 'نام کامل انگلیسی',
+        'national' => 'ملیت',
+        'samples_number' => 'تعداد نمونه',
+        'analyze_id' => 'شناسه آنالیز',
+        'internal_status' => 'وضعیت داخلی',
+        'success_date' => 'تاریخ موفقیت',
+        'description' => 'توضیحات',
+        'acceptance_status' => 'وضعیت پذیرش',
+        'link_analysis_person_management' => 'مدیریت لینک آنالیزگر به آنالیز',
+        'analyzer' => 'آنالیزگر',
+        'registration_date' => 'تاریخ ثبت',
+        'registration_time' => 'زمان ثبت',
+        'customer_name' => 'نام مشتری',
     ],
 
     'placeholders' => [
@@ -117,6 +136,7 @@ return [
         'create' => 'ایجاد مشتری',
         'edit' => 'ویرایش مشتری',
         'delete' => 'حذف مشتری',
+        'view' => 'مشاهده',
     ],
 
     'fields' => [
@@ -139,5 +159,17 @@ return [
         'email' => 'پست الکترونیک',
         'postal_code' => 'کد پستی',
         'address' => 'آدرس',
+    ],
+    'status' => [
+        'waiting_for_payment' => 'منتظر پرداخت',
+        'full_acceptance' => 'پذیرش کامل',
+        'awaiting' => 'در انتظار',
+        'cancelled' => 'کنسل',
+        'financial_approval' => 'تایید مالی',
+        'waiting_for_technical_management_approval' => 'منتظر تایید مدیریت فنی',
+        'technical_management_approved' => 'تایید مدیریت فنی',
+        'analysis_completed' => 'آنالیز تکمیل',
+        'waiting_for_financial_management_approval' => 'منتظر تایید مدیریت مالی',
+        'unknown' => 'نامشخص',
     ],
 ];
