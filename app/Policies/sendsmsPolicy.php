@@ -3,10 +3,10 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\SendSms;
+use App\Models\sendsms;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class SendSmsPolicy
+class sendsmsPolicy
 {
     use HandlesAuthorization;
 
@@ -21,7 +21,7 @@ class SendSmsPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, SendSms $sendSms): bool
+    public function view(User $user, sendsms $sendsms): bool
     {
         return $user->can('view_send::sms');
     }
@@ -37,7 +37,7 @@ class SendSmsPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, SendSms $sendSms): bool
+    public function update(User $user, sendsms $sendsms): bool
     {
         return $user->can('update_send::sms');
     }
@@ -45,7 +45,7 @@ class SendSmsPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, SendSms $sendSms): bool
+    public function delete(User $user, sendsms $sendsms): bool
     {
         return $user->can('delete_send::sms');
     }
@@ -61,7 +61,7 @@ class SendSmsPolicy
     /**
      * Determine whether the user can permanently delete.
      */
-    public function forceDelete(User $user, SendSms $sendSms): bool
+    public function forceDelete(User $user, sendsms $sendsms): bool
     {
         return $user->can('force_delete_send::sms');
     }
@@ -77,7 +77,7 @@ class SendSmsPolicy
     /**
      * Determine whether the user can restore.
      */
-    public function restore(User $user, SendSms $sendSms): bool
+    public function restore(User $user, sendsms $sendsms): bool
     {
         return $user->can('restore_send::sms');
     }
@@ -93,7 +93,7 @@ class SendSmsPolicy
     /**
      * Determine whether the user can replicate.
      */
-    public function replicate(User $user, SendSms $sendSms): bool
+    public function replicate(User $user, sendsms $sendsms): bool
     {
         return $user->can('replicate_send::sms');
     }

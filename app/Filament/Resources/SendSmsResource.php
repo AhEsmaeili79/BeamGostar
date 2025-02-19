@@ -5,7 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\SendSmsResource\Pages;
 use App\Filament\Resources\SendSmsResource\RelationManagers;
 use App\Models\Customers;
-use App\Models\SendSms;
+use App\Models\sendsms;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class SendSmsResource extends Resource
 {
-    protected static ?string $model = SendSms::class;
+    protected static ?string $model = sendsms::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-chat-bubble-left-right';
     protected static ?string $navigationGroup = 'اطلاعات پایه';
