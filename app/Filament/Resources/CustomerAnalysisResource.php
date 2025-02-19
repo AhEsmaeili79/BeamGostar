@@ -47,32 +47,32 @@ class CustomerAnalysisResource extends Resource
             ->schema([
 
                 Forms\Components\Radio::make('grant')
-    ->options([
-        0 => 'ندارد',
-        1 => 'دارد',
-    ])
-    ->label('گرنت')
-    ->inline()
-    ->required()
-    ->reactive()
-    ->default($customerAnalysis->grant ?? 0)
-    ->afterStateUpdated(function ($state, $set, $get) {
-        // Get the total cost value
-        $total = $get('total_cost') ?? 0;
-        
-        // If grant is 0, set applicant_share to total and reset network_share and network_id
-        if ($state == 0) {
-            $set('applicant_share', $total);
-            $set('network_share', null);
-            $set('network_id', null);
-        } else if ($state == 1) {
-            // If grant is 1, calculate applicant_share based on network_share
-            $networkShare = $get('network_share') ?? 0;
-            $applicantShare = $total - $networkShare;
-            $set('applicant_share', $applicantShare);
-            $set('network_share', $networkShare);
-        }
-    }),
+                    ->options([
+                        0 => 'ندارد',
+                        1 => 'دارد',
+                    ])
+                    ->label('گرنت')
+                    ->inline()
+                    ->required()
+                    ->reactive()
+                    ->default($customerAnalysis->grant ?? 0)
+                    ->afterStateUpdated(function ($state, $set, $get) {
+                        // Get the total cost value
+                        $total = $get('total_cost') ?? 0;
+                        
+                        // If grant is 0, set applicant_share to total and reset network_share and network_id
+                        if ($state == 0) {
+                            $set('applicant_share', $total);
+                            $set('network_share', null);
+                            $set('network_id', null);
+                        } else if ($state == 1) {
+                            // If grant is 1, calculate applicant_share based on network_share
+                            $networkShare = $get('network_share') ?? 0;
+                            $applicantShare = $total - $networkShare;
+                            $set('applicant_share', $applicantShare);
+                            $set('network_share', $networkShare);
+                        }
+                    }),
 
 
                 Forms\Components\Radio::make('discount')
@@ -260,8 +260,11 @@ class CustomerAnalysisResource extends Resource
                         ->label('سهم متقاضی')
                         ->required()
                         ->numeric()
-                        ->default(0)
                         ->reactive() // React when applicant_share changes
+                        ->default(function ($get) {
+                            // Set the default value of applicant_share to the current total_cost
+                            return $get('total_cost') ?? 0;
+                        })
                         ->afterStateUpdated(function ($state, $set, $get) {
                             // Get total cost and update network_share based on applicant_share
                             $total = $get('total_cost') ?? 0;
