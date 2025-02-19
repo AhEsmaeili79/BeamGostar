@@ -143,6 +143,17 @@ return [
         'payment_methods' => 'Payment Methods',
         'choose_payment_status' => 'Choose Payment Status',
         'enter_title' => 'Enter Title',
+        'my_analyses_management' => 'My Analyses Management',
+        'awaiting_payment' => 'Awaiting Payment',
+        'awaiting' => 'Awaiting',
+        'awaiting_technical_management_approval' => 'Awaiting Technical Management Approval',
+        'technical_management_approval' => 'Technical Management Approval',
+        'analysis_complete' => 'Analysis Complete',
+        'awaiting_financial_management_approval' => 'Awaiting Financial Management Approval',
+        'customers' => 'Customers' ,
+        'my_analyses' => 'my analyses' ,
+        'invoice_rules' => 'Invoice Rules',
+        'text' => 'Text',
     ],
 
     'placeholders' => [

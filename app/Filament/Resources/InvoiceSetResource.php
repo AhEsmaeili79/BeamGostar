@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\InvoiceRequestResource\Pages;
-use App\Filament\Resources\InvoiceRequestResource\RelationManagers;
-use App\Models\InvoiceRequest;
+use App\Filament\Resources\InvoiceSetResource\Pages;
+use App\Filament\Resources\InvoiceSetResource\RelationManagers;
+use App\Models\InvoiceSet;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,9 +13,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class InvoiceRequestResource extends Resource
+class InvoiceSetResource extends Resource
 {
-    protected static ?string $model = InvoiceRequest::class;
+    protected static ?string $model = InvoiceSet::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -56,9 +56,9 @@ class InvoiceRequestResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListInvoiceRequests::route('/'),
-            'create' => Pages\CreateInvoiceRequest::route('/create'),
-            'edit' => Pages\EditInvoiceRequest::route('/{record}/edit'),
+            'index' => Pages\ListInvoiceSets::route('/'),
+            'create' => Pages\CreateInvoiceSet::route('/create'),
+            'edit' => Pages\EditInvoiceSet::route('/{record}/edit'),
         ];
     }
 }

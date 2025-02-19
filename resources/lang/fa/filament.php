@@ -143,6 +143,17 @@ return [
         'payment_methods' => 'روش‌های پرداخت',
         'choose_payment_status' => 'وضعیت پرداخت را انتخاب کنید',
         'enter_title' => 'عنوان را وارد کنید',
+        'my_analyses_management' => 'مدیریت آنالیز های من',
+        'awaiting_payment' => 'منتظر پرداخت',
+        'awaiting' => 'در انتظار',
+        'awaiting_technical_management_approval' => 'منتظر تایید مدیریت فنی',
+        'technical_management_approval' => 'تایید مدیریت فنی',
+        'analysis_complete' => 'آنالیز تکمیل',
+        'awaiting_financial_management_approval' => 'منتظر تایید مدیریت مالی',
+        'customers' => 'مشتریان' ,
+        'my_analyses' => 'آنالیز های من ' ,
+        'invoice_rules' => 'قوانین فاکتور',
+        'text' => 'متن قانون',
     ],
 
     'placeholders' => [
