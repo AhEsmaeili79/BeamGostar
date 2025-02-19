@@ -12,11 +12,7 @@ class Ad extends Model
     use HasFactory;
 
     // Specify which fields can be mass-assigned
-    protected $fillable = ['title', 'description', 'image', 'url', 'user_id'];
+    protected $fillable = ['title', 'description', 'image', 'url'];
 
     // Optional: Define a relationship to the user model if you want to link ads to users
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
 }

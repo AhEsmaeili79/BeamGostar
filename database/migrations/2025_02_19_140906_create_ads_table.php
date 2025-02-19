@@ -15,7 +15,6 @@ class CreateAdsTable extends Migration
             $table->text('description'); // Ad description
             $table->string('image')->nullable(); // Optional image for the ad
             $table->string('url')->nullable(); // Optional link to an external site
-            $table->integer('user_id'); // Assuming ads are linked to a user (if required)
             $table->timestamps();
         });
     }

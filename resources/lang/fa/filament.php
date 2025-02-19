@@ -159,6 +159,17 @@ return [
         'customers_management' => 'مدیریت مشتریان',
         'singular_customer' => 'مدیریت مشتریان',
         'admissions' => 'پذیرش',
+        'ad_management' => 'مدیریت تبلیغات',
+        'image' => 'تصویر',
+        'url' => 'آدرس اینترنتی',
+        'user' => 'کاربر',
+        'enter_shaba_number' => 'لطفا شماره شبا را وارد کنید',
+        "reject" => 'عودت',
+        'reject_requrst' => 'درخواست عودت',
+        'approved_reject' => 'عودت تایید شده',
+        'deny_reject' => 'عودت رد شده',
+        'approve' => 'تایید',
+        'deny' => 'رد',
     ],
 
     'placeholders' => [

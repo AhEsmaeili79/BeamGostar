@@ -159,6 +159,17 @@ return [
         'customers_management' => 'Customer Management',
         'singular_customer' => 'Customer Management',
         'admissions' => 'Admissions',
+        'ad_management' => 'Ad Management',
+        'image' => 'Image',
+        'url' => 'URL',
+        'user' => 'User',
+        'enter_shaba_number' => 'please enter sheba number!',
+        "reject" => 'Reject',
+        'reject_requrst' => 'Rejection Request',
+        'approved_reject' => 'Approved Rejection',
+        'deny_reject' => 'Denied Rejection',
+        'approve' => 'Approve',
+        'deny' => 'Deny',
     ],
 
     'placeholders' => [
@@ -205,5 +216,6 @@ return [
         'analysis_completed' => 'Analysis Completed',
         'waiting_for_financial_management_approval' => 'Waiting for Financial Management Approval',
         'unknown' => 'Unknown',
+        
     ],
 ];

@@ -3,15 +3,12 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\AdResource\Pages;
-use App\Filament\Resources\AdResource\RelationManagers;
 use App\Models\Ad;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class AdResource extends Resource
 {
@@ -19,25 +16,49 @@ class AdResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    // Use translation function
+    public static function getNavigationLabel(): string
+    {
+        return __('filament.labels.ad_management');
+    }
+
+    public static function getNavigationGroup(): string
+    {
+        return __('filament.labels.base_info');
+    }
+    public static function getPluralLabel(): string
+    {
+        return __('filament.labels.ad_management');
+    }
+
+    public static function getLabel(): string
+    {
+        return __('filament.labels.ad_management');
+    }
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('title')
-                ->required()
-                ->maxLength(255),
+                    ->required()
+                    ->maxLength(255)
+                    ->label(__('filament.labels.title')),
 
-            Forms\Components\Textarea::make('description')
-                ->required(),
+                Forms\Components\Textarea::make('description')
+                    ->required()
+                    ->label(__('filament.labels.description')),
 
-            Forms\Components\FileUpload::make('image')
-                ->image()
-                ->maxSize(2048) // 2 MB
-                ->nullable(),
+                Forms\Components\FileUpload::make('image')
+                    ->image()
+                    ->maxSize(2048) // 2 MB
+                    ->nullable()
+                    ->label(__('filament.labels.image')),
 
-            Forms\Components\TextInput::make('url')
-                ->url()
-                ->nullable(),
+                Forms\Components\TextInput::make('url')
+                    ->url()
+                    ->nullable()
+                    ->label(__('filament.labels.url')),
             ]);
     }
 
@@ -47,25 +68,24 @@ class AdResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('title')
                     ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->label(__('filament.labels.title')),
 
                 Tables\Columns\TextColumn::make('description')
-                    ->limit(50),
+                    ->limit(50)
+                    ->label(__('filament.labels.description')),
 
                 Tables\Columns\ImageColumn::make('image')
-                    ->nullable()
-                    ->size(50),
-
-                Tables\Columns\TextColumn::make('user.name')
-                    ->label('User')
-                    ->sortable(),
+                    ->size(50)
+                    ->label(__('filament.labels.image')),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->sortable()
-                    ->dateTime(),
+                    ->dateTime()
+                    ->label(__('filament.labels.created_at')),
             ])
             ->filters([
-                //
+                // Add any filters if necessary
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
@@ -82,7 +102,7 @@ class AdResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            // Add any relations if necessary
         ];
     }
 
