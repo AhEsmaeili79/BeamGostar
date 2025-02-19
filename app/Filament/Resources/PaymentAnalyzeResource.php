@@ -3,61 +3,71 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PaymentAnalyzeResource\Pages;
-use App\Filament\Resources\PaymentAnalyzeResource\RelationManagers;
 use App\Models\PaymentAnalyze;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class PaymentAnalyzeResource extends Resource
 {
     protected static ?string $model = PaymentAnalyze::class;
-
-    
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
-    protected static ?string $navigationLabel = 'مدیریت پرداخت مشتریان';
-
-    protected static ?string $pluralLabel = 'مدیریت پرداخت مشتریان';
-
-    protected static ?string $modelLabel = 'مدیریت پرداخت مشتریان';
-
     protected static ?string $navigationGroup = 'امور مالی';
+
+    public static function getLabel(): string
+    {
+        return __('filament.labels.payment_management');
+    }
+
+    public static function getPluralLabel(): string
+    {
+        return __('filament.labels.payment_management');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('filament.labels.payment_management');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('filament.labels.payment_management');
+    }
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\Select::make('customer_analysis_id')
-                ->options(function () {
-                    return \App\Models\CustomerAnalysis::query()
-                        ->join('customers', 'customers.id', '=', 'customer_analysis.customers_id')  // اتصال به جدول مشتریان
-                        ->join('analyze', 'analyze.id', '=', 'customer_analysis.analyze_id')  // اتصال به جدول آنالیز
-                        ->selectRaw('CONCAT(customers.name_fa, " ", customers.family_fa) AS full_name, analyze.title AS analyze_title, customer_analysis.id')
-                        ->get()
-                        ->mapWithKeys(function ($item) {
-                            return [$item->id => $item->full_name . ' - ' . $item->analyze_title];
-                        });
-                })
-                ->required()
-                ->label('آنالیز مشتریان'),
-                Forms\Components\TextInput::make('upload_fish')
-                    ->label('آپلود فیش پرداخت')
-                    ->nullable(),
-                Forms\Components\TextInput::make('transaction_id')
-                    ->label('شناسه تراکنش')
-                    ->nullable(),
-                Forms\Components\TextInput::make('uniq_id')
-                    ->label('شناسه')
-                    ->nullable(),
-                Forms\Components\TextInput::make('datepay')
-                    ->label('تاریخ پرداخت')
+                    ->options(function () {
+                        return \App\Models\CustomerAnalysis::query()
+                            ->join('customers', 'customers.id', '=', 'customer_analysis.customers_id')
+                            ->join('analyze', 'analyze.id', '=', 'customer_analysis.analyze_id')
+                            ->selectRaw('CONCAT(customers.name_fa, " ", customers.family_fa) AS full_name, analyze.title AS analyze_title, customer_analysis.id')
+                            ->get()
+                            ->mapWithKeys(fn ($item) => [$item->id => $item->full_name . ' - ' . $item->analyze_title]);
+                    })
                     ->required()
-                    ->placeholder('مثال: 1401/04/13'),
+                    ->label(__('filament.labels.customer_analysis')),
+
+                Forms\Components\TextInput::make('upload_fish')
+                    ->label(__('filament.labels.upload_fish'))
+                    ->nullable(),
+
+                Forms\Components\TextInput::make('transaction_id')
+                    ->label(__('filament.labels.transaction_id'))
+                    ->nullable(),
+
+                Forms\Components\TextInput::make('uniq_id')
+                    ->label(__('filament.labels.unique_id'))
+                    ->nullable(),
+
+                Forms\Components\TextInput::make('datepay')
+                    ->label(__('filament.labels.payment_date'))
+                    ->required()
+                    ->placeholder(__('filament.labels.payment_date_placeholder')),
             ]);
     }
 
@@ -66,26 +76,27 @@ class PaymentAnalyzeResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('id')
-                    ->label('شناسه')
+                    ->label(__('filament.labels.id'))
                     ->sortable(),
-                Tables\Columns\TextColumn::make('customerAnalysis')
-                    ->label('آنالیز مشتریان')
-                    ->getStateUsing(function ($record) {
-                        return $record->customerAnalysis->customer->name_fa . ' ' . $record->customerAnalysis->customer->family_fa . ' - ' . $record->customerAnalysis->analyze->title;
-                    }),
-                Tables\Columns\TextColumn::make('upload_fish')
-                    ->label('فیش پرداخت')
-                    ->limit(20),
-                Tables\Columns\TextColumn::make('transaction_id')
-                    ->label('شناسه تراکنش'),
-                Tables\Columns\TextColumn::make('uniq_id')
-                    ->label('شناسه'),
-                Tables\Columns\TextColumn::make('datepay')
-                    ->label('تاریخ پرداخت'),
-            ])
-            ->filters([
 
+                Tables\Columns\TextColumn::make('customerAnalysis')
+                    ->label(__('filament.labels.customer_analysis'))
+                    ->getStateUsing(fn ($record) => $record->customerAnalysis->customer->name_fa . ' ' . $record->customerAnalysis->customer->family_fa . ' - ' . $record->customerAnalysis->analyze->title),
+
+                Tables\Columns\TextColumn::make('upload_fish')
+                    ->label(__('filament.labels.upload_fish'))
+                    ->limit(20),
+
+                Tables\Columns\TextColumn::make('transaction_id')
+                    ->label(__('filament.labels.transaction_id')),
+
+                Tables\Columns\TextColumn::make('uniq_id')
+                    ->label(__('filament.labels.unique_id')),
+
+                Tables\Columns\TextColumn::make('datepay')
+                    ->label(__('filament.labels.payment_date')),
             ])
+            ->filters([])
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\DeleteAction::make(),
@@ -97,9 +108,7 @@ class PaymentAnalyzeResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array

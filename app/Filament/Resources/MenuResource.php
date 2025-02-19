@@ -14,42 +14,68 @@ use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-
 class MenuResource extends Resource
 {
     protected static ?string $model = Menu::class;
-
-    protected static ?string $pluralLabel = 'زیرمنو ها';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationGroup = 'مدیریت کاربران';
-    protected static ?string $navigationLabel = 'زیرمنو ها';
+    protected static ?int $navigationSort = 5;
+
+    // Remove dynamic translations from properties
+    protected static ?string $navigationLabel = null;
+    protected static ?string $pluralLabel = null;
+
+    public static function getLabel(): string
+    {
+        return __('filament.labels.submenu');
+    }
+
+    public static function getPluralLabel(): string
+    {
+        return __('filament.labels.submenus');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('filament.labels.submenus');
+    }
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Toggle::make('state')
-                    ->label('وضعیت')
+                    ->label(__('filament.labels.status'))
                     ->default(1)
                     ->columnSpan(2),
+
                 TextInput::make('title')
-                ->required()
-                ->maxLength(50)
-                ->reactive(),
+                    ->label(__('filament.labels.title'))
+                    ->required()
+                    ->maxLength(50)
+                    ->reactive(),
+
                 TextInput::make('title_en')
+                    ->label(__('filament.labels.title_en'))
                     ->maxLength(50),
+
                 TextInput::make('icon_class')
+                    ->label(__('filament.labels.icon_class'))
                     ->maxLength(30),
+
                 TextInput::make('route')
+                    ->label(__('filament.labels.route'))
                     ->maxLength(100)
                     ->required(),
+
                 TextInput::make('ordering')
+                    ->label(__('filament.labels.ordering'))
                     ->required()
-                    ->numeric()
-                    ->required(),
+                    ->numeric(),
+
                 Select::make('subsystem_id')
-                    ->label('Parent Menu')
-                    ->relationship('subsystem', 'title') // 'subsystem' is the relationship method defined in the Menu model
+                    ->label(__('filament.labels.parent_menu'))
+                    ->relationship('subsystem', 'title')
                     ->nullable(),
             ]);
     }
@@ -58,20 +84,39 @@ class MenuResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id')->sortable()->searchable(),
-                TextColumn::make('title')->sortable()->searchable(),
-                TextColumn::make('title_en')->sortable(),
+                TextColumn::make('id')
+                    ->label(__('filament.labels.id'))
+                    ->sortable()
+                    ->searchable(),
+
+                TextColumn::make('title')
+                    ->label(__('filament.labels.title'))
+                    ->sortable()
+                    ->searchable(),
+
+                TextColumn::make('title_en')
+                    ->label(__('filament.labels.title_en'))
+                    ->sortable(),
+
                 Tables\Columns\IconColumn::make('state')
-                ->label('وضعیت') // Optional: You can remove this if you don't want any column label.
-                ->icon(fn($state) => $state ? 'heroicon-o-check-circle' : 'heroicon-o-x-circle') // Use any icon as per your preference
-                ->color(fn($state) => $state ? 'success' : 'danger')
-                ->sortable()
-                ->wrap()
-                ->toggleable()
-                ->searchable(),
-                TextColumn::make('ordering')->sortable(),
-                TextColumn::make('subsystem.title')->label('Parent Menu'),
-                TextColumn::make('updated_at')->label('Last Updated')->dateTime(),
+                    ->label(__('filament.labels.status'))
+                    ->icon(fn($state) => $state ? 'heroicon-o-check-circle' : 'heroicon-o-x-circle')
+                    ->color(fn($state) => $state ? 'success' : 'danger')
+                    ->sortable()
+                    ->wrap()
+                    ->toggleable()
+                    ->searchable(),
+
+                TextColumn::make('ordering')
+                    ->label(__('filament.labels.ordering'))
+                    ->sortable(),
+
+                TextColumn::make('subsystem.title')
+                    ->label(__('filament.labels.parent_menu')),
+
+                TextColumn::make('updated_at')
+                    ->label(__('filament.labels.updated_at'))
+                    ->dateTime(),
             ])
             ->filters([
                 //
@@ -88,9 +133,7 @@ class MenuResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            
-        ];
+        return [];
     }
 
     public static function getPages(): array
