@@ -167,6 +167,11 @@ class FullCustomerAnalysisResource extends Resource
                 Tables\Columns\TextColumn::make('tracking_code')
                     ->label(__('filament.labels.tracking_code')),
 
+                // Tables\Columns\TextColumn::make('financialCheck.scan_form')
+                //     ->label('دانلود فیش')
+                //     ->formatStateUsing(fn ($state) => $state ? '<a href="' . asset("storage/$state") . '" target="_blank">دانلود</a>' : 'ندارد')
+                //     ->html(),
+
                 Tables\Columns\TextColumn::make('acceptance_date')
                     ->label(__('filament.labels.acceptance_date'))
                     ->dateTime()
@@ -175,6 +180,43 @@ class FullCustomerAnalysisResource extends Resource
             ->filters([])
             ->actions([
                 Tables\Actions\ViewAction::make(),
+                
+                Tables\Actions\Action::make('view_receipt')
+                    ->label('مشاهده فیش پرداختی')
+                    ->icon('heroicon-o-receipt-refund')
+                    ->modalHeading('فیش پرداختی')
+                    ->modalButton('بستن')
+                    ->modalWidth('md')
+                    ->form(fn ($record) => [
+                        Forms\Components\TextInput::make('state')
+                            ->label('وضعیت')
+                            ->default(optional($record->financialCheck)->state)
+                            ->disabled(),
+                        
+                        Forms\Components\TextInput::make('date_success')
+                            ->label('تاریخ تایید')
+                            ->default(optional($record->financialCheck)->date_success)
+                            ->disabled(),
+
+                        Forms\Components\FileUpload::make('scan_form')
+                            ->label('اسکن فرم')
+                            ->directory('uploads/financial_checks')
+                            ->default(optional($record->financialCheck)->scan_form)
+                            ->disabled(),
+                    ]),
+
+                Tables\Actions\Action::make('approve')
+                    ->label('تایید')
+                    ->icon('heroicon-o-check')
+                    ->requiresConfirmation()
+                    ->action(function ($record) {
+                        $record->update(['status' => 8]); // تغییر وضعیت به منتظر تأیید مالی
+                        \Filament\Notifications\Notification::make()
+                            ->title('تأیید شد')
+                            ->body('با موفقیت به وضعیت "منتظر تأیید مالی" تغییر یافت.')
+                            ->success()
+                            ->send();
+        }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
