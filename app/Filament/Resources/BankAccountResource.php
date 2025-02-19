@@ -10,17 +10,37 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+
 class BankAccountResource extends Resource
 {
     protected static ?string $model = bank_account::class;
 
-    protected static ?string $pluralLabel = 'اطلاعات حساب بانکی';
-    protected static ?string $navigationGroup = 'اطلاعات پایه';
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $navigationLabel = 'اطلاعات حساب بانکی';
-    protected static ?string $label = 'اطلاعات حساب بانکی';
-    protected static ?string $singularLabel = 'اطلاعات حساب بانکی';
+    public static function getNavigationGroup(): string
+    {
+        return __('filament.labels.base_info');
+    }
 
+    public static function getPluralLabel(): string
+    {
+        return __('filament.labels.bank_accounts');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('filament.labels.bank_accounts');
+    }
+
+    public static function getLabel(): string
+    {
+        return __('filament.labels.bank_account');
+    }
+
+    public static function getSingularLabel(): string
+    {
+        return __('filament.labels.bank_account');
+    }
+
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
@@ -28,69 +48,68 @@ class BankAccountResource extends Resource
         return $form
             ->schema([
                 Grid::make(2)
-                ->schema([
-                Forms\Components\Radio::make('account_type')
-                    ->options([
-                        1 => 'رسمی',
-                        0 => 'غیررسمی',
+                    ->schema([
+                        Forms\Components\Radio::make('account_type')
+                            ->options([
+                                1 => __('filament.labels.account_type') . ' ' . __('filament.labels.official'),
+                                0 => __('filament.labels.account_type') . ' ' . __('filament.labels.unofficial'),
+                            ])
+                            ->label(__('filament.labels.account_type'))
+                            ->inline()
+                            ->required()
+                            ->columnSpan(2)
+                            ->reactive()
+                            ->default(1),
+
+                        Forms\Components\TextInput::make('account_number')
+                            ->label(__('filament.labels.account_number'))
+                            ->required()
+                            ->mask('9999999999999999')
+                            ->minLength(12)
+                            ->maxLength(16)
+                            ->rules([
+                                'required',
+                                'min:12',
+                                'max:16',
+                            ])
+                            ->columnSpan([
+                                'default' => 2,
+                                'sm' => 1,
+                            ]),
+
+                        Forms\Components\TextInput::make('card_number')
+                            ->label(__('filament.labels.card_number'))
+                            ->mask('9999 9999 9999 9999')
+                            ->placeholder('xxxx xxxx xxxx xxxx')
+                            ->dehydrateStateUsing(fn($state) => str_replace(' ', '', $state))
+                            ->columnSpan([
+                                'default' => 2,
+                                'sm' => 1,
+                            ]),
+
+                        Forms\Components\TextInput::make('shaba_number')
+                            ->label(__('filament.labels.shaba_number'))
+                            ->suffix('IR')
+                            ->dehydrateStateUsing(fn($state) => str_replace(' ', '', $state))
+                            ->mask('99 9999 9999 9999 9999 9999 99')
+                            ->placeholder(__('filament.labels.shaba_number'))
+                            ->helperText(__('filament.labels.enter_shaba_number'))
+                            ->extraInputAttributes(['dir' => 'ltr'])
+                            ->columnSpan([
+                                'default' => 2,
+                                'sm' => 1,
+                            ]),
+
+                        Forms\Components\TextInput::make('account_holder_name')
+                            ->label(__('filament.labels.account_holder_name'))
+                            ->required()
+                            ->maxLength(150)
+                            ->columnSpan([
+                                'default' => 2,
+                                'sm' => 1,
+                            ]),
                     ])
-                    ->label('نوع حساب')
-                    ->inline()
-                    ->required()
-                    ->columnSpan(2)
-                    ->reactive()
-                    ->default(1),
-
-                    Forms\Components\TextInput::make('account_number')
-                    ->label('شماره حساب')
-                    ->required()
-                    ->mask('9999999999999999')
-                    ->minLength(12)
-                    ->maxLength(16)
-                    ->rules([
-                        'required',
-                        'min:12',
-                        'max:16',
-                    ])
-                    ->columnSpan([
-                        'default' => 2,  
-                        'sm' => 1,       
-                    ]),
-                
-                
-                    Forms\Components\TextInput::make('card_number')
-                        ->label('شماره کارت')
-                        ->mask('9999 9999 9999 9999')
-                        ->placeholder('xxxx xxxx xxxx xxxx') 
-                        ->dehydrateStateUsing(fn ($state) => str_replace(' ', '', $state))  
-                        ->columnSpan([
-                            'default' => 2, 
-                            'sm' => 1,       
-                        ]),
-
-                    Forms\Components\TextInput::make('shaba_number') 
-                        ->label('شماره شبا') 
-                        ->suffix('IR')
-                        ->dehydrateStateUsing(fn ($state) => str_replace(' ', '', $state))  
-                        ->mask('99 9999 9999 9999 9999 9999 99') 
-                        ->placeholder('xx xxxx xxxx xxxx xxxx xxxx xxxx xx') 
-                        ->helperText('شماره شبا را بدون IR وارد کنید') 
-                        ->extraInputAttributes(['dir' => 'ltr']) 
-                        ->columnSpan([
-                            'default' => 2,  
-                            'sm' => 1,       
-                        ]),
-
-                Forms\Components\TextInput::make('account_holder_name')
-                    ->label('نام دارنده حساب')
-                    ->required()
-                    ->maxLength(150)
-                    ->columnSpan([
-                        'default' => 2, 
-                        'sm' => 1,       
-                    ]),
-            ])
-        ]);
+            ]);
     }
 
     public static function table(Table $table): Table
@@ -98,51 +117,53 @@ class BankAccountResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('id')
-                    ->label('ردیف')
+                    ->label(__('filament.labels.row'))
                     ->sortable()
                     ->searchable(),
+
                 Tables\Columns\BadgeColumn::make('account_type')
-                ->label('نوع حساب')
+                    ->label(__('filament.labels.account_type'))
                     ->formatStateUsing(function ($state) {
-                        return $state == 0 ? 'غیررسمی' : 'رسمی';
+                        return $state == 0 ? __('filament.labels.unofficial') : __('filament.labels.official');
                     })
-                    ->color(fn($state) => $state == 1 ? 'success': 'danger' ) 
-                    ->icon(fn($state) => $state == 1 ? 'heroicon-o-user' : 'heroicon-o-building-office') 
+                    ->color(fn($state) => $state == 1 ? 'success' : 'danger')
+                    ->icon(fn($state) => $state == 1 ? 'heroicon-o-user' : 'heroicon-o-building-office')
                     ->wrap()
-                    ->badge() 
+                    ->badge()
                     ->searchable(),
-                    
+
                 Tables\Columns\TextColumn::make('account_number')
-                    ->label('شماره حساب')
+                    ->label(__('filament.labels.account_number'))
                     ->sortable()
                     ->searchable(),
-                    Tables\Columns\TextColumn::make('card_number')
-                    ->label('شماره کارت')
+
+                Tables\Columns\TextColumn::make('card_number')
+                    ->label(__('filament.labels.card_number'))
                     ->sortable()
                     ->searchable()
-                    ->formatStateUsing(fn ($state) => implode(' ', str_split($state, 4))) , 
+                    ->formatStateUsing(fn ($state) => implode(' ', str_split($state, 4))),
 
                 Tables\Columns\TextColumn::make('shaba_number')
-                    ->label('شماره شبا')
+                    ->label(__('filament.labels.shaba_number'))
                     ->sortable()
                     ->searchable()
-                    ->formatStateUsing(fn ($state) => 
-                        substr($state, 0, 2) . ' ' . 
-                        substr($state, 2, 4) . ' ' . 
-                        substr($state, 6, 4) . ' ' . 
-                        substr($state, 10, 4) . ' ' . 
-                        substr($state, 14, 4) . ' ' . 
-                        substr($state, 18, 4) . ' ' . 
-                        substr($state, 22, 2)  
-                                ),
-                
+                    ->formatStateUsing(fn ($state) =>
+                        substr($state, 0, 2) . ' ' .
+                        substr($state, 2, 4) . ' ' .
+                        substr($state, 6, 4) . ' ' .
+                        substr($state, 10, 4) . ' ' .
+                        substr($state, 14, 4) . ' ' .
+                        substr($state, 18, 4) . ' ' .
+                        substr($state, 22, 2)
+                    ),
+
                 Tables\Columns\TextColumn::make('account_holder_name')
-                    ->label('نام دارنده حساب')
+                    ->label(__('filament.labels.account_holder_name'))
                     ->sortable()
                     ->searchable(),
             ])
             ->filters([
-                //
+                // Add filters if necessary
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

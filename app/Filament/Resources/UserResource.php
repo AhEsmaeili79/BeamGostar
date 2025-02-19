@@ -16,11 +16,28 @@ use Rawilk\FilamentPasswordInput\Password;
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
-    protected static ?string $label = 'کاربران';
-    protected static ?string $navigationGroup = 'مدیریت کاربران';
     
-    protected static ?string $pluralLabel = 'کاربران';
-    protected static ?string $navigationLabel = 'کاربران';
+    // Make methods public to override parent methods
+    public static function getNavigationGroup(): string
+    {
+        return __('filament.labels.user_management');
+    }
+
+    public static function getPluralLabel(): string
+    {
+        return __('filament.labels.users');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('filament.labels.users');
+    }
+
+    public static function getLabel(): string
+    {
+        return __('filament.labels.users');
+    }
+
     protected static ?string $navigationIcon = 'heroicon-o-user';
 
     public static function form(Form $form): Form
@@ -28,12 +45,11 @@ class UserResource extends Resource
         return $form
             ->schema([
                 TextInput::make('name')
-                    ->label('name')
+                    ->label(__('filament.labels.username'))
                     ->required()
                     ->maxLength(50)
                     ->reactive()
                     ->hiddenOn(['edit']),
-
 
                 Select::make('roles')
                     ->relationship('roles', 'name')
@@ -42,7 +58,7 @@ class UserResource extends Resource
                     ->searchable(),
 
                 Password::make('password')
-                    ->label('password')
+                    ->label(__('filament.labels.password'))
                     ->required()
                     ->password()
                     ->hiddenOn(['edit'])
@@ -50,7 +66,7 @@ class UserResource extends Resource
                     ->reactive(),
 
                 Password::make('re_password')
-                    ->label('password')
+                    ->label(__('filament.labels.password'))
                     ->required()
                     ->password()
                     ->hiddenOn(['edit'])
@@ -65,12 +81,12 @@ class UserResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')
-                    ->label('ردیف')
+                    ->label(__('filament.labels.row'))
                     ->sortable()
                     ->wrap(),
 
                 TextColumn::make('customer_full_name')
-                    ->label('نام کامل')
+                    ->label(__('filament.labels.full_name'))
                     ->getStateUsing(function ($record) {
                         // Try to get the full name from customer or personnel
                         $fullName = trim(($record->customer ? ($record->customer->name_fa . ' ' . $record->customer->family_fa) : '') 
@@ -82,15 +98,14 @@ class UserResource extends Resource
                     ->wrap(),
 
                 TextColumn::make('name')
-                    ->label('نام کاربری'),
+                    ->label(__('filament.labels.username')),
 
                 TextColumn::make('roles.name')
-                    ->label('گروه کاری')
+                    ->label(__('filament.labels.working_group'))
                     ->wrap(),
-
             ])
-            ->filters([
-                //
+            ->filters([ 
+                // Add filters if necessary
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

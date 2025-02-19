@@ -19,11 +19,28 @@ class AnalysisTimeResource extends Resource
 {
     protected static ?string $model = AnalysisTime::class;
 
-    protected static ?string $navigationGroup = 'اطلاعات پایه';
-    protected static ?string $pluralLabel = 'مدیریت زمان آنالیزها';
-    protected static ?string $navigationLabel = 'مدیریت زمان آنالیزها';
+    // Make methods public to override parent methods
+    public static function getNavigationGroup(): string
+    {
+        return __('filament.labels.base_info');
+    }
+
+    public static function getPluralLabel(): string
+    {
+        return __('filament.labels.analysis_time_management');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('filament.labels.analysis_time_management');
+    }
+
+    public static function getLabel(): string
+    {
+        return __('filament.labels.analysis_time_management');
+    }
+
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $label = 'مدیریت زمان آنالیزها';
     
     protected static ?int $navigationSort = 4;
     
@@ -33,12 +50,13 @@ class AnalysisTimeResource extends Resource
             ->schema([
                 Grid::make(2) 
                 ->schema([
+
                 Radio::make('accordingto')
                     ->options([
-                        0 => 'دقیقه',
-                        1 => 'روز',
+                        0 => __('filament.labels.minute'),
+                        1 => __('filament.labels.day'),
                     ])
-                    ->label('برحسب')
+                    ->label(__('filament.labels.based_on'))
                     ->inline()
                     ->required()
                     ->default(0)
@@ -46,53 +64,51 @@ class AnalysisTimeResource extends Resource
                     ->columnSpan(2),
 
                 Select::make('analyze_id')
-                    ->label('آنالیز')
+                    ->label(__('filament.labels.analysis'))
                     ->options(
                         Analyze::whereNotNull('title')  
-                            ->whereNotNull('title')  
                             ->pluck('title', 'id') 
                     )
                     ->required()
                     ->searchable()
-                    ->columnSpan([
+                    ->columnSpan([ 
                         'default' => 2,  
                         'sm' => 1,      
                     ]),
 
-
                 TextInput::make('number_done')
-                    ->label('تعداد قابل انجام')
+                    ->label(__('filament.labels.number_possible'))
                     ->maxLength(5)
-                    ->suffix(' عدد')
+                    ->suffix(__('filament.labels.units'))
                     ->required()
                     ->numeric()
-                    ->columnSpan([
+                    ->columnSpan([ 
                         'default' => 2,  
                         'sm' => 1,       
                     ]),
 
                 TextInput::make('number_minutes')
-                    ->label('دقیقه قابل انجام')
+                    ->label(__('filament.labels.number_minutes_possible'))
                     ->maxLength(5)
-                    ->suffix(label: 'دقیقه')
+                    ->suffix(__('filament.labels.minutes'))
                     ->nullable()
                     ->numeric()
-                    ->columnSpan([
+                    ->columnSpan([ 
                         'default' => 2,  
                         'sm' => 1,       
                     ])
                     ->visible(fn ($get) => $get('accordingto') == 0),
 
-                
                 TextInput::make('default_number_day')
-                    ->label('تعداد روز پیش فرض')
-                    ->suffix('روز')
+                    ->label(__('filament.labels.default_number_day'))
+                    ->suffix(__('filament.labels.days'))
                     ->required()
                     ->numeric()
-                    ->columnSpan([
+                    ->columnSpan([ 
                         'default' => 2,  
                         'sm' => 1,      
                     ]),
+
                 ]),
             ]);
     }
@@ -101,12 +117,13 @@ class AnalysisTimeResource extends Resource
     {
         return $table
             ->columns([
+
                 TextColumn::make('id')
-                ->label('ردیف')
+                ->label(__('filament.labels.row'))
                 ->sortable(),
 
                 TextColumn::make('analyze_id')
-                ->label('عنوان آنالیز')
+                ->label(__('filament.labels.analysis_title'))
                 ->searchable()
                 ->sortable()
                 ->wrap()
@@ -115,30 +132,30 @@ class AnalysisTimeResource extends Resource
                 }),
 
                 TextColumn::make('accordingto')
-                ->label('برحسب')
-                ->formatStateUsing(fn($state) => $state ? 'روز' : 'دقیقه')
+                ->label(__('filament.labels.based_on'))
+                ->formatStateUsing(fn($state) => $state ? __('filament.labels.day') : __('filament.labels.minute'))
                 ->wrap()
                 ->sortable(),
-            
+
                 TextColumn::make('number_done')
-                ->label('تعداد قابل انجام')
-                ->suffix(suffix: ' عدد')
+                ->label(__('filament.labels.number_possible'))
+                ->suffix(__('filament.labels.units'))
                 ->toggleable()
                 ->wrap()
                 ->sortable(),
 
                 TextColumn::make('number_minutes')
-                ->label('دقیقه قابل انجام')
+                ->label(__('filament.labels.number_minutes_possible'))
                 ->wrap()
                 ->toggleable()
                 ->sortable(),
 
                 TextColumn::make('created_at')
-                ->label('تاریخ ثبت')
+                ->label(__('filament.labels.creation_date'))
                 ->wrap()
                 ->sortable(),
             ])
-            ->filters([
+            ->filters([ // filters
                 //
             ])
             ->actions([
@@ -168,5 +185,4 @@ class AnalysisTimeResource extends Resource
             'edit' => Pages\EditAnalysisTime::route('/{record}/edit'),
         ];
     }
-    
 }

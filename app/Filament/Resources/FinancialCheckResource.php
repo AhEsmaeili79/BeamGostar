@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\FinancialCheckResource\Pages;
-use App\Filament\Resources\FinancialCheckResource\RelationManagers;
 use App\Models\FinancialCheck;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -11,8 +10,6 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class FinancialCheckResource extends Resource
 {
@@ -20,48 +17,55 @@ class FinancialCheckResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $navigationLabel = 'مدیریت مالی آنالیز مشتریان';
+    // Use translation function
+    public static function getNavigationLabel(): string
+    {
+        return __('filament.labels.financial_check_management');
+    }
 
-    protected static ?string $pluralLabel = 'مدیریت مالی آنالیز مشتریان';
+    public static function getPluralLabel(): string
+    {
+        return __('filament.labels.financial_check_management');
+    }
 
-    protected static ?string $modelLabel = 'مدیریت مالی آنالیز مشتریان';
+    public static function getLabel(): string
+    {
+        return __('filament.labels.financial_check_management');
+    }
 
     protected static ?string $navigationGroup = 'امور مالی';
-
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\Select::make('customer_analysis_id')
-                ->options(function () {
-                    return \App\Models\CustomerAnalysis::query()
-                        ->join('customers', 'customers.id', '=', 'customer_analysis.customers_id')  // Join customers
-                        ->join('analyze', 'analyze.id', '=', 'customer_analysis.analyze_id')  // Join analyze
-                        ->selectRaw('CONCAT(customers.name_fa, " ", customers.family_fa) AS full_name, analyze.title AS analyze_title, customer_analysis.id')
-                        ->get()
-                        ->mapWithKeys(function ($item) {
-                            // Combine the customer full name and analyze title
-                            return [$item->id => $item->full_name . ' - ' . $item->analyze_title];
-                        });
-                })
-                ->required()
-                ->label('آنالیز مشتریان'),
+                    ->options(function () {
+                        return \App\Models\CustomerAnalysis::query()
+                            ->join('customers', 'customers.id', '=', 'customer_analysis.customers_id')
+                            ->join('analyze', 'analyze.id', '=', 'customer_analysis.analyze_id')
+                            ->selectRaw('CONCAT(customers.name_fa, " ", customers.family_fa) AS full_name, analyze.title AS analyze_title, customer_analysis.id')
+                            ->get()
+                            ->mapWithKeys(function ($item) {
+                                return [$item->id => $item->full_name . ' - ' . $item->analyze_title];
+                            });
+                    })
+                    ->required()
+                    ->label(__('filament.labels.customer_analysis')),
 
                 Forms\Components\Textarea::make('scan_form')
-                    ->label('اسکن فرم')
+                    ->label(__('filament.labels.scan_form'))
                     ->nullable(),
 
                 Forms\Components\TextInput::make('state')
                     ->numeric()
                     ->required()
-                    ->label('وضعیت'),
+                    ->label(__('filament.labels.state')),
 
                 Forms\Components\TextInput::make('date_success')
-                    ->label('تاریخ تایید')
+                    ->label(__('filament.labels.date_success'))
                     ->jalali()
                     ->nullable(),
-
             ]);
     }
 
@@ -73,37 +77,36 @@ class FinancialCheckResource extends Resource
                     ->label('ردیف'),
 
                 Tables\Columns\TextColumn::make('customerAnalysis')
-                    ->label('آنالیز مشتریان')
+                    ->label(__('filament.labels.customer_analysis'))
                     ->getStateUsing(function ($record) {
                         return $record->customerAnalysis->customer->name_fa . ' ' . $record->customerAnalysis->customer->family_fa . ' - ' . $record->customerAnalysis->analyze->title;
                     }),
                                     
                 Tables\Columns\TextColumn::make('scan_form')
-                    ->label('اسکن فرم')
+                    ->label(__('filament.labels.scan_form'))
                     ->limit(50), // Limits the text shown in the column
 
                 Tables\Columns\TextColumn::make('state')
-                    ->label('وضعیت'),
+                    ->label(__('filament.labels.state')),
 
                 Tables\Columns\TextColumn::make('date_success')
-                    ->label('تاریخ تایید'),
+                    ->label(__('filament.labels.date_success')),
             ])
             ->filters([
                 SelectFilter::make('customer_analysis_id')
                     ->options(function () {
                         return \App\Models\CustomerAnalysis::query()
-                            ->join('customers', 'customers.id', '=', 'customer_analysis.customers_id')  // Join customers
-                            ->join('analyze', 'analyze.id', '=', 'customer_analysis.analyze_id')  // Join analyze
+                            ->join('customers', 'customers.id', '=', 'customer_analysis.customers_id')
+                            ->join('analyze', 'analyze.id', '=', 'customer_analysis.analyze_id')
                             ->selectRaw('CONCAT(customers.name_fa, " ", customers.family_fa) AS full_name, analyze.title AS analyze_title, customer_analysis.id')
                             ->get()
                             ->mapWithKeys(function ($item) {
-                                // Combine the customer full name and analyze title
                                 return [$item->id => $item->full_name . ' - ' . $item->analyze_title];
                             });
                     })
-                    ->label('آنالیز مشتریان'),
+                    ->label(__('filament.labels.customer_analysis')),
             ])
-            ->defaultSort('id', 'desc') // Remove the extra semicolon here
+            ->defaultSort('id', 'desc')
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),

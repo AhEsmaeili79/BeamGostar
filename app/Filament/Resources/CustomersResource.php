@@ -18,7 +18,7 @@ use Ysfkaya\FilamentPhoneInput\Forms\PhoneInput;
 use Ysfkaya\FilamentPhoneInput\Tables\PhoneColumn;
 use Ysfkaya\FilamentPhoneInput\PhoneInputNumberType;
 use App\Rules\ValidNationalCode;
-use Illuminate\Validation\Rule; 
+use Illuminate\Validation\Rule;
 
 class CustomersResource extends Resource
 {
@@ -35,20 +35,20 @@ class CustomersResource extends Resource
 
     protected static ?string $singularLabel = 'مدیریت مشتریان';
 
-    protected static ?int $navigationSort = 1; 
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('نوع مشتریان')
+                Forms\Components\Section::make(__('filament.labels.customer_type'))
                 ->schema([
                     Radio::make('customer_type')
                         ->options([
-                            0 => 'حقیقی',
-                            1 => 'حقوقی',
+                            0 => __('filament.labels.customer_type_options.0'),
+                            1 => __('filament.labels.customer_type_options.1'),
                         ])
-                        ->label('نوع مشتری')
+                        ->label(__('filament.labels.customer_type'))
                         ->inline()
                         ->required()
                         ->reactive()
@@ -59,10 +59,10 @@ class CustomersResource extends Resource
             
                     Radio::make('nationality')
                         ->options([
-                            0 => 'ایرانی',
-                            1 => 'خارجی',
+                            0 => __('filament.labels.nationality_options.0'),
+                            1 => __('filament.labels.nationality_options.1'),
                         ])
-                        ->label('تابعیت')
+                        ->label(__('filament.labels.nationality'))
                         ->inline()
                         ->required()
                         ->reactive()
@@ -73,10 +73,10 @@ class CustomersResource extends Resource
             
                     Radio::make('clearing_type')
                         ->options([
-                            0 => 'نقدی',
-                            1 => 'اعتباری',
+                            0 => __('filament.labels.clearing_type_options.0'),
+                            1 => __('filament.labels.clearing_type_options.1'),
                         ])
-                        ->label('نوع تسویه')
+                        ->label(__('filament.labels.clearing_type'))
                         ->inline()
                         ->required()
                         ->default(0)
@@ -90,35 +90,35 @@ class CustomersResource extends Resource
                 ]),
 
                 TextInput::make('company_fa')
-                    ->label('نام شرکت (فارسی)')
+                    ->label(__('filament.labels.company_fa'))
                     ->prefixIcon('heroicon-m-globe-alt')
                     ->nullable()
-                    ->visible(fn ($state, $get) => $get('customer_type') == 1),  
+                    ->visible(fn ($state, $get) => $get('customer_type') == 1),
 
                 TextInput::make('company_en')
-                    ->label('نام شرکت (انگلیسی)')
+                    ->label(__('filament.labels.company_en'))
                     ->prefixIcon('heroicon-m-globe-alt')
                     ->nullable()
-                    ->visible(fn ($state, $get) => $get('customer_type') == 1), 
+                    ->visible(fn ($state, $get) => $get('customer_type') == 1),
 
                 TextInput::make('name_fa')
-                    ->label(fn ($get) => $get('customer_type') == 1 && $get('nationality') == 0 ? 'نام رابط' : 'نام (فارسی)')
+                    ->label(fn ($get) => $get('customer_type') == 1 && $get('nationality') == 0 ? __('filament.labels.name_fa') : __('filament.labels.name_fa'))
                     ->required(),
                 
                 TextInput::make('family_fa')
-                    ->label(fn ($get) => $get('customer_type') == 1 && $get('nationality') == 0 ? 'نام خانوادگی رابط' : 'نام خانوادگی (فارسی)')
+                    ->label(fn ($get) => $get('customer_type') == 1 && $get('nationality') == 0 ? __('filament.labels.family_fa') : __('filament.labels.family_fa'))
                     ->required(),
                 
                 TextInput::make('name_en')
-                    ->label(fn ($get) => $get('customer_type') == 1 && $get('nationality') == 0 ? 'نام رابط (انگلیسی)' : 'نام (انگلیسی)')
+                    ->label(fn ($get) => $get('customer_type') == 1 && $get('nationality') == 0 ? __('filament.labels.name_en') : __('filament.labels.name_en'))
                     ->nullable(),
                 
                 TextInput::make('family_en')
-                    ->label(fn ($get) => $get('customer_type') == 1 && $get('nationality') == 0 ? 'نام خانوادگی رابط (انگلیسی)' : 'نام خانوادگی (انگلیسی)')
+                    ->label(fn ($get) => $get('customer_type') == 1 && $get('nationality') == 0 ? __('filament.labels.family_en') : __('filament.labels.family_en'))
                     ->nullable(),
 
                 TextInput::make('national_code')
-                    ->label('کد ملی')
+                    ->label(__('filament.labels.national_code'))
                     ->numeric()
                     ->nullable()
                     ->reactive()
@@ -130,21 +130,21 @@ class CustomersResource extends Resource
                             'required', 
                             'numeric',   
                             'digits:10', 
-                            Rule::unique('users', 'name')->ignore($get('name')),  // Ensure the national code is unique (check against name column)
+                            Rule::unique('users', 'name')->ignore($get('name')),
                             new ValidNationalCode(), 
                         ];
                     }),
 
                 TextInput::make('national_id')
-                    ->label('شناسه ملی')
+                    ->label(__('filament.labels.national_id'))
                     ->numeric()
                     ->required()
                     ->unique('users', 'name')
                     ->reactive()
-                    ->visible(fn ($state, $get) => $get('customer_type') == 1),  
+                    ->visible(fn ($state, $get) => $get('customer_type') == 1),
 
-                    TextInput::make('passport')
-                    ->label('شماره گذرنامه')
+                TextInput::make('passport')
+                    ->label(__('filament.labels.passport'))
                     ->numeric()
                     ->required()
                     ->unique('users', 'name')
@@ -153,21 +153,20 @@ class CustomersResource extends Resource
                     ->reactive(),
             
                 TextInput::make('economy_code')
-                    ->label('کد اقتصادی')
+                    ->label(__('filament.labels.economy_code'))
                     ->numeric()
                     ->required()
-                    ->visible(fn ($state, $get) => $get('customer_type') == 1 && $get('nationality') == 0),  // Show for حقوقی & ایرانی
+                    ->visible(fn ($state, $get) => $get('customer_type') == 1 && $get('nationality') == 0), 
 
-                    
                 DatePicker::make('birth_date')
-                    ->label('تاریخ تولد')
+                    ->label(__('filament.labels.birth_date'))
                     ->jalali()
                     ->nullable()
-                    ->visible(fn ($state, $get) => $get('customer_type') == 0 && $get('nationality') == 0),  // Show for حقیقی & ایرانی
+                    ->visible(fn ($state, $get) => $get('customer_type') == 0 && $get('nationality') == 0),  
                 
                 PhoneInput::make('mobile')
-                    ->label('شماره همراه')
-                    ->placeholder('9121234567')
+                    ->label(__('filament.labels.mobile'))
+                    ->placeholder(__('filament.placeholders.mobile'))
                     ->required()
                     ->countrySearch(true)
                     ->allowDropdown(true)
@@ -188,27 +187,26 @@ class CustomersResource extends Resource
                         'oninput' => "if (this.value.startsWith('0')) { this.value = this.value.substring(1); }"
                     ]),
                 
-                                    
                 TextInput::make('phone')
-                    ->label('شماره تماس شرکت')
+                    ->label(__('filament.labels.phone'))
                     ->tel()
                     ->numeric()
-                    ->telRegex('/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\.\/0-9]{0,11}$/') // Limits to 11 digits
+                    ->telRegex('/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\.\/0-9]{0,11}$/')
                     ->maxLength(11)
                     ->nullable()
-                    ->visible(fn ($state, $get) => $get('customer_type') == 1),  // Show for حقوقی
-                
+                    ->visible(fn ($state, $get) => $get('customer_type') == 1),
+
                 TextInput::make('email')
-                    ->label('پست الکترونیک')
+                    ->label(__('filament.labels.email'))
                     ->email()
                     ->nullable(),
 
                 TextInput::make('postal_code')
-                    ->label('کد پستی')
+                    ->label(__('filament.labels.postal_code'))
                     ->nullable(),
 
                 TextInput::make('address')
-                    ->label('آدرس')
+                    ->label(__('filament.labels.address'))
                     ->nullable(),
             ]);
     }
@@ -218,72 +216,73 @@ class CustomersResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('id')
-                ->label('ردیف')
+                ->label(__('filament.labels.row'))
                 ->sortable(),
                 Tables\Columns\BadgeColumn::make('customer_type')
-                ->label('نوع مشتری')
+                ->label(__('filament.labels.customer_type'))
                 ->formatStateUsing(function ($state) {
-                    return $state == 0 ? 'حقیقی' : 'حقوقی';
+                    return $state == 0 ? __('filament.labels.customer_type_options.0') : __('filament.labels.customer_type_options.1');
                 })
-                ->color(fn($state) => $state == 0 ? 'success': 'danger' ) // 'primary' for 'حقیقی' and 'success' for 'حقوقی'
-                ->icon(fn($state) => $state == 0 ? 'heroicon-o-user' : 'heroicon-o-building-office') // Correct icon name
+                ->color(fn($state) => $state == 0 ? 'success' : 'danger')
+                ->icon(fn($state) => $state == 0 ? 'heroicon-o-user' : 'heroicon-o-building-office')
                 ->wrap()
-                ->badge() 
+                ->badge()
                 ->searchable(),
                 
                 Tables\Columns\TextColumn::make('nationality')
-                    ->label('تابعیت')
+                    ->label(__('filament.labels.nationality'))
                     ->wrap()
                     ->formatStateUsing(function ($state) {
-                    return $state == 0 ? 'ایرانی' : 'خارجی';
+                        return $state == 0 ? __('filament.labels.nationality_options.0') : __('filament.labels.nationality_options.1');
                     }),
 
                 Tables\Columns\TextColumn::make('clearing_type')
-                    ->label('نوع تسویه')
+                    ->label(__('filament.labels.clearing_type'))
                     ->wrap()
                     ->formatStateUsing(function ($state) {
-                        return $state == 0 ? 'نقدی' : 'اعتباری';
+                        return $state == 0 ? __('filament.labels.clearing_type_options.0') : __('filament.labels.clearing_type_options.1');
                     }),
 
                 Tables\Columns\TextColumn::make('name_fa')
-                    ->label('نام (فارسی)')
+                    ->label(__('filament.labels.name_fa'))
                     ->wrap()
                     ->searchable(),
                     
                 Tables\Columns\TextColumn::make('family_fa')
-                    ->label('نام خانوادگی (فارسی)')
+                    ->label(__('filament.labels.family_fa'))
                     ->wrap()
                     ->searchable(),
 
-                    Tables\Columns\TextColumn::make('national_code')
-                    ->label('کد ملی')
+                Tables\Columns\TextColumn::make('national_code')
+                    ->label(__('filament.labels.national_code'))
                     ->toggleable()
                     ->wrap()
                     ->searchable()
                     ->getStateUsing(function ($record) {
                         return $record->national_code ?: '-';
                     }),
-                
+
                 Tables\Columns\TextColumn::make('national_id')
-                    ->label('شناسه ملی')
+                    ->label(__('filament.labels.national_id'))
                     ->toggleable()
                     ->wrap()
                     ->searchable()
                     ->getStateUsing(function ($record) {
                         return $record->national_id ?: '-';
                     }),
-                
+
                 Tables\Columns\TextColumn::make('passport')
-                    ->label('شماره گذرنامه')
+                    ->label(__('filament.labels.passport'))
                     ->toggleable()
                     ->wrap()
                     ->searchable()
                     ->getStateUsing(function ($record) {
                         return $record->passport ?: '-';
                     }),
+                
                 PhoneColumn::make('mobile')
                     ->displayFormat(PhoneInputNumberType::NATIONAL)
-                    ->label('شماره همراه')
+                    ->label(__('filament.labels.mobile'))
                     ->wrap()
                     ->searchable(),
             ])
@@ -303,7 +302,6 @@ class CustomersResource extends Resource
                 ->action(fn (\Illuminate\Database\Eloquent\Collection $records) => (new CustomersExport($records))->download('customers.xlsx')),
             ]);
     }
-
 
     public static function getPages(): array
     {
