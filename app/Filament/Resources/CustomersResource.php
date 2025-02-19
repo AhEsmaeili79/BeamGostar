@@ -24,16 +24,49 @@ class CustomersResource extends Resource
 {
     protected static ?string $model = Customers::class;
 
-    protected static ?string $pluralLabel = 'مدیریت مشتریان';
+    protected static ?string $pluralLabel = null;
+    protected static ?string $navigationLabel = null;
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $navigationGroup = 'پذیرش';
-    protected static ?string $navigationLabel = 'مدیریت مشتریان';
-    
-    protected static ?string $pluralModelLabel = 'مدیریت مشتریان';
+    protected static ?string $navigationGroup = null;
+    protected static ?string $pluralModelLabel = null;
+    protected static ?string $label = null;
+    protected static ?string $singularLabel = null;
 
-    protected static ?string $label = 'مشتری';
+    // Dynamically get the labels and navigation
+    public static function getLabel(): string
+    {
+        return __('filament.labels.customer');
+    }
 
-    protected static ?string $singularLabel = 'مدیریت مشتریان';
+    public static function getSingularLabel(): string
+    {
+        return __('filament.labels.singular_customer');
+    }
+
+    public static function getPluralLabel(): string
+    {
+        return __('filament.labels.customers_management');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('filament.labels.customers_management');
+    }
+
+    public static function getNavigationGroup(): string
+    {
+        return __('filament.labels.admissions');
+    }
+
+    public static function getNavigationIcon(): string
+    {
+        return 'heroicon-o-rectangle-stack';  // You can customize this icon if needed
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.labels.customers_management');
+    }
 
     protected static ?int $navigationSort = 1;
 

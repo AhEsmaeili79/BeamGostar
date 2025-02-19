@@ -7,19 +7,19 @@ return [
 
     'labels' => [
         'customer_type' => 'Customer Type',
-        'customer_type_options' => [
-            0 => 'Individual',
-            1 => 'Corporate',
-        ],
         'nationality' => 'Nationality',
-        'nationality_options' => [
-            0 => 'Iranian',
-            1 => 'Foreign',
-        ],
         'clearing_type' => 'Clearing Type',
+        'customer_type_options' => [
+            0 => 'Real',    // حقیقی
+            1 => 'Legal',   // حقوقی
+        ],
+        'nationality_options' => [
+            0 => 'Iranian',  // ایرانی
+            1 => 'Foreign',  // خارجی
+        ],
         'clearing_type_options' => [
-            0 => 'Cash',
-            1 => 'Credit',
+            0 => 'Cash',     // نقدی
+            1 => 'Credit',   // اعتباری
         ],
         'company_fa' => 'Company Name (Persian)',
         'company_en' => 'Company Name (English)',
@@ -154,6 +154,11 @@ return [
         'my_analyses' => 'my analyses' ,
         'invoice_rules' => 'Invoice Rules',
         'text' => 'Text',
+        'invoice_set_management' => 'Invoice Set Management',
+        'invoice_management' => 'Invoice Management',
+        'customers_management' => 'Customer Management',
+        'singular_customer' => 'Customer Management',
+        'admissions' => 'Admissions',
     ],
 
     'placeholders' => [

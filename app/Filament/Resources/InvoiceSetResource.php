@@ -3,54 +3,83 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\InvoiceSetResource\Pages;
-use App\Filament\Resources\InvoiceSetResource\RelationManagers;
 use App\Models\InvoiceSet;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class InvoiceSetResource extends Resource
 {
     protected static ?string $model = InvoiceSet::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    // Remove dynamic translations from here
+    protected static ?string $navigationLabel = null;  // To be set by a method
 
-    public static function form(Form $form): Form
+    protected static ?string $navigationGroup = null;
+
+    public static function getLabel(): string
+    {
+        return __('filament.labels.invoice_set_management');
+    }
+
+    public static function getnavigationGroup(): string
+    {
+        return __('filament.labels.invoice_management');
+    }
+
+    // Move this dynamic property to a method
+    public static function getNavigationLabel(): string
+    {
+        return __('filament.labels.invoice_set_management');
+    }
+
+
+    public static function getSingularLabel(): string
+    {
+        return __('filament.labels.invoice_set_management');
+    }
+
+    public static function getPluralLabel(): string
+    {
+        return __('filament.labels.invoice_set_management');
+    }
+
+    public static function form(Forms\Form $form): Forms\Form
     {
         return $form
             ->schema([
-                //
+                Forms\Components\TextInput::make('title')
+                    ->required()
+                    ->maxLength(200)
+                    ->label(__('filament.labels.title')),
+                Forms\Components\Textarea::make('text')
+                    ->required()
+                    ->label(__('filament.labels.text')),
+                Forms\Components\Toggle::make('state')
+                    ->label(__('filament.labels.status')),
             ]);
     }
 
-    public static function table(Table $table): Table
+    public static function table(Tables\Table $table): Tables\Table
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('title')
+                    ->label(__('filament.labels.title')),
+                Tables\Columns\TextColumn::make('text')
+                    ->label(__('filament.labels.text')),
+                Tables\Columns\BooleanColumn::make('state')
+                    ->label(__('filament.labels.status')),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('filament.labels.created_at')),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->label(__('filament.labels.updated_at')),
             ])
             ->filters([
-                //
-            ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // You can add filters here if necessary
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
     }
 
     public static function getPages(): array

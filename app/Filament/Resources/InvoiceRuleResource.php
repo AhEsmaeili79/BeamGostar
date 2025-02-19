@@ -14,11 +14,34 @@ class InvoiceRuleResource extends Resource
     
     // Remove dynamic translation from property
     protected static ?string $navigationLabel = null;  // To be set by a method
-
-    // Method to handle dynamic translations
+    protected static ?string $navigationGroup = null;
+    public static function getnavigationGroup(): string
+    {
+        return __('filament.labels.invoice_management');
+    }
     public static function getNavigationLabel(): string
     {
         return __('filament.labels.invoice_rules');
+    }
+
+    public static function getLabel(): string
+    {
+        return __('filament.labels.invoice_rules');
+    }
+
+    public static function getSingularLabel(): string
+    {
+        return __('filament.labels.invoice_rules');
+    }
+
+    public static function getPluralLabel(): string
+    {
+        return __('filament.labels.invoice_rules');
+    }
+
+    public static function getNavigationIcon(): string
+    {
+        return 'heroicon-o-rectangle-stack';  // You can customize this icon if needed
     }
 
     public static function form(Forms\Form $form): Forms\Form
@@ -26,9 +49,11 @@ class InvoiceRuleResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('title')
+                    ->label(__('filament.labels.title'))
                     ->required()
                     ->maxLength(200),
                 Forms\Components\Textarea::make('text')
+                    ->label(__('filament.labels.text'))
                     ->required(),
                 Forms\Components\Toggle::make('state')
                     ->label(__('filament.labels.status')),

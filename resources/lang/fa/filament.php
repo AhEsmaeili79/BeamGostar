@@ -7,16 +7,16 @@ return [
 
     'labels' => [
         'customer_type' => 'نوع مشتری',
+        'nationality' => 'تابعیت',
+        'clearing_type' => 'نوع تسویه',
         'customer_type_options' => [
             0 => 'حقیقی',
             1 => 'حقوقی',
         ],
-        'nationality' => 'تابعیت',
         'nationality_options' => [
             0 => 'ایرانی',
             1 => 'خارجی',
         ],
-        'clearing_type' => 'نوع تسویه',
         'clearing_type_options' => [
             0 => 'نقدی',
             1 => 'اعتباری',
@@ -59,7 +59,7 @@ return [
         'analyzes' => 'آنالیزها',
         'analyze' => 'آنالیز',
         'status' => 'وضعیت',
-        'title' => 'عنوان آنالیز',
+        'title' => 'عنوان',
         'created_at' => 'تاریخ ایجاد',
         'export' => 'صادر کردن',
         'bank_accounts' => 'حساب‌های بانکی',
@@ -154,6 +154,11 @@ return [
         'my_analyses' => 'آنالیز های من ' ,
         'invoice_rules' => 'قوانین فاکتور',
         'text' => 'متن قانون',
+        'invoice_set_management' => 'مدیریت قوانین فاکتور',
+        'invoice_management' => 'مدیریت فاکتور',
+        'customers_management' => 'مدیریت مشتریان',
+        'singular_customer' => 'مدیریت مشتریان',
+        'admissions' => 'پذیرش',
     ],
 
     'placeholders' => [
