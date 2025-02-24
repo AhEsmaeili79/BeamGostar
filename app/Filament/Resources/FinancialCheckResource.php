@@ -17,23 +17,29 @@ class FinancialCheckResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    // Use translation function
-    public static function getNavigationLabel(): string
+    protected static ?string $navigationGroup = 'امور مالی';
+
+    protected static ?int $navigationSort = 1;
+
+    public static function getLabel(): string
     {
-        return __('filament.labels.financial_check_management');
+        return __('filament.labels.payment_management');
     }
 
     public static function getPluralLabel(): string
     {
-        return __('filament.labels.financial_check_management');
+        return __('filament.labels.payment_management');
     }
 
-    public static function getLabel(): string
+    public static function getModelLabel(): string
     {
-        return __('filament.labels.financial_check_management');
+        return __('filament.labels.payment_management');
     }
 
-    protected static ?string $navigationGroup = 'امور مالی';
+    public static function getNavigationLabel(): string
+    {
+        return __('filament.labels.payment_management');
+    }
 
     public static function form(Form $form): Form
     {

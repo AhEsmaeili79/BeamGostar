@@ -31,18 +31,7 @@ class MyAnalysesResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     // Move dynamic expressions like this one into methods
-    protected static ?string $navigationLabel = null; // to be set by a method
-
     protected static ?string $navigationGroup = 'مشتریان';
-
-    protected static ?string $pluralModelLabel = null; // to be set by a method
-
-    protected static ?string $label = null; // to be set by a method
-
-    protected static ?string $pluralLabel = null; // to be set by a method
-
-    protected static ?string $singularLabel = null; // to be set by a method
-
     protected static ?string $slug = 'my-analysis';
     
     protected static ?int $navigationSort = 2;

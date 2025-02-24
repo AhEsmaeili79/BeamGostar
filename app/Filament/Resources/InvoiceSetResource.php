@@ -14,51 +14,44 @@ class InvoiceSetResource extends Resource
 {
     protected static ?string $model = InvoiceSet::class;
 
-    // Remove dynamic translations from here
-    protected static ?string $navigationLabel = null;  // To be set by a method
+    protected static ?string $navigationIcon = 'heroicon-o-document';
 
-    protected static ?string $navigationGroup = null;
-
-    public static function getLabel(): string
-    {
-        return __('filament.labels.invoice_set_management');
-    }
-
-    public static function getnavigationGroup(): string
+    public static function getNavigationGroup(): string
     {
         return __('filament.labels.base_info');
     }
 
-    // Move this dynamic property to a method
-    public static function getNavigationLabel(): string
+    public static function getPluralLabel(): string
     {
-        return __('filament.labels.invoice_set_management');
+        return __('filament.labels.max_dayinvoice');
     }
 
+    public static function getNavigationLabel(): string
+    {
+        return __('filament.labels.max_dayinvoice');
+    }
+
+    public static function getLabel(): string
+    {
+        return __('filament.labels.max_dayinvoice');
+    }
 
     public static function getSingularLabel(): string
     {
-        return __('filament.labels.invoice_set_management');
+        return __('filament.labels.max_dayinvoice');
     }
 
-    public static function getPluralLabel(): string
-    {
-        return __('filament.labels.invoice_set_management');
-    }
+    protected static ?int $navigationSort = 12;
 
     public static function form(Forms\Form $form): Forms\Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('title')
+                Forms\Components\TextInput::make('max_day')
+                    ->label(__('filament.labels.max_day'))
+                    ->numeric()
                     ->required()
-                    ->maxLength(200)
-                    ->label(__('filament.labels.title')),
-                Forms\Components\Textarea::make('text')
-                    ->required()
-                    ->label(__('filament.labels.text')),
-                Forms\Components\Toggle::make('state')
-                    ->label(__('filament.labels.status')),
+                    ->placeholder(__('filament.placeholders.enter_max_day')),
             ]);
     }
 
@@ -66,20 +59,32 @@ class InvoiceSetResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('title')
-                    ->label(__('filament.labels.title')),
-                Tables\Columns\TextColumn::make('text')
-                    ->label(__('filament.labels.text')),
-                Tables\Columns\BooleanColumn::make('state')
-                    ->label(__('filament.labels.status')),
+                Tables\Columns\TextColumn::make('id')->sortable()->label(__('filament.labels.id')),
+                Tables\Columns\TextColumn::make('max_day')->sortable()->label(__('filament.labels.max_day')),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime('Y-m-d H:i:s')
+                    ->sortable()
                     ->label(__('filament.labels.created_at')),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->dateTime('Y-m-d H:i:s')
+                    ->sortable()
                     ->label(__('filament.labels.updated_at')),
             ])
             ->filters([
-                // You can add filters here if necessary
+                //
+            ])
+            ->actions([
+                Tables\Actions\EditAction::make()->label(__('filament.actions.edit')),
+                Tables\Actions\DeleteAction::make()->label(__('filament.actions.delete')),
+            ])
+            ->bulkActions([
+                Tables\Actions\DeleteBulkAction::make()->label(__('filament.actions.delete_bulk')),
             ]);
+    }
+
+    public static function getRelations(): array
+    {
+        return [];
     }
 
     public static function getPages(): array

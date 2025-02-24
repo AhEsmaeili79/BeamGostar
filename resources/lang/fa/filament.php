@@ -176,11 +176,14 @@ return [
         'pay_now' => 'پرداخت',
         'print_invoice' => 'چاپ فاکتور',
         'download_result' => 'دانلود نتیجه آنالیز',
+        "max_dayinvoice" => "تنظیم حداکثر روز مجاز صورتحساب",
+        'max_day' => 'بیشترین روز',
     ],
 
     'placeholders' => [
         'mobile' => '9121234567',
         'phone' => 'شماره تلفن',
+        'enter_max_day' => 'بیشترین روز برای صورتحساب را وارد کنید',
     ],
 
     'actions' => [

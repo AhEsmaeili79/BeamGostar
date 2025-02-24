@@ -176,11 +176,14 @@ return [
         'pay_now' => 'Pay Now',
         'print_invoice' => 'Print Invoice',
         'download_result' => 'Download Analysis Result',
+        'max_dayinvoice' => 'set max day invoice',
+        'max_day' => 'Max Day',
     ],
 
     'placeholders' => [
         'mobile' => '9121234567',
         'phone' => 'Phone number',
+        'enter_max_day' => 'Enter the maximum day for invoice',
     ],
 
     'actions' => [
@@ -189,7 +192,6 @@ return [
         'delete' => 'Delete Customer',
         'view' => 'View',
     ],
-
     'fields' => [
         'customer_type' => 'Customer Type',
         'nationality' => 'Nationality',
