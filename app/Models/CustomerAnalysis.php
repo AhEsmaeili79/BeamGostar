@@ -68,10 +68,14 @@ class CustomerAnalysis extends Model
         return $this->hasMany(PaymentAnalyze::class, 'customer_analysis_id');
     }
     
+    public function priceAnalysis()
+    {
+        return $this->hasOne(price_analysis::class, 'analyze_id', 'analyze_id');
+    }
 
-public function priceAnalysis()
-{
-    return $this->hasOne(price_analysis::class, 'analyze_id', 'analyze_id');
-}
+    public function returnRequest()
+    {
+        return $this->hasOne(ReturnRequest::class);
+    }
 
 }

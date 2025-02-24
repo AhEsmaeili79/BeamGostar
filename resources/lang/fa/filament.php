@@ -170,6 +170,12 @@ return [
         'deny_reject' => 'عودت رد شده',
         'approve' => 'تایید',
         'deny' => 'رد',
+        'add_payment_details' => 'افزودن جزئیات پرداخت',
+        'save' => 'ذخیره',
+        'payment_receipt' => 'رسید پرداخت',
+        'pay_now' => 'پرداخت',
+        'print_invoice' => 'چاپ فاکتور',
+        'download_result' => 'دانلود نتیجه آنالیز',
     ],
 
     'placeholders' => [

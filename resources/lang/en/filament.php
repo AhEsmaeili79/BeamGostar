@@ -170,6 +170,12 @@ return [
         'deny_reject' => 'Denied Rejection',
         'approve' => 'Approve',
         'deny' => 'Deny',
+        'add_payment_details' => 'Add Payment Details',
+        'save' => 'Save',
+        'payment_receipt' => 'Payment Receipt',
+        'pay_now' => 'Pay Now',
+        'print_invoice' => 'Print Invoice',
+        'download_result' => 'Download Analysis Result',
     ],
 
     'placeholders' => [

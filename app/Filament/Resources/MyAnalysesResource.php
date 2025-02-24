@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\MyAnalysesResource\Pages;
 use App\Models\CustomerAnalysis;
+use App\Models\ReturnRequest;
 use App\Models\Customers;
 use App\Models\Analyze;
 use Filament\Forms;
@@ -17,6 +18,11 @@ use Filament\Tables\Columns\TextColumn;
 use Illuminate\Support\Facades\App;
 use Morilog\Jalali\Jalalian;
 use Carbon\Carbon;
+use App\Models\PaymentAnalyze;
+use App\Http\Controllers\PaymentController;
+use Filament\Notifications\Notification;
+use Filament\Tables\Actions\Action;
+use Filament\Forms\Components\Textarea;
 
 class MyAnalysesResource extends Resource
 {
@@ -72,6 +78,7 @@ class MyAnalysesResource extends Resource
         return __('filament.labels.my_analyses');
     }
 
+    
     public static function form(Form $form): Form
     {
         return $form
@@ -165,6 +172,7 @@ class MyAnalysesResource extends Resource
                     }),
                 TextColumn::make('tracking_code')
                     ->label(__('filament.labels.tracking_code')),
+                    
             ])
             ->filters([
                 Filter::make('status')
@@ -187,6 +195,99 @@ class MyAnalysesResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
+                Tables\Actions\Action::make('add_payment_details')
+                ->label(__('filament.labels.add_payment_details'))
+                
+                ->modalHeading(__('filament.labels.add_payment_details'))
+                ->modalButton(__('filament.labels.save'))
+                ->modalWidth('lg')
+                ->form([
+                    Forms\Components\FileUpload::make('upload_fish')
+                        ->label(__('filament.labels.payment_receipt'))
+                        ->disk('public')
+                        ->directory('payment_receipts')
+                        ->required(),
+                    Forms\Components\TextInput::make('transaction_id')
+                        ->label(__('filament.labels.transaction_id'))
+                        ->required(),
+                    Forms\Components\DateTimePicker::make('datepay')
+                        ->label(__('filament.labels.payment_date'))
+                        ->jalali()
+                        ->required(),
+                ])
+                ->action(function (array $data, $record) {
+                    PaymentAnalyze::create([
+                        'customer_analysis_id' => $record->id,
+                        'upload_fish' => $data['upload_fish'],
+                        'transaction_id' => $data['transaction_id'],
+                        'datepay' => $data['datepay'],
+                    ]);
+                }),
+        
+                Tables\Actions\Action::make('pay_now')
+                    ->label(__('filament.labels.pay_now'))
+                    ->icon('heroicon-o-currency-dollar')
+                    ->action(function ($record) {
+                        // Redirect to the specified URL
+                        return redirect('https://zarinp.al/beamgostartabanlab');
+                    }),
+
+
+                Tables\Actions\Action::make('print_invoice')
+                    ->label(__('filament.labels.print_invoice'))
+                    ->icon('heroicon-o-printer')
+                    ->url(fn ($record) => route('invoice.print', ['id' => $record->id]))
+                    ->openUrlInNewTab(),
+                
+                Tables\Actions\Action::make('download_pdf')
+                ->label(__('filament.labels.download_result'))
+                ->url(fn ($record) => route('analysis.download', ['id' => $record->id]))
+                ->openUrlInNewTab(),
+                
+                Tables\Actions\Action::make('request_return')
+                ->label('عودت')
+                ->color('danger')
+                ->requiresConfirmation()
+                ->modalHeading('درخواست عودت')
+                ->modalSubheading('آیا مطمئن هستید که می‌خواهید درخواست عودت دهید؟ این عملیات غیرقابل برگشت است.')
+                ->modalButton('تایید')
+                ->form([
+                    Forms\Components\Textarea::make('reason')
+                        ->label('علت عودت')
+                        ->required()
+                        ->rows(3),
+                ])
+                ->action(function (array $data, $record) {
+                    // Check if a ReturnRequest with the same tracking_code already exists
+                    $existingRequest = ReturnRequest::where('tracking_code', $record->tracking_code)->first();
+                    $statusTranslations = [
+                        'requested' => 'در انتظار',
+                        'canceled' => 'لغو شده',
+                        'ready_for_return' => 'آماده جهت عودت',
+                        'returned' => 'عودت شده',
+                    ];
+                    if ($existingRequest) {
+                        // If a ReturnRequest exists, show the status instead of the action button
+                        $status = $statusTranslations[$existingRequest->status] ?? $existingRequest->status; // Use translation if available
+                        return Notification::make()
+                            ->title('درخواست عودت قبلاً ثبت شده است')
+                            ->body('وضعیت: ' . $status)
+                            ->success()
+                            ->send();
+                    } else {
+                        // If no existing request, create a new one
+                        $record->returnRequest()->create([
+                            'reason' => $data['reason'],
+                            'tracking_code' => $record->tracking_code,
+                            'requested_at' => now(),
+                        ]);
+                        
+                        Notification::make()
+                            ->title('درخواست عودت با موفقیت ثبت شد')
+                            ->success()
+                            ->send();
+                    }
+                }),
             ]);
     }
 
