@@ -238,63 +238,27 @@ class CustomerAnalysisResource extends Resource
                 Forms\Components\Toggle::make('priority')
                     ->label('اولویت'),
 
-                    Forms\Components\Toggle::make('value_added')
+                Forms\Components\Toggle::make('value_added')
                     ->label('ارزش افزوده')
                     ->id('value_added')
-                    ->reactive()  // Make sure this is reactive
+                    ->reactive()  // Make it reactive
                     ->afterStateUpdated(function ($state, $set, $get) {
-                        // Call the controller's function to recalculate total cost and applicant share
-                        (new CustomerAnalysisController())->calculateTotalCostAndApplicantShare($state, $set, $get);
+                        // Recalculate total cost and applicant share after updating value_added
+                        (new \App\Http\Controllers\CustomerAnalysisController())->recalculateTotalCostAndApplicantShare($state, $set, $get);
                     }),
                 
-                
-                    Forms\Components\TextInput::make('additional_cost')
+                Forms\Components\TextInput::make('additional_cost')
                     ->label('هزینه اضافه')
                     ->numeric()
                     ->suffix('ریال')
                     ->id('additional_cost')
                     ->default(0)
-                    ->reactive()
+                    ->reactive()  // Make it reactive
                     ->afterStateUpdated(function ($state, $set, $get) {
-                        // Reset total_cost to the base price (samples_number * price)
-                        $samplesNumber = $get('samples_number');
-                        $analyzeId = $get('analyze_id');
-                        $customerId = $get('customers_id');
-                
-                        // Fetch the price for the selected analyze_id and customer_id
-                        $price = \App\Models\price_analysis_credit::where('customers_id', $customerId)
-                            ->where('analyze_id', $analyzeId)
-                            ->value('price');
-                
-                        // If no price is found in price_analysis_credit, fall back to price_analysis
-                        if ($price === null) {
-                            $price = \App\Models\price_analysis::where('analyze_id', $analyzeId)
-                                ->value('price');
-                        }
-                
-                        if ($price !== null) {
-                            // Recalculate the base total cost
-                            $baseTotalCost = $samplesNumber * $price;
-                
-                            // Reset total cost to the base price first
-                            $set('total_cost', $baseTotalCost);
-                
-                            // Apply additional cost
-                            $newTotalCost = $baseTotalCost + $state;  // Adding additional cost to base price
-                            $set('total_cost', $newTotalCost);
-                
-                            // Recalculate applicant_share based on grant and network_share
-                            $grant = $get('grant');
-                            $networkShare = $get('network_share') ?? 0;
-                
-                            if ($grant == 0) {
-                                $set('applicant_share', $newTotalCost);  // If grant is 0, applicant_share = new total_cost
-                            } elseif ($grant == 1) {
-                                $set('applicant_share', max($newTotalCost - $networkShare, 0));  // If grant is 1, deduct network_share
-                            }
-                        }
+                        // Recalculate total cost and applicant share after updating additional cost
+                        (new CustomerAnalysisController())->recalculateTotalCostAndApplicantShare($state, $set, $get);
                     }),
-                
+                                
                 
 
                     Forms\Components\TextInput::make('total_cost')

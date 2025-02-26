@@ -116,6 +116,55 @@ public function calculateTotalCostAndApplicantShare($state, $set, $get)
     }
 }
 
+public function recalculateTotalCostAndApplicantShare($state, $set, $get)
+{
+    // Get current form data
+    $samplesNumber = $get('samples_number');
+    $analyzeId = $get('analyze_id');
+    $customerId = $get('customers_id');
+    $additionalCost = $get('additional_cost') ?? 0;
+    $valueAdded = $get('value_added') ?? 0;
+    $grant = $get('grant');
+    $networkShare = $get('network_share') ?? 0;
+
+    // Fetch the price for the selected analyze_id and customer_id
+    $price = \App\Models\price_analysis_credit::where('customers_id', $customerId)
+        ->where('analyze_id', $analyzeId)
+        ->value('price');
+
+    // If no price is found in price_analysis_credit, fall back to price_analysis
+    if ($price === null) {
+        $price = \App\Models\price_analysis::where('analyze_id', $analyzeId)
+            ->value('price');
+    }
+
+    if ($price !== null) {
+        // Calculate base total cost
+        $baseTotalCost = $samplesNumber * $price;
+
+        // Apply value_added logic
+        if ($valueAdded == 1) {
+            $valueAddedAmount = ($baseTotalCost * 10) / 100;  // 10% of the base total cost
+        } else {
+            $valueAddedAmount = 0;
+        }
+
+        // Add the value_added to the base total cost
+        $newTotalCost = $baseTotalCost + $valueAddedAmount + $additionalCost;
+
+        // Set the new total cost
+        $set('total_cost', $newTotalCost);
+
+        // Recalculate applicant_share based on grant and network_share
+        if ($grant == 0) {
+            $set('applicant_share', $newTotalCost);  // If grant is 0, applicant_share = new total_cost
+        } elseif ($grant == 1) {
+            $set('applicant_share', max($newTotalCost - $networkShare, 0));  // Deduct network_share if grant is 1
+        }
+    }
+}
+
+
 public function handleAfterStateUpdated($state, $set, $get)
     {
         $totalCost = $get('total_cost');
