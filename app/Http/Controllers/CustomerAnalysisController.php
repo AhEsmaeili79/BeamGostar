@@ -118,38 +118,37 @@ public function calculateTotalCostAndApplicantShare($state, $set, $get)
 
 public function recalculateTotalCostAndApplicantShare($state, $set, $get)
 {
-    // Get current form data
-    $samplesNumber = $get('samples_number');
+    // Get current form data and ensure proper type casting
+    $samplesNumber = (int) $get('samples_number');  // Ensure samples_number is an integer
     $analyzeId = $get('analyze_id');
     $customerId = $get('customers_id');
-    $additionalCost = $get('additional_cost') ?? 0;
-    $valueAdded = $get('value_added') ?? 0;
-    $grant = $get('grant');
-    $networkShare = $get('network_share') ?? 0;
+    $additionalCost = (float) ($get('additional_cost') ?? 0);  // Ensure additional_cost is a float
+    $valueAdded = (int) ($get('value_added') ?? 0);  // Ensure value_added is treated as an integer (1 or 0)
+    $grant = (int) ($get('grant') ?? 0);  // Ensure grant is treated as an integer (0 or 1)
+    $networkShare = (float) ($get('network_share') ?? 0);  // Ensure network_share is a float
 
     // Fetch the price for the selected analyze_id and customer_id
-    $price = \App\Models\price_analysis_credit::where('customers_id', $customerId)
+    $price = price_analysis_credit::where('customers_id', $customerId)
         ->where('analyze_id', $analyzeId)
         ->value('price');
 
     // If no price is found in price_analysis_credit, fall back to price_analysis
     if ($price === null) {
-        $price = \App\Models\price_analysis::where('analyze_id', $analyzeId)
+        $price = price_analysis::where('analyze_id', $analyzeId)
             ->value('price');
     }
 
     if ($price !== null) {
-        // Calculate base total cost
+        // Calculate base total cost (ensure price is a numeric value)
         $baseTotalCost = $samplesNumber * $price;
 
-        // Apply value_added logic
+        // Apply value_added logic (e.g., 10% of the base total cost if value_added is 1)
+        $valueAddedAmount = 0;
         if ($valueAdded == 1) {
             $valueAddedAmount = ($baseTotalCost * 10) / 100;  // 10% of the base total cost
-        } else {
-            $valueAddedAmount = 0;
         }
 
-        // Add the value_added to the base total cost
+        // Ensure proper numeric addition
         $newTotalCost = $baseTotalCost + $valueAddedAmount + $additionalCost;
 
         // Set the new total cost

@@ -244,7 +244,7 @@ class CustomerAnalysisResource extends Resource
                     ->reactive()  // Make it reactive
                     ->afterStateUpdated(function ($state, $set, $get) {
                         // Recalculate total cost and applicant share after updating value_added
-                        (new \App\Http\Controllers\CustomerAnalysisController())->recalculateTotalCostAndApplicantShare($state, $set, $get);
+                        (new CustomerAnalysisController())->recalculateTotalCostAndApplicantShare($state, $set, $get);
                     }),
                 
                 Forms\Components\TextInput::make('additional_cost')
@@ -448,12 +448,5 @@ class CustomerAnalysisResource extends Resource
     public static function beforeSave($record, array $data): array
     {
         return (new CustomerAnalysisController)->beforeSave(request());
-    }
-    public static function boot(): void
-    {
-        parent::boot();
-
-        // Add the JS file to the page
-        \Filament\Facades\Filament::addScript(asset('js/custom.js'));
     }
 }
