@@ -39,18 +39,17 @@ class PriceAnalysisCreditResource extends Resource
         return $form
             ->schema([
                 Select::make('customers_id')
-                ->label('مشتری')
-                ->options(
-                    Customers::whereNotNull('name_fa')  // Ensure 'name_fa' is not null
-                        ->whereNotNull('family_fa')    // Ensure 'family_fa' is not null
-                        ->where('clearing_type', 1)    // Filter by clearing_type = 1
-                        ->get()
-                        ->mapWithKeys(function ($customer) {
-                            return [$customer->id => $customer->name_fa . ' ' . $customer->family_fa];  // Concatenate name_fa and family_fa
-                        })
-                )
-                ->required()
-                ->searchable()
+                    ->label('مشتری')
+                    ->options(
+                        Customers::whereNotNull('name_fa')
+                            ->whereNotNull('family_fa')
+                            ->get()
+                            ->mapWithKeys(function ($customer) {
+                                return [$customer->id => $customer->name_fa . ' ' . $customer->family_fa];
+                            })
+                    )
+                    ->required()
+                    ->searchable()
                 ->columnSpan([
                     'default' => 2,  // 1 column span on larger screens
                     'sm' => 1,       // 2 column span on small screens (screens smaller than 600px)
@@ -110,15 +109,6 @@ class PriceAnalysisCreditResource extends Resource
                 ->label('قیمت(ریال)')
                 ->sortable(),
     
-            Tables\Columns\TextColumn::make('date')  // Display date
-                ->label('تاریخ ثبت')
-                ->sortable()
-                ->date(),
-    
-            Tables\Columns\TextColumn::make('time')  // Display time
-                ->label('زمان ثبت')
-                ->sortable()
-                ->time(),
             ])
             ->filters([
                 //

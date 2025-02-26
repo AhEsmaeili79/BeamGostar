@@ -8,7 +8,7 @@ use App\Models\Analyze;
 use Illuminate\Http\Request;
 use Morilog\Jalali\Jalalian;
 use App\Models\price_analysis;
-
+use App\Models\price_analysis_credit;
 class CustomerAnalysisController extends Controller
 {
     public function handleAcceptanceDateChange($state, $set)
@@ -50,19 +50,16 @@ class CustomerAnalysisController extends Controller
             $data['applicant_share'] = $totalCost;
             $data['network_share'] = 0; // Set network share to 0
         } elseif ($grant == 1) {
-            // If grant is 1, calculate applicant_share based on network_share
             $data['applicant_share'] = $totalCost - $networkShare;
         }
     }
 
     if (isset($data['samples_number'])) {
-        $maxSamplesNumber = 20; // Set the maximum allowed value for samples_number
+        $maxSamplesNumber = 20; 
         if ($data['samples_number'] > $maxSamplesNumber) {
-            // Optionally, you can throw an exception or return a validation error
             return response()->json(['error' => 'The samples_number exceeds the maximum allowed value of ' . $maxSamplesNumber], 400);
         }
     }
-    // Handle tracking code and other data saving logic
     if (isset($data['acceptance_date'])) {
         $data['tracking_code'] = $this->generateTrackingCode($data['acceptance_date']);
     }
@@ -71,6 +68,63 @@ class CustomerAnalysisController extends Controller
 }
 
 
+public function calculateTotalCostAndApplicantShare($state, $set, $get)
+{
+    $customerId = $get('customers_id');
+    $analyzeId = $get('analyze_id');
+    $samplesNumber = $get('samples_number') ?? 1;
+
+    // Fetch the price for the selected customer and analysis type
+    $price = price_analysis_credit::where('customers_id', $customerId)
+        ->where('analyze_id', $analyzeId)
+        ->value('price');
+
+    // If no price is found in price_analysis_credit, fall back to price_analysis
+    if ($price === null) {
+        $price = price_analysis::where('analyze_id', $analyzeId)
+            ->value('price');
+    }
+
+    if ($price !== null) {
+        // Calculate total cost
+        $totalCost = $samplesNumber * $price;
+
+        // Calculate value added if value_added is true (1)
+        $valueAdded = $get('value_added') ?? 0;
+        if ($valueAdded == 1) {
+            // Calculate value added as 10% of the total cost
+            $valueadded = ($totalCost * 10) / 100;
+        } else {
+            $valueadded = 0;  // No value added
+        }
+
+        // Add valueadded to total cost
+        $totalCost += $valueadded;
+
+        // Apply grant and network share logic
+        $grant = $get('grant');
+        $networkShare = $get('network_share') ?? 0;
+
+        if ($grant == 0) {
+            $set('applicant_share', $totalCost);  
+        } elseif ($grant == 1) {
+            $set('applicant_share', max($totalCost - $networkShare, 0)); 
+        }
+
+        // Set the new total cost
+        $set('total_cost', $totalCost);
+    }
+}
+
+public function handleAfterStateUpdated($state, $set, $get)
+    {
+        $totalCost = $get('total_cost');
+        if ($get('grant') == 0) {
+            $set('applicant_share', $totalCost);
+        } elseif ($get('grant') == 1) {
+            $set('applicant_share', max($totalCost - ($get('network_share') ?? 0), 0));
+        }
+    }
     
     public function generateTrackingCode($acceptanceDate)
     {

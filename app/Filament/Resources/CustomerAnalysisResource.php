@@ -41,33 +41,24 @@ class CustomerAnalysisResource extends Resource
     {
 
         $customerAnalysis = new CustomerAnalysis(); 
-
+        $controller = new CustomerAnalysisController();
+        
         return $form
             ->schema([
 
                 Forms\Components\Radio::make('grant')
-                    ->options([
-                        0 => 'ندارد',
-                        1 => 'دارد',
-                    ])
+                    ->options([0 => 'ندارد', 1 => 'دارد'])
                     ->label('گرنت')
                     ->inline()
                     ->required()
                     ->reactive()
                     ->default(0)
-                    ->afterStateUpdated(function ($state, $set, $get) {
-                        $totalCost = $get('total_cost');
-                        if ($state == 0) {
-                            $set('applicant_share', $totalCost);
-                            $set('network_share', 0); 
-                        } elseif ($state == 1) {
-                            $networkShare = $get('network_share');
-                            $set('applicant_share', $totalCost - $networkShare);
-                        }
+                    ->afterStateUpdated(function ($state, $set, $get) use ($controller) {
+                        $controller->handleAfterStateUpdated($state, $set, $get);
                     }),
                     
 
-                Forms\Components\Radio::make('discount')
+                    Forms\Components\Radio::make('discount')
                     ->options([
                         0 => 'ندارد',
                         1 => 'درصد',
@@ -79,8 +70,9 @@ class CustomerAnalysisResource extends Resource
                     ->reactive()
                     ->default(0), 
 
-                Forms\Components\Select::make('customers_id')
+                    Forms\Components\Select::make('customers_id')
                     ->label('مشتری')
+                    ->default(1)
                     ->options(
                         Customers::whereNotNull('name_fa')
                             ->whereNotNull('family_fa')
@@ -90,7 +82,43 @@ class CustomerAnalysisResource extends Resource
                             })
                     )
                     ->required()
-                    ->searchable(),
+                    ->searchable()
+                    ->reactive()
+                    ->afterStateUpdated(function ($state, $set, $get) {
+                        // After customers_id is updated, recalculate the total_cost and applicant_share
+                        $customerId = $state;
+                
+                        $analyzeId = $get('analyze_id');
+                        $samplesNumber = $get('samples_number') ?? 1;
+                
+                        // Try to find a price for the selected analyze_id and customer_id
+                        $price = \App\Models\price_analysis_credit::where('customers_id', $customerId)
+                            ->where('analyze_id', $analyzeId)
+                            ->value('price');
+                
+                        if ($price === null) {
+                            // If no price found in price_analysis_credit, fall back to price_analysis
+                            $price = \App\Models\price_analysis::where('analyze_id', $analyzeId)
+                                ->value('price');
+                        }
+                
+                        // Calculate total_cost based on the samples_number and price
+                        if ($price !== null) {
+                            $totalCost = $samplesNumber * $price;
+                            $set('total_cost', $totalCost);
+                
+                            // Recalculate applicant_share based on grant and network_share
+                            $grant = $get('grant');
+                            $networkShare = $get('network_share') ?? 0;
+                
+                            if ($grant == 0) {
+                                $set('applicant_share', $totalCost);  // If grant is 0, applicant_share = total_cost
+                            } elseif ($grant == 1) {
+                                $set('applicant_share', max($totalCost - $networkShare, 0));  // Deduct network_share if grant is 1
+                            }
+                        }
+                    }),
+                
                     
                 Forms\Components\DatePicker::make('acceptance_date')
                     ->label('تاریخ پذیرش')
@@ -110,37 +138,117 @@ class CustomerAnalysisResource extends Resource
                     ->relationship('getAnswers', 'title')
                     ->required(),
                     
-                Forms\Components\Select::make('analyze_id')
+                    Forms\Components\Select::make('analyze_id')
                     ->label('آنالیز')
                     ->options(Analyze::all()->pluck('title', 'id'))
                     ->default(1)
                     ->required()
                     ->searchable()
-                    ->reactive(),
+                    ->reactive()
+                    ->afterStateUpdated(function ($state, $set, $get) {
+                        // Get the selected customer_id
+                        $customerId = $get('customers_id'); 
+                
+                        // Check if customer_id is set, and recalculate total_cost and applicant_share if it changes
+                        if ($customerId) {
+                            // Try to find a price in price_analysis_credit
+                            $price = \App\Models\price_analysis_credit::where('customers_id', $customerId)
+                                ->where('analyze_id', $state)
+                                ->value('price');
+                
+                            if ($price === null) {
+                                // If no price found in price_analysis_credit, fall back to price_analysis
+                                $price = \App\Models\price_analysis::where('analyze_id', $state)
+                                    ->value('price');
+                            }
+                
+                            if ($price !== null) {
+                                // Calculate total_cost based on samples_number * price
+                                $samplesNumber = $get('samples_number') ?? 1; // Default to 1 if samples_number is not set
+                                $totalCost = $samplesNumber * $price;
+                                $set('total_cost', $totalCost);
+                
+                                // Update applicant_share based on the grant
+                                $grant = $get('grant');
+                                $networkShare = $get('network_share') ?? 0;
+                
+                                if ($grant == 0) {
+                                    $set('applicant_share', $totalCost);  // If grant is 0, applicant_share = total_cost
+                                } elseif ($grant == 1) {
+                                    $set('applicant_share', max($totalCost - $networkShare, 0));  // Deduct network_share if grant is 1
+                                }
+                            }
+                        }
+                    }),
+                
+                
                 
                 Forms\Components\TextInput::make('samples_number')
                     ->label('تعداد نمونه')
                     ->numeric()
                     ->required()
+                    ->maxLength(15)
+                    ->mask(mask: 99)
                     ->suffix('عدد')
                     ->default(1)
-                    ->reactive(),
+                    ->reactive()
+                    ->afterStateUpdated(function ($state, $set, $get) {
+                        // Get the selected analyze_id and customer_id
+                        $analyzeId = $get('analyze_id');
+                        $customerId = $get('customers_id');
+
+                        if ($analyzeId && $customerId) {
+                            // Fetch the price for the selected analyze_id and customer_id
+                            $price = \App\Models\price_analysis_credit::where('customers_id', $customerId)
+                                ->where('analyze_id', $analyzeId)
+                                ->value('price');
+
+                            // If no price is found in price_analysis_credit, fall back to price_analysis
+                            if ($price === null) {
+                                $price = \App\Models\price_analysis::where('analyze_id', $analyzeId)
+                                    ->value('price');
+                            }
+
+                            // Calculate total_cost by multiplying samples_number by the price
+                            if ($price !== null) {
+                                $totalCost = $state * $price;
+                                $set('total_cost', $totalCost);  // Set the total cost based on samples_number * price
+
+                                // Update applicant_share based on the grant
+                                $grant = $get('grant');
+                                $networkShare = $get('network_share') ?? 0;
+
+                                if ($grant == 0) {
+                                    $set('applicant_share', $totalCost);  // If grant is 0, applicant_share = total_cost
+                                } elseif ($grant == 1) {
+                                    $set('applicant_share', max($totalCost - $networkShare, 0));  // Deduct network_share if grant is 1
+                                }
+                            }
+                        }
+                    }),
+
 
                 Forms\Components\TextInput::make('analyze_time')
                     ->label('کل زمان آنالیز')
                     ->numeric()
+                    ->required()
                     ->default($customerAnalysis->analyze_time ?? 0)
                     ->id('analyze_time'),
 
                 Forms\Components\Toggle::make('priority')
                     ->label('اولویت'),
 
-                Forms\Components\Toggle::make('value_added')
+                    Forms\Components\Toggle::make('value_added')
                     ->label('ارزش افزوده')
                     ->id('value_added')
-                    ->reactive(),
+                    ->reactive()  // Make sure this is reactive
+                    ->afterStateUpdated(function ($state, $set, $get) {
+                        // Call the controller's function to recalculate total cost and applicant share
+                        (new CustomerAnalysisController())->calculateTotalCostAndApplicantShare($state, $set, $get);
+                    }),
                 
-                Forms\Components\TextInput::make('additional_cost')
+                
+                    Forms\Components\TextInput::make('additional_cost')
                     ->label('هزینه اضافه')
                     ->numeric()
                     ->suffix('ریال')
@@ -148,43 +256,104 @@ class CustomerAnalysisResource extends Resource
                     ->default(0)
                     ->reactive()
                     ->afterStateUpdated(function ($state, $set, $get) {
-                        $totalCost = $get('total_cost');
-                        $set('total_cost', $state + $totalCost);
-                        if ($get('grant') == 0) {
-                            $set('applicant_share', $state + $totalCost);
+                        // Reset total_cost to the base price (samples_number * price)
+                        $samplesNumber = $get('samples_number');
+                        $analyzeId = $get('analyze_id');
+                        $customerId = $get('customers_id');
+                
+                        // Fetch the price for the selected analyze_id and customer_id
+                        $price = \App\Models\price_analysis_credit::where('customers_id', $customerId)
+                            ->where('analyze_id', $analyzeId)
+                            ->value('price');
+                
+                        // If no price is found in price_analysis_credit, fall back to price_analysis
+                        if ($price === null) {
+                            $price = \App\Models\price_analysis::where('analyze_id', $analyzeId)
+                                ->value('price');
+                        }
+                
+                        if ($price !== null) {
+                            // Recalculate the base total cost
+                            $baseTotalCost = $samplesNumber * $price;
+                
+                            // Reset total cost to the base price first
+                            $set('total_cost', $baseTotalCost);
+                
+                            // Apply additional cost
+                            $newTotalCost = $baseTotalCost + $state;  // Adding additional cost to base price
+                            $set('total_cost', $newTotalCost);
+                
+                            // Recalculate applicant_share based on grant and network_share
+                            $grant = $get('grant');
+                            $networkShare = $get('network_share') ?? 0;
+                
+                            if ($grant == 0) {
+                                $set('applicant_share', $newTotalCost);  // If grant is 0, applicant_share = new total_cost
+                            } elseif ($grant == 1) {
+                                $set('applicant_share', max($newTotalCost - $networkShare, 0));  // If grant is 1, deduct network_share
+                            }
                         }
                     }),
-                    Forms\Components\TextInput::make('base_total_cost')
-                        ->label('هزینه کل اولیه')
-                        ->numeric()
-                        ->default(0)
-                        ->hidden(),
                 
+                
+
                     Forms\Components\TextInput::make('total_cost')
-                        ->label('هزینه کل بعد از تخفیف')
-                        ->nullable()
-                        ->required()
-                        ->suffix('ریال')
-                        ->reactive()
-                        ->readonly()
-                        ->extraAttributes(['class' => 'bg-gray-300'])
-                        ->afterStateUpdated(function ($state, $set, $get) {
-                            $grant = $get('grant');
-                            if ($grant == 0) {
-                                $set('applicant_share', $state);
-                            } elseif ($grant == 1) {
-                                $networkShare = $get('network_share') ?? 0;
-                                $set('applicant_share', max($state - $networkShare, 0)); 
-                            }
-                        }),
+                    ->label('هزینه کل')
+                    ->nullable()
+                    ->required()
+                    ->suffix('ریال')
+                    ->reactive()
+                    ->readonly()
+                    ->extraAttributes(['class' => 'bg-gray-300'])
+                    ->afterStateUpdated(function ($state, $set, $get) {
+                        // Invoke the total cost calculation and applicant share update
+                        (new CustomerAnalysisController())->calculateTotalCostAndApplicantShare($state, $set, $get);
+                    }),
+                
+
 
                 Forms\Components\TextInput::make('applicant_share')
                     ->label('سهم متقاضی')
+                    ->suffix('ریال')
                     ->required()
                     ->numeric()
                     ->reactive()
-                    ->default(0)
-                    ->readonly(),
+                    ->readonly()
+                    ->default(function ($get) {
+                        // Ensure applicant_share gets the value based on total_cost
+                        $totalCost = $get('total_cost');
+                
+                        // Check if customers_id and analyze_id are set to 1 and 1 respectively
+                        if ($get('customers_id') == 1 && $get('analyze_id') == 1) {
+                            // Fetch the price for customer 1 and analyze 1
+                            $price = \App\Models\price_analysis_credit::where('customers_id', 1)
+                                ->where('analyze_id', 1)
+                                ->value('price');
+                
+                            // If no record is found, fall back to price_analysis
+                            if (!$price) {
+                                $price = \App\Models\price_analysis::where('analyze_id', 1)
+                                    ->value('price');
+                            }
+                
+                            return $price ?? 0; // Return price or 0 if not found
+                        }
+                
+                        // Default to total_cost if it's already set
+                        return $totalCost;
+                    })
+                    ->afterStateUpdated(function ($state, $set, $get) {
+                        $totalCost = $get('total_cost');
+                        $grant = $get('grant');
+                        $networkShare = $get('network_share') ?? 0;
+                
+                        // Ensure applicant_share is updated correctly when grant or total_cost changes
+                        if ($grant == 0) {
+                            $set('applicant_share', $totalCost); // If grant is 0, applicant_share = total_cost
+                        } elseif ($grant == 1) {
+                            $set('applicant_share', max($totalCost - $networkShare, 0)); // If grant is 1, deduct network share from total cost
+                        }
+                    }),
 
 
                 Forms\Components\TextInput::make('network_share')
