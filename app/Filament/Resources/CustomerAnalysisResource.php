@@ -3,18 +3,17 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\CustomerAnalysisResource\Pages;
+use App\Http\Controllers\CustomerAnalysisController;
 use App\Models\CustomerAnalysis;
 use App\Models\Customers;
 use App\Models\Analyze;
 use Filament\Forms;
-use Filament\Forms\Components\Hidden;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\App;
-use Morilog\Jalali\Jalalian;
 
 class CustomerAnalysisResource extends Resource
 {
@@ -55,66 +54,30 @@ class CustomerAnalysisResource extends Resource
                     ->inline()
                     ->required()
                     ->reactive()
-                    ->default($customerAnalysis->grant ?? 0)
+                    ->default(0)
                     ->afterStateUpdated(function ($state, $set, $get) {
-                        // Get the total cost value
-                        $total = $get('total_cost') ?? 0;
-                        
-                        // If grant is 0, set applicant_share to total and reset network_share and network_id
+                        $totalCost = $get('total_cost');
                         if ($state == 0) {
-                            $set('applicant_share', $total);
-                            $set('network_share', null);
-                            $set('network_id', null);
-                        } else if ($state == 1) {
-                            // If grant is 1, calculate applicant_share based on network_share
-                            $networkShare = $get('network_share') ?? 0;
-                            $applicantShare = $total - $networkShare;
-                            $set('applicant_share', $applicantShare);
-                            $set('network_share', $networkShare);
+                            $set('applicant_share', $totalCost);
+                            $set('network_share', 0); 
+                        } elseif ($state == 1) {
+                            $networkShare = $get('network_share');
+                            $set('applicant_share', $totalCost - $networkShare);
                         }
                     }),
-
+                    
 
                 Forms\Components\Radio::make('discount')
-                ->options([
-                    0 => 'ندارد',
-                    1 => 'درصد',
-                    2 => 'مبلغ',
-                ])
-                ->label('تخفیف')
-                ->inline()
-                ->required()
-                ->reactive()
-                ->default(0)
-                ->afterStateUpdated(function ($state, $set, $get) {
-                    // Get current values of other relevant fields
-                    $samplesNumber = $get('samples_number') ?? 1;
-                    $analyzeId = $get('analyze_id') ?? 1;
-                    $priceAnalysis = \App\Models\price_analysis::where('analyze_id', $analyzeId)->first();
-                    
-                    $base_cost = $priceAnalysis ? $priceAnalysis->price : 0;
-                    $additional_cost = $get('additional_cost') ?? 0;
-                    $value_added = $get('value_added') == 1 ? ($samplesNumber * $base_cost * 10) / 100 : 0;
-                    
-                    // Get discount-related values
-                    $discountType = $state;
-                    $discountNum = $get('discount_num') ?? 0;
-                    
-                    // Calculate total cost based on discount type
-                    $totalCost = 0;
-            
-                    if ($discountType == 0) {  // No discount
-                        $totalCost = ($samplesNumber * $base_cost) + $value_added;
-                    } elseif ($discountType == 2) {  // Fixed discount (discount_num is amount)
-                        $totalCost = (($samplesNumber * $base_cost) + $value_added) - $discountNum;
-                    } elseif ($discountType == 1) {  // Percentage discount
-                        $totalCost = (($samplesNumber * $base_cost) + $value_added) - (($samplesNumber * $base_cost + $value_added) * $discountNum) / 100;
-                    }
-            
-                    // Update the total cost field
-                    $set('total_cost', $totalCost);
-                }),
-            
+                    ->options([
+                        0 => 'ندارد',
+                        1 => 'درصد',
+                        2 => 'مبلغ',
+                    ])
+                    ->label('تخفیف')
+                    ->inline()
+                    ->required()
+                    ->reactive()
+                    ->default(0), 
 
                 Forms\Components\Select::make('customers_id')
                     ->label('مشتری')
@@ -129,16 +92,16 @@ class CustomerAnalysisResource extends Resource
                     ->required()
                     ->searchable(),
                     
-                    Forms\Components\DatePicker::make('acceptance_date')
+                Forms\Components\DatePicker::make('acceptance_date')
                     ->label('تاریخ پذیرش')
                     ->required()
                     ->jalali()
-                    ->default(now())  // Sets the default date to today's date
+                    ->default(now())
                     ->reactive()
                     ->afterStateUpdated(function ($state, $set) {
-                        // Call the function to generate tracking code whenever the date changes
-                        $trackingCode = self::generateTrackingCode($state);
-                        $set('tracking_code', $trackingCode);  // Update the tracking_code field with the new tracking code
+                        // Call the function to generate tracking code from the controller
+                        $trackingCode = (new CustomerAnalysisController())->generateTrackingCode($state);
+                        $set('tracking_code', $trackingCode);  
                     }),
                         
 
@@ -149,41 +112,19 @@ class CustomerAnalysisResource extends Resource
                     
                 Forms\Components\Select::make('analyze_id')
                     ->label('آنالیز')
-                    ->options(Analyze::all()->pluck('title', 'id')) 
+                    ->options(Analyze::all()->pluck('title', 'id'))
                     ->default(1)
                     ->required()
                     ->searchable()
-                    ->reactive() 
-                    ->afterStateUpdated(function ($state, $set, $get) {
-                        $samplesNumber = $get('samples_number') ?? 1;
-                        $priceAnalysis = \App\Models\price_analysis::where('analyze_id', $state)->first();
-                        
-                        $additional_cost = $get('additional_cost') ?? 0;
-                        
-                        if ($priceAnalysis) {
-                            $new_total_cost = ($samplesNumber * $priceAnalysis->price) + $additional_cost;
-                            $set('total_cost', $new_total_cost);
-                        }
-                    }),
+                    ->reactive(),
                 
                 Forms\Components\TextInput::make('samples_number')
-                ->label('تعداد نمونه')
-                ->numeric()
-                ->required()
-                ->suffix('عدد')
-                ->default(1)
-                ->reactive() 
-                ->afterStateUpdated(function ($state, $set, $get) {
-                    $analyzeId = $get('analyze_id') ?? 1;
-                    $priceAnalysis = \App\Models\price_analysis::where('analyze_id', $analyzeId)->first();
-                    
-                    $additional_cost = $get('additional_cost') ?? 0;
-                    
-                    if ($priceAnalysis) {
-                        $new_total_cost = ($state * $priceAnalysis->price) + $additional_cost;
-                        $set('total_cost', $new_total_cost);
-                    }
-                }),
+                    ->label('تعداد نمونه')
+                    ->numeric()
+                    ->required()
+                    ->suffix('عدد')
+                    ->default(1)
+                    ->reactive(),
 
                 Forms\Components\TextInput::make('analyze_time')
                     ->label('کل زمان آنالیز')
@@ -197,95 +138,69 @@ class CustomerAnalysisResource extends Resource
                 Forms\Components\Toggle::make('value_added')
                     ->label('ارزش افزوده')
                     ->id('value_added')
-                    ->reactive() // Makes it reactive
-                    ->afterStateUpdated(function ($state, $set, $get) {
-                        // Get current values of other relevant fields
-                        $samplesNumber = $get('samples_number') ?? 1;
-                        $analyzeId = $get('analyze_id') ?? 1;
-                        $priceAnalysis = \App\Models\price_analysis::where('analyze_id', $analyzeId)->first();
-                        
-                        $base_cost = $priceAnalysis ? $priceAnalysis->price : 0;
-                        $additional_cost = $get('additional_cost') ?? 0;
+                    ->reactive(),
                 
-                        // Calculate value added based on 'value_added' toggle
-                        if ($state == 1) {  // if value_added is enabled
-                            $valueadded = ($samplesNumber * $base_cost * 10) / 100;
-                        } else {  // if value_added is disabled
-                            $valueadded = 0;
-                        }
-                
-                        // Calculate the new total cost
-                        $new_total_cost = ($samplesNumber * $base_cost) + $additional_cost + $valueadded;
-                
-                        // Update the total_cost field
-                        $set('total_cost', $new_total_cost);
-                    }),
-                
-                
-                    Forms\Components\TextInput::make('additional_cost')
+                Forms\Components\TextInput::make('additional_cost')
                     ->label('هزینه اضافه')
                     ->numeric()
                     ->suffix('ریال')
                     ->id('additional_cost')
-                    ->default($customerAnalysis->additional_cost ?? 0)
-                    ->reactive() 
+                    ->default(0)
+                    ->reactive()
                     ->afterStateUpdated(function ($state, $set, $get) {
-                        $samplesNumber = $get('samples_number') ?? 1;
-                        $analyzeId = $get('analyze_id') ?? 1;
-                        $priceAnalysis = \App\Models\price_analysis::where('analyze_id', $analyzeId)->first();
-                        $base_cost = $priceAnalysis ? $priceAnalysis->price : 0;
-                
-                        $new_total_cost = ($samplesNumber * $base_cost) + $state;
-                
-                        $set('total_cost', $new_total_cost);
+                        $totalCost = $get('total_cost');
+                        $set('total_cost', $state + $totalCost);
+                        if ($get('grant') == 0) {
+                            $set('applicant_share', $state + $totalCost);
+                        }
                     }),
-                
-
-                    Forms\Components\TextInput::make('total_cost')
-                        ->label('هزینه کل')
-                        ->nullable()
-                        ->required() 
-                        ->suffix('ریال')
-                        ->extraAttributes(['id' => 'total_cost'])
-                        ->default(function ($get) {
-                            $priceAnalysis = \App\Models\price_analysis::where('analyze_id', 1)->first();
-                            return $priceAnalysis ? $priceAnalysis->price : 0;
-                        })
-                        ->reactive() 
-                        ->afterStateUpdated(function ($state, $set, $get) {
-                        }),
-
-
-                        Forms\Components\TextInput::make('applicant_share')
-                        ->label('سهم متقاضی')
-                        ->required()
+                    Forms\Components\TextInput::make('base_total_cost')
+                        ->label('هزینه کل اولیه')
                         ->numeric()
-                        ->reactive() // React when applicant_share changes
-                        ->default(function ($get) {
-                            // Set the default value of applicant_share to the current total_cost
-                            return $get('total_cost') ?? 0;
-                        })
-                        ->afterStateUpdated(function ($state, $set, $get) {
-                            // Get total cost and update network_share based on applicant_share
-                            $total = $get('total_cost') ?? 0;
-                            $networkShare = $total - $state; // Subtract applicant_share from total cost to get network_share
-                            $set('network_share', $networkShare);
-                        }),
-
-
-                        Forms\Components\TextInput::make('network_share')
-                        ->label('سهم شبکه')
+                        ->default(0)
+                        ->hidden(),
+                
+                    Forms\Components\TextInput::make('total_cost')
+                        ->label('هزینه کل بعد از تخفیف')
+                        ->nullable()
                         ->required()
-                        ->id('network_share')
-                        ->visible(fn ($state, $get) => $get('grant') == 1)  // Only visible if grant == 1
-                        ->reactive() // React when network_share changes
+                        ->suffix('ریال')
+                        ->reactive()
+                        ->readonly()
+                        ->extraAttributes(['class' => 'bg-gray-300'])
                         ->afterStateUpdated(function ($state, $set, $get) {
-                            // Get total cost and update applicant_share based on network_share
-                            $total = $get('total_cost') ?? 0;
-                            $applicantShare = $total - $state; // Subtract network_share from total cost to get applicant_share
-                            $set('applicant_share', $applicantShare);
+                            $grant = $get('grant');
+                            if ($grant == 0) {
+                                $set('applicant_share', $state);
+                            } elseif ($grant == 1) {
+                                $networkShare = $get('network_share') ?? 0;
+                                $set('applicant_share', max($state - $networkShare, 0)); 
+                            }
                         }),
-                    
+
+                Forms\Components\TextInput::make('applicant_share')
+                    ->label('سهم متقاضی')
+                    ->required()
+                    ->numeric()
+                    ->reactive()
+                    ->default(0)
+                    ->readonly(),
+
+
+                Forms\Components\TextInput::make('network_share')
+                    ->label('سهم شبکه')
+                    ->required()
+                    ->numeric()
+                    ->visible(fn ($state, $get) => $get('grant') == 1) 
+                    ->reactive()
+                    ->default(0)
+                    ->afterStateUpdated(function ($state, $set, $get) {
+                        $totalCost = $get('total_cost');
+                        $grant = $get('grant');
+                        if ($grant == 1) {
+                            $set('applicant_share', $totalCost - $state);
+                        }
+                    }),
 
                 Forms\Components\TextInput::make('network_id')
                     ->label('ID شبکه')
@@ -293,113 +208,40 @@ class CustomerAnalysisResource extends Resource
                     ->default(null)
                     ->visible(fn ($state, $get) => $get('grant') == 1),
 
-                Forms\Components\Select::make('payment_method_id')
+                Forms\Components\Select::make('payment_method_id') 
                     ->label('نحوه پرداخت')
                     ->relationship('paymentMethod', 'title')
-                    ->required(),
+                    ->required()
+                    ->afterStateUpdated(function ($state, callable $set) {
+                        $status = ($state == 1) ? 1 : 0;
+                        
+                        $set('status', $status);
+                    }),
                     
-                    Forms\Components\TextInput::make('discount_num')
+                Forms\Components\TextInput::make('discount_num')
                     ->label('درصد تخفیف')
                     ->numeric()
                     ->nullable()
-                    ->visible(fn ($state, $get) => $get('discount') == 1)  // Only visible if discount is set to 'درصد'
-                    ->afterStateUpdated(function ($state, $set, $get) {
-                        // Recalculate total cost whenever the discount_num changes
-                        $samplesNumber = $get('samples_number') ?? 1;
-                        $analyzeId = $get('analyze_id') ?? 1;
-                        $priceAnalysis = \App\Models\price_analysis::where('analyze_id', $analyzeId)->first();
-                        
-                        $base_cost = $priceAnalysis ? $priceAnalysis->price : 0;
-                        $additional_cost = $get('additional_cost') ?? 0;
-                        $value_added = $get('value_added') == 1 ? ($samplesNumber * $base_cost * 10) / 100 : 0;
-                
-                        $discountType = $get('discount') ?? 0;
-                        $discountNum = $state ?? 0;
-                
-                        // Calculate total cost based on discount type
-                        $totalCost = 0;
-                
-                        if ($discountType == 0) {  // No discount
-                            $totalCost = ($samplesNumber * $base_cost) + $value_added;
-                        } elseif ($discountType == 1) {  // Fixed discount (discount_num is amount)
-                            $totalCost = (($samplesNumber * $base_cost) + $value_added) - $discountNum;
-                        } elseif ($discountType == 2) {  // Percentage discount
-                            $totalCost = (($samplesNumber * $base_cost) + $value_added) - (($samplesNumber * $base_cost + $value_added) * $discountNum) / 100;
-                        }
-                
-                        // Update the total cost field
-                        $set('total_cost', $totalCost);
-                    }),
+                    ->visible(fn ($state, $get) => $get('discount') == 1)  
+                    ->reactive(),
 
-                    Forms\Components\TextInput::make('discount_num')
+                Forms\Components\TextInput::make('discount_num')
                     ->label('مبلغ تخفیف')
                     ->numeric()
                     ->nullable()
-                    ->visible(fn ($state, $get) => $get('discount') == 2)  // Only visible if discount is set to 'مبلغ'
-                    ->afterStateUpdated(function ($state, $set, $get) {
-                        // Recalculate total cost whenever the discount_num changes
-                        $samplesNumber = $get('samples_number') ?? 1;
-                        $analyzeId = $get('analyze_id') ?? 1;
-                        $priceAnalysis = \App\Models\price_analysis::where('analyze_id', $analyzeId)->first();
-                        
-                        $base_cost = $priceAnalysis ? $priceAnalysis->price : 0;
-                        $additional_cost = $get('additional_cost') ?? 0;
-                        $value_added = $get('value_added') == 1 ? ($samplesNumber * $base_cost * 10) / 100 : 0;
-                
-                        $discountType = $get('discount') ?? 0;
-                        $discountNum = $state ?? 0;
-                
-                        // Calculate total cost based on discount type
-                        $totalCost = 0;
-                
-                        if ($discountType == 0) {  // No discount
-                            $totalCost = ($samplesNumber * $base_cost) + $value_added;
-                        } elseif ($discountType == 1) {  // Fixed discount (discount_num is amount)
-                            $totalCost = (($samplesNumber * $base_cost) + $value_added) - $discountNum;
-                        } elseif ($discountType == 2) {  // Percentage discount
-                            $totalCost = (($samplesNumber * $base_cost) + $value_added) - (($samplesNumber * $base_cost + $value_added) * $discountNum) / 100;
-                        }
-                
-                        // Update the total cost field
-                        $set('total_cost', $totalCost);
-                    }),
-
-                // Forms\Components\FileUpload::make('scan_form')
-                //     ->label('اسکن فرم')
-                //     ->image()
-                //     ->disk('public')
-                //     ->directory('images')
-                //     ->nullable(),
-
+                    ->visible(fn ($state, $get) => $get('discount') == 2) 
+                    ->reactive() ,
 
                 Forms\Components\Textarea::make('description')
                     ->label('توضیحات پذیرش'),
 
-                Forms\Components\Select::make('status')
-                    ->label('وضعیت پذیرش')
-                    ->options([
-                        0 => 'منتظر پرداخت',
-                        1 => 'پذیرش کامل',
-                        2 => 'در انتظار',
-                        3 => 'کنسل',
-                        4 => 'تایید مالی',
-                        5 => 'منتظر تایید مدیریت فنی',
-                        6 => 'تایید مدیریت فنی',
-                        7 => 'آنالیز تکمیل',
-                        8 => 'منتظر تایید مدیریت مالی',
-                    ])
+                Forms\Components\Hidden::make('status')
                     ->required(),
 
-                    Forms\Components\TextInput::make('tracking_code')
-                    ->label('کد پیگیری')
-                    ->nullable()  // The tracking code will be populated based on the date
-                    ->default(function ($get) {
-                        // Set the default tracking code based on the current date
-                        $acceptanceDate = now()->format('Y/m/d');  // Get current date (today)
-                        return self::generateTrackingCode($acceptanceDate);  // Use the generateTrackingCode function
-                    }),
-                ]);
-            
+                Forms\Components\Hidden::make('tracking_code')
+                    ->default(fn($get) => (new CustomerAnalysisController)->generateTrackingCode($get('acceptance_date')))
+            ]
+        );
     }
 
     public static function table(Table $table): Table
@@ -417,6 +259,7 @@ class CustomerAnalysisResource extends Resource
                     ->label('تاریخ پذیرش')
                     ->dateTime()
                     ->unless(App::isLocale('en'), fn (Tables\Columns\TextColumn $column) => $column->jalaliDate()),
+                
                 Tables\Columns\TextColumn::make('date_answer')
                     ->label('تاریخ جوابدهی')
                     ->dateTime()
@@ -428,20 +271,12 @@ class CustomerAnalysisResource extends Resource
                 Tables\Columns\TextColumn::make('total_cost')
                     ->label('هزینه کل'),
 
+                Tables\Columns\TextColumn::make('applicant_share')
+                    ->label('سهم متقاضی'),
+
                 Tables\Columns\TextColumn::make('status')
                     ->label('وضعیت پذیرش')
-                    ->formatStateUsing(fn ($state) => match ($state) {
-                        0 => 'منتظر پرداخت',
-                        1 => 'پذیرش کامل',
-                        2 => 'در انتظار',
-                        3 => 'کنسل',
-                        4 => 'تایید مالی',
-                        5 => 'منتظر تایید مدیریت فنی',
-                        6 => 'تایید مدیریت فنی',
-                        7 => 'آنالیز تکمیل',
-                        8 => 'منتظر تایید مدیریت مالی',
-                        default => 'نامشخص',
-                    }),
+                    ->formatStateUsing(fn ($state) => CustomerAnalysisController::getStatusLabel($state)),
                     
                 Tables\Columns\TextColumn::make('tracking_code')
                     ->label('کد پیگیری'),
@@ -457,22 +292,11 @@ class CustomerAnalysisResource extends Resource
                     ->form([
                         Forms\Components\Select::make('status')
                             ->label('وضعیت')
-                            ->options([
-                                0 => 'منتظر پرداخت',
-                                1 => 'پذیرش کامل',
-                                2 => 'در انتظار',
-                                3 => 'کنسل',
-                                4 => 'تایید مالی',
-                                5 => 'منتظر تایید مدیریت فنی',
-                                6 => 'تایید مدیریت فنی',
-                                7 => 'آنالیز تکمیل',
-                                8 => 'منتظر تایید مدیریت مالی',
-                            ]),
+                            ->options(CustomerAnalysisController::statusOptions()),
                     ]),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
@@ -485,52 +309,18 @@ class CustomerAnalysisResource extends Resource
         return [
             'index' => Pages\ListCustomerAnalyses::route('/'),
             'create' => Pages\CreateCustomerAnalysis::route('/create'),
-            'edit' => Pages\EditCustomerAnalysis::route('/{record}/edit'),
         ];
     }
 
     public static function beforeSave($record, array $data): array
-{
-    // Get the acceptance date from the data
-    $acceptanceDate = $data['acceptance_date'] ?? null;
-
-    // If the acceptance date is set, generate the tracking code
-    if ($acceptanceDate) {
-        // Call the function to generate the tracking code
-        $trackingCode = self::generateTrackingCode($acceptanceDate);
-
-        // Add the generated tracking code to the data
-        $data['tracking_code'] = $trackingCode;
+    {
+        return (new CustomerAnalysisController)->beforeSave(request());
     }
+    public static function boot(): void
+    {
+        parent::boot();
 
-    // Return the modified data
-    return $data;
-}
-
-public static function generateTrackingCode($acceptanceDate)
-{
-    // Convert the acceptance date to the Persian (Jalali) calendar
-    $persianDate = Jalalian::fromCarbon(\Carbon\Carbon::parse($acceptanceDate))->format('Ymd');
-
-    // Look for the latest record with the same Persian date in the tracking code
-    $lastTrackingCode = CustomerAnalysis::where('tracking_code', 'like', $persianDate . '%')
-        ->orderBy('tracking_code', 'desc')
-        ->first();
-
-    if ($lastTrackingCode) {
-        // If a previous record exists, increment the last 5 digits of the tracking code
-        $lastNumber = substr($lastTrackingCode->tracking_code, -5);
-        $nextNumber = (int)$lastNumber + 1;
-        // Pad the incremented number to ensure it's always 5 digits
-        $trackingCode = str_pad($nextNumber, 5, '0', STR_PAD_LEFT);
-    } else {
-        // If no previous record, start from "00001"
-        $trackingCode = '00001';
+        // Add the JS file to the page
+        \Filament\Facades\Filament::addScript(asset('js/custom.js'));
     }
-
-    // Combine the Persian date with the incremented tracking number
-    $trackingCode = $persianDate . $trackingCode;
-
-    return $trackingCode;
-}
 }
