@@ -5,7 +5,6 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\LinkAnalysisPersonResource\Pages;
 use App\Models\Customers;
 use App\Models\LinkAnalysisPerson;
-use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -13,6 +12,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Morilog\Jalali\Jalalian;
 
 class LinkAnalysisPersonResource extends Resource
 {
@@ -103,7 +103,14 @@ class LinkAnalysisPersonResource extends Resource
                     ->wrap()
                     ->getStateUsing(fn($record) => $record->analyze ? $record->analyze->title : null),
 
-                TextColumn::make('created_at')->label(__('filament.labels.created_at')),
+                TextColumn::make('created_at')
+                    ->label(__('filament.labels.created_at'))
+                    ->formatStateUsing(fn ($state) => 
+                        app()->getLocale() === 'fa' 
+                            ? Jalalian::fromDateTime($state)->format('Y/m/d H:i') // Convert to Jalali
+                            : \Carbon\Carbon::parse($state)->format('Y-m-d H:i') // Gregorian format
+                    )
+                    ->sortable(),
             ])
             ->filters([
                 //

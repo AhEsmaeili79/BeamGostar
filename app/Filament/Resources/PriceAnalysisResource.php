@@ -12,7 +12,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-
+use Morilog\Jalali\Jalalian;
 class PriceAnalysisResource extends Resource
 {
     protected static ?string $model = price_analysis::class;
@@ -69,14 +69,14 @@ class PriceAnalysisResource extends Resource
                 ->sortable()
                 ->searchable(),
 
-                TextColumn::make('price')
-                    ->label('قیمت(ریال)')
-                    ->sortable()
-                    ->searchable(),
-
-                TextColumn::make('date')
-                    ->label('تاریخ ثبت')
-                    ->sortable(),
+                // TextColumn::make('created_at')
+                //     ->label(__('filament.labels.created_at'))
+                //     ->formatStateUsing(fn ($state) => 
+                //         app()->getLocale() === 'fa' 
+                //             ? Jalalian::fromDateTime($state)->format('Y/m/d H:i') // Convert to Jalali
+                //             : \Carbon\Carbon::parse($state)->format('Y-m-d H:i') // Gregorian format
+                //     )
+                //     ->sortable(),
             ])
             ->filters([
                 //

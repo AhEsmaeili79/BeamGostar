@@ -3,15 +3,11 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\InvoiceRuleSetResource\Pages;
-use App\Filament\Resources\InvoiceRuleSetResource\RelationManagers;
 use App\Models\InvoiceRuleSet;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Morilog\Jalali\Jalalian;
 
 class InvoiceRuleSetResource extends Resource
 {
@@ -74,8 +70,14 @@ class InvoiceRuleSetResource extends Resource
                     ->label(__('filament.labels.text')),
                 Tables\Columns\BooleanColumn::make('state')
                     ->label(__('filament.labels.status')),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->label(__('filament.labels.created_at')),
+                    Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('filament.labels.created_at'))
+                    ->formatStateUsing(fn ($state) => 
+                        app()->getLocale() === 'fa' 
+                            ? Jalalian::fromDateTime($state)->format('Y/m/d H:i') // Convert to Jalali
+                            : \Carbon\Carbon::parse($state)->format('Y-m-d H:i') // Gregorian format
+                    )
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->label(__('filament.labels.updated_at')),
             ])

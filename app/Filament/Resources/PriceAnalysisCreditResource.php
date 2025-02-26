@@ -3,20 +3,16 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PriceAnalysisCreditResource\Pages;
-use App\Filament\Resources\PriceAnalysisCreditResource\RelationManagers;
 use App\Models\Analyze;
 use App\Models\Customers;
 use App\Models\price_analysis_credit;
-use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-
+use Morilog\Jalali\Jalalian;
 class PriceAnalysisCreditResource extends Resource
 {
     protected static ?string $model = price_analysis_credit::class;
@@ -108,7 +104,14 @@ class PriceAnalysisCreditResource extends Resource
             Tables\Columns\TextColumn::make('price')  // Display price
                 ->label('قیمت(ریال)')
                 ->sortable(),
-    
+            Tables\Columns\TextColumn::make('created_at')
+                ->label(__('filament.labels.created_at'))
+                ->formatStateUsing(fn ($state) => 
+                    app()->getLocale() === 'fa' 
+                        ? Jalalian::fromDateTime($state)->format('Y/m/d H:i') // Convert to Jalali
+                        : \Carbon\Carbon::parse($state)->format('Y-m-d H:i') // Gregorian format
+                )
+                ->sortable(),
             ])
             ->filters([
                 //

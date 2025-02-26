@@ -5,11 +5,9 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\InvoiceSetResource\Pages;
 use App\Models\InvoiceSet;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Table;
-
+use Morilog\Jalali\Jalalian;
 class InvoiceSetResource extends Resource
 {
     protected static ?string $model = InvoiceSet::class;
@@ -62,9 +60,13 @@ class InvoiceSetResource extends Resource
                 Tables\Columns\TextColumn::make('id')->sortable()->label(__('filament.labels.id')),
                 Tables\Columns\TextColumn::make('max_day')->sortable()->label(__('filament.labels.max_day')),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime('Y-m-d H:i:s')
-                    ->sortable()
-                    ->label(__('filament.labels.created_at')),
+                    ->label(__('filament.labels.created_at'))
+                    ->formatStateUsing(fn ($state) => 
+                        app()->getLocale() === 'fa' 
+                            ? Jalalian::fromDateTime($state)->format('Y/m/d H:i') // Convert to Jalali
+                            : \Carbon\Carbon::parse($state)->format('Y-m-d H:i') // Gregorian format
+                    )
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime('Y-m-d H:i:s')
                     ->sortable()

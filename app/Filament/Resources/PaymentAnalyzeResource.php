@@ -131,6 +131,15 @@ class PaymentAnalyzeResource extends Resource
                     }),
                 TextColumn::make('tracking_code')
                     ->label(__('filament.labels.tracking_code')),
+                
+                    TextColumn::make('created_at')
+                    ->label(__('filament.labels.created_at'))
+                    ->formatStateUsing(fn ($state) => 
+                        app()->getLocale() === 'fa' 
+                            ? Jalalian::fromDateTime($state)->format('Y/m/d H:i') // Convert to Jalali
+                            : Carbon::parse($state)->format('Y-m-d H:i') // Gregorian format
+                    )
+                    ->sortable(),
             ])
             ->filters([])
             ->actions([

@@ -19,6 +19,7 @@ use Ysfkaya\FilamentPhoneInput\Tables\PhoneColumn;
 use Ysfkaya\FilamentPhoneInput\PhoneInputNumberType;
 use App\Rules\ValidNationalCode;
 use Illuminate\Validation\Rule;
+use Morilog\Jalali\Jalalian;
 
 class CustomersResource extends Resource
 {
@@ -72,6 +73,7 @@ class CustomersResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $isPersian = app()->getLocale() === 'fa';
         return $form
             ->schema([
                 Forms\Components\Section::make(__('filament.labels.customer_type'))
@@ -191,12 +193,17 @@ class CustomersResource extends Resource
                     ->required()
                     ->visible(fn ($state, $get) => $get('customer_type') == 1 && $get('nationality') == 0), 
 
-                DatePicker::make('birth_date')
+                tap(DatePicker::make('birth_date')
                     ->label(__('filament.labels.birth_date'))
-                    ->jalali()
                     ->nullable()
-                    ->visible(fn ($state, $get) => $get('customer_type') == 0 && $get('nationality') == 0),  
-                
+                    ->visible(fn ($state, $get) => $get('customer_type') == 0 && $get('nationality') == 0), 
+                    function ($datePicker) use ($isPersian) {
+                        if ($isPersian) {
+                            $datePicker->jalali(); // Apply Jalali only if Persian is selected
+                        }
+                    }
+                ),
+
                 PhoneInput::make('mobile')
                     ->label(__('filament.labels.mobile'))
                     ->placeholder(__('filament.placeholders.mobile'))
@@ -318,6 +325,15 @@ class CustomersResource extends Resource
                     ->label(__('filament.labels.mobile'))
                     ->wrap()
                     ->searchable(),
+
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('filament.labels.created_at'))
+                    ->formatStateUsing(fn ($state) => 
+                        app()->getLocale() === 'fa' 
+                            ? Jalalian::fromDateTime($state)->format('Y/m/d H:i') // Convert to Jalali
+                            : \Carbon\Carbon::parse($state)->format('Y-m-d H:i') // Gregorian format
+                    )
+                    ->sortable(),
             ])
             ->filters([
                 //

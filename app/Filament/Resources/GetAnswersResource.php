@@ -12,6 +12,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Morilog\Jalali\Jalalian;
 
 class GetAnswersResource extends Resource
 {
@@ -86,8 +87,11 @@ class GetAnswersResource extends Resource
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->label(__('filament.labels.created_at'))
-                    ->wrap()
-                    ->toggleable()
+                    ->formatStateUsing(fn ($state) => 
+                        app()->getLocale() === 'fa' 
+                            ? Jalalian::fromDateTime($state)->format('Y/m/d H:i') // Convert to Jalali
+                            : \Carbon\Carbon::parse($state)->format('Y-m-d H:i') // Gregorian format
+                    )
                     ->sortable(),
             ])
             ->filters([

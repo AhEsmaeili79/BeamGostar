@@ -7,6 +7,7 @@ use App\Models\InvoiceRule;
 use Filament\Forms;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Morilog\Jalali\Jalalian;
 
 class InvoiceRuleResource extends Resource
 {
@@ -67,7 +68,14 @@ class InvoiceRuleResource extends Resource
                 Tables\Columns\TextColumn::make('title')->label(__('filament.labels.title')),
                 Tables\Columns\TextColumn::make('text')->label(__('filament.labels.text')),
                 Tables\Columns\BooleanColumn::make('state')->label(__('filament.labels.status')),
-                Tables\Columns\TextColumn::make('created_at')->label(__('filament.labels.created_at')),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('filament.labels.created_at'))
+                    ->formatStateUsing(fn ($state) => 
+                        app()->getLocale() === 'fa' 
+                            ? Jalalian::fromDateTime($state)->format('Y/m/d H:i') // Convert to Jalali
+                            : \Carbon\Carbon::parse($state)->format('Y-m-d H:i') // Gregorian format
+                    )
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('updated_at')->label(__('filament.labels.updated_at')),
             ])
             ->filters([

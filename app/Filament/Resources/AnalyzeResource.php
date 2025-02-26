@@ -13,6 +13,7 @@ use Filament\Tables\Table;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Grid;
+use Morilog\Jalali\Jalalian;
 
 class AnalyzeResource extends Resource
 {
@@ -100,8 +101,11 @@ class AnalyzeResource extends Resource
                 
                 Tables\Columns\TextColumn::make('created_at')
                     ->label(__('filament.labels.created_at'))
-                    ->wrap()
-                    ->toggleable()
+                    ->formatStateUsing(fn ($state) => 
+                        app()->getLocale() === 'fa' 
+                            ? Jalalian::fromDateTime($state)->format('Y/m/d H:i') // Convert to Jalali
+                            : \Carbon\Carbon::parse($state)->format('Y-m-d H:i') // Gregorian format
+                    )
                     ->sortable(),
             ])
             ->filters([ 
