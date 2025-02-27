@@ -6,9 +6,10 @@ use Filament\Forms\Components\Component;
 use Filament\Forms\Components\TextInput;
 use Filament\Pages\Auth\Login;
 use Filament\Forms\Components\Checkbox;
-use Filament\Facades\Notification;
+use Filament\Notifications\Notification;
 use Illuminate\Validation\ValidationException;
-
+use Illuminate\Contracts\Validation\Validator;
+use App\Models\BackgroundImage;
 class CustomLogin extends Login
 {
     /**
@@ -85,7 +86,25 @@ class CustomLogin extends Login
     }
 
     /**
-     * Extract credentials from the form data.
+     * Get the background URL dynamically.
+     *
+     * @return string
+     */
+    protected function getBackgroundUrl(): string
+    {
+        // You can replace this with fetching from DB or configuration file
+        
+        
+        $background = BackgroundImage::latest()->first();
+        if ($background) {
+            return asset('storage/' . $background->image_path); // Use 'storage/' prefix to match symlinked directory
+        }
+        return asset('storage/images/default-background.jpg'); // Fallback image
+
+    }
+
+    /**
+     * Get the credentials from form data.
      *
      * @param array $data
      * @return array
@@ -165,5 +184,29 @@ class CustomLogin extends Login
     {
         $this->sendLoginSuccessNotification();
         // Additional logic for successful login can be added here
+    }
+
+    /**
+     * Apply the background dynamically to the login page.
+     *
+     * @return void
+     */
+    public function applyBackground()
+    {
+        $backgroundUrl = $this->getBackgroundUrl();
+
+        $this->viewData['background_url'] = $backgroundUrl;
+    }
+
+    /**
+     * The login page's layout view
+     *
+     * @return string
+     */
+    public function layout(): string
+    {
+        $this->applyBackground();  // Apply the background dynamically
+
+        return 'filament::auth.login';
     }
 }

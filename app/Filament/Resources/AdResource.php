@@ -52,9 +52,11 @@ class AdResource extends Resource
 
                 Forms\Components\FileUpload::make('image')
                     ->image()
+                    ->label(__('filament.labels.image'))
                     ->maxSize(2048) // 2 MB
                     ->nullable()
-                    ->label(__('filament.labels.image')),
+                    ->disk('public')
+                    ->directory('images'),
 
                 Forms\Components\TextInput::make('url')
                     ->url()
