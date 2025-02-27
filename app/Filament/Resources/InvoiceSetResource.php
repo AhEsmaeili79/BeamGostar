@@ -50,7 +50,16 @@ class InvoiceSetResource extends Resource
                     ->numeric()
                     ->required()
                     ->placeholder(__('filament.placeholders.enter_max_day')),
-            ]);
+            ])
+           ->extraAttributes([
+            'class' => 'filament-form-wrapper', // Adding a wrapper class for custom styles
+            'style' => 'border: 3px solid #ddd; 
+                        padding: 20px; 
+                        border-radius: 12px; 
+                        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
+                        transition: all 0.3s ease;',
+        ]);
+    
     }
 
     public static function table(Tables\Table $table): Tables\Table
@@ -80,7 +89,7 @@ class InvoiceSetResource extends Resource
                 Tables\Actions\DeleteAction::make()->label(__('filament.actions.delete')),
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make()->label(__('filament.actions.delete_bulk')),
+                Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
 

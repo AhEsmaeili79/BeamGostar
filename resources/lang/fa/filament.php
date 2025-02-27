@@ -187,6 +187,7 @@ return [
         'mobile' => '9121234567',
         'phone' => 'شماره تلفن',
         'enter_max_day' => 'بیشترین روز برای صورتحساب را وارد کنید',
+        'passportplacehoder' => 'شماره پاسپورت را وارد کنید',
     ],
 
     'actions' => [
@@ -229,4 +230,7 @@ return [
         'waiting_for_financial_management_approval' => 'منتظر تایید مدیریت مالی',
         'unknown' => 'نامشخص',
     ],
+    'alert'=> [
+        'passport_alert' => 'شماره پاسپورت باید دارای حروف و 6 تا 9 رقم باشد',
+    ]
 ];

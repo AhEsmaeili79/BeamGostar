@@ -187,6 +187,7 @@ return [
         'mobile' => '9121234567',
         'phone' => 'Phone number',
         'enter_max_day' => 'Enter the maximum day for invoice',
+        'passportplacehoder' => 'Enter Passport Number',
     ],
 
     'actions' => [
@@ -227,6 +228,8 @@ return [
         'analysis_completed' => 'Analysis Completed',
         'waiting_for_financial_management_approval' => 'Waiting for Financial Management Approval',
         'unknown' => 'Unknown',
-        
     ],
+    'alert'=> [
+        'passport_alert' => 'Passport No must be alphanumeric and between 6 and 9 characters.',
+    ]
 ];

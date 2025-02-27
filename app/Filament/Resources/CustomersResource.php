@@ -152,7 +152,7 @@ class CustomersResource extends Resource
                     ->label(fn ($get) => $get('customer_type') == 1 && $get('nationality') == 0 ? __('filament.labels.family_en') : __('filament.labels.family_en'))
                     ->nullable(),
 
-                    TextInput::make('national_code')
+                TextInput::make('national_code')
                     ->label(__('filament.labels.national_code'))
                     ->numeric()
                     ->nullable()
@@ -189,22 +189,27 @@ class CustomersResource extends Resource
                 
                 TextInput::make('passport')
                     ->label(__('filament.labels.passport'))
-                    ->numeric()
-                    ->required()
-                    ->unique('users', 'name')
-                    ->same('password')
-                    ->visible(fn ($state, $get) => $get('nationality') == 1)
+                    ->required() // Required field
+                    ->unique('users', 'name') // Unique passport number
+                    ->visible(fn ($state, $get) => $get('nationality') == 1) // Conditional visibility based on nationality
                     ->reactive()
                     ->rules(function ($get, $record) {
                         return [
-                            'required',
-                            'numeric',
-                            Rule::unique('users', 'name')->ignore($record ? $record->user_id : null),  // Ignore user if editing
+                            'required', // Ensures passport number is numeric (if you want alphanumeric, replace with 'regex')
+                            Rule::unique('users', 'name')->ignore($record ? $record->user_id : null), // Ignore current record when editing
+                            // Custom validation rule for passport format (alphanumeric, 6-9 characters)
+                            function ($attribute, $value, $fail) {
+                                // Updated regex for passport number: letter (any) followed by 6-9 digits
+                                if (!preg_match('/^[A-Z][0-9]{6,9}$/', $value)) {
+                                    $fail(__('filament.alert.passport_alert', ['attribute' => $attribute]));
+                                }
+                            },
                         ];
                     })
-                    ->readonly(fn ($get) => $get('record') !== null),  // Make it readonly when editing
+                    ->readonly(fn ($get) => $get('record') !== null) // Set it as readonly when the record exists
+                    ->placeholder(__('filament.placeholders.passportplacehoder')),
                 
-            
+        
                 TextInput::make('economy_code')
                     ->label(__('filament.labels.economy_code'))
                     ->numeric()
@@ -268,7 +273,16 @@ class CustomersResource extends Resource
                 TextInput::make('address')
                     ->label(__('filament.labels.address'))
                     ->nullable(),
-            ]);
+            ])
+           ->extraAttributes([
+            'class' => 'filament-form-wrapper', // Adding a wrapper class for custom styles
+            'style' => 'border: 3px solid #ddd; 
+                        padding: 20px; 
+                        border-radius: 12px; 
+                        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
+                        transition: all 0.3s ease;',
+        ]);
+    
     }
 
     public static function table(Table $table): Table

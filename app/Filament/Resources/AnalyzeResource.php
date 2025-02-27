@@ -49,31 +49,38 @@ class AnalyzeResource extends Resource
     protected static ?int $navigationSort = 2;
     
     public static function form(Form $form): Form
-    {
-        return $form
-            ->schema([
-                Grid::make(2) // Creates a two-column layout
-                    ->schema([
-                        Toggle::make('status')
-                            ->label(__('filament.labels.status'))
-                            ->required()
-                            ->default(false)
-                            ->reactive()
-                            ->afterStateUpdated(fn($state) => $state ? 1 : 0)
-                            ->offIcon('')
-                            ->helperText(__('filament.labels.status'))
-                            ->columnSpan(1), // It will take 1/2 of the available space
-                
-                        TextInput::make('title')
-                            ->label(__('filament.labels.title'))
-                            ->maxLength(250)
-                            ->required()
-                            ->placeholder(__('filament.labels.title'))
-                            ->unique(Analyze::class, 'title') // Enforce unique validation for the title
-                            ->columnSpan(2), // It will take 1/2 of the available space
-                    ]),
-            ]);
-    }
+{
+    return $form
+        ->schema([
+            Grid::make(2)
+                ->schema([
+                    Toggle::make('status')
+                        ->label(__('filament.labels.status'))
+                        ->required()
+                        ->default(1)
+                        ->reactive()
+                        ->afterStateUpdated(fn($state) => $state ? 1 : 0)
+                        ->offIcon('')
+                        ->columnSpan(1), 
+
+                    TextInput::make('title')
+                        ->label(__('filament.labels.title'))
+                        ->maxLength(250)
+                        ->required()
+                        ->placeholder(__('filament.labels.title'))
+                        ->unique(Analyze::class, 'title') 
+                        ->columnSpan(2), 
+                ]),
+        ])
+        ->extraAttributes([
+            'class' => 'filament-form-wrapper', // Adding a wrapper class for custom styles
+            'style' => 'border: 3px solid #ddd; 
+                        padding: 20px; 
+                        border-radius: 12px; 
+                        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
+                        transition: all 0.3s ease;',
+        ]);
+}
 
     public static function table(Table $table): Table
     {

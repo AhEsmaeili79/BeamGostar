@@ -58,6 +58,14 @@ class SubsystemResource extends Resource
                     ->numeric()
                     ->required()
                     ->maxLength(3),
+            ])
+            ->extraAttributes([
+                'class' => 'filament-form-wrapper', // Adding a wrapper class for custom styles
+                'style' => 'border: 3px solid #ddd; 
+                            padding: 20px; 
+                            border-radius: 12px; 
+                            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
+                            transition: all 0.3s ease;',
             ]);
     }
 
