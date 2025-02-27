@@ -17,7 +17,8 @@ class ReturnRequestResource extends Resource
 {
     protected static ?string $model = ReturnRequest::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-arrow-path';
+
 
     // Move dynamic expressions like this one into methods
     protected static ?string $navigationLabel = null; // to be set by a method

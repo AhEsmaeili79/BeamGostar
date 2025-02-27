@@ -44,7 +44,8 @@ class AnalyzeResource extends Resource
         return __('filament.labels.analyze');
     }
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-chart-pie';
+
     
     protected static ?int $navigationSort = 2;
     

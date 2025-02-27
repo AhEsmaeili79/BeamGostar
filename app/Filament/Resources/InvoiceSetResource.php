@@ -12,7 +12,8 @@ class InvoiceSetResource extends Resource
 {
     protected static ?string $model = InvoiceSet::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document';
+    protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
+
 
     public static function getNavigationGroup(): string
     {

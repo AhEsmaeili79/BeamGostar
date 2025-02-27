@@ -19,7 +19,7 @@ class PriceAnalysisResource extends Resource
 
     protected static ?string $label = 'هزینه';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-briefcase';
 
     protected static ?string $navigationGroup = 'اطلاعات پایه';
 

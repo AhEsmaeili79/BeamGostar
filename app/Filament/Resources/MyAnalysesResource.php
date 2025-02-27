@@ -28,8 +28,8 @@ class MyAnalysesResource extends Resource
 {
     protected static ?string $model = CustomerAnalysis::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
+    protected static ?string $navigationIcon = 'heroicon-o-beaker';
+    
     // Move dynamic expressions like this one into methods
     protected static ?string $navigationGroup = 'مشتریان';
     protected static ?string $slug = 'my-analysis';

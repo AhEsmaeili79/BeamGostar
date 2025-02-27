@@ -176,7 +176,7 @@ return [
         'pay_now' => 'پرداخت',
         'print_invoice' => 'چاپ فاکتور',
         'download_result' => 'دانلود نتیجه آنالیز',
-        "max_dayinvoice" => "تنظیم حداکثر روز مجاز صورتحساب",
+        "max_dayinvoice" => "حداکثر روز مجاز صورتحساب",
         'max_day' => 'بیشترین روز',
         'national_code_invalid' => 'کد ملی وارد شده معتبر نیست.',
         'minutes' => 'دقیقه',

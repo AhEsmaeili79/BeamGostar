@@ -15,6 +15,8 @@ class InvoiceRuleSetResource extends Resource
 
     protected static ?string $navigationLabel = null;  // To be set by a method
 
+    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+
     protected static ?string $navigationGroup = null;
 
     public static function getLabel(): string

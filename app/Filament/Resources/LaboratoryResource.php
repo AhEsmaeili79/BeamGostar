@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\App;
 class LaboratoryResource extends Resource
 {
     protected static ?string $model = Laboratory::class;
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-presentation-chart-line';
     protected static ?int $navigationSort = 5;
     
     // Removed dynamic expressions from these properties

@@ -15,7 +15,7 @@ class AdResource extends Resource
 {
     protected static ?string $model = Ad::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-megaphone'; 
 
     // Use translation function
     public static function getNavigationLabel(): string

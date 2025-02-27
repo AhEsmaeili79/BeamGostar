@@ -18,7 +18,9 @@ class GetAnswersResource extends Resource
 {
     protected static ?string $model = get_answers::class;
     protected static ?string $navigationGroup = 'اطلاعات پایه';
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-chat-bubble-left-right';
+
+
     protected static ?int $navigationSort = 5;
 
     // Remove dynamic translations from here

@@ -35,7 +35,8 @@ class TechnicalReviewResource extends Resource
 
     protected static ?string $singularLabel = 'مدیریت فنی آنالیز مشتریان';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-wrench';
+
     
 
     public static function form(Form $form): Form

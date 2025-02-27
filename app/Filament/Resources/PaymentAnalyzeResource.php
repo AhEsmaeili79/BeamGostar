@@ -18,7 +18,9 @@ use Illuminate\Database\Eloquent\Builder;
 class PaymentAnalyzeResource extends Resource
 {
     protected static ?string $model = CustomerAnalysis::class;
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    protected static ?string $navigationIcon = 'heroicon-o-banknotes';
+
     protected static ?string $navigationGroup = 'امور مالی';
 
 

@@ -40,10 +40,7 @@ class InvoiceRuleResource extends Resource
         return __('filament.labels.invoice_rules');
     }
 
-    public static function getNavigationIcon(): string
-    {
-        return 'heroicon-o-rectangle-stack';  // You can customize this icon if needed
-    }
+    protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
     public static function form(Forms\Form $form): Forms\Form
     {

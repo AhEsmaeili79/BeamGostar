@@ -27,7 +27,7 @@ class CustomersResource extends Resource
 
     protected static ?string $pluralLabel = null;
     protected static ?string $navigationLabel = null;
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-user-plus';
     protected static ?string $navigationGroup = null;
     protected static ?string $pluralModelLabel = null;
     protected static ?string $label = null;
@@ -57,11 +57,6 @@ class CustomersResource extends Resource
     public static function getNavigationGroup(): string
     {
         return __('filament.labels.admissions');
-    }
-
-    public static function getNavigationIcon(): string
-    {
-        return 'heroicon-o-rectangle-stack';  // You can customize this icon if needed
     }
 
     public static function getPluralModelLabel(): string

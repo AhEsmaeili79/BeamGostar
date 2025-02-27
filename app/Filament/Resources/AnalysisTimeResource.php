@@ -19,6 +19,8 @@ class AnalysisTimeResource extends Resource
 {
     protected static ?string $model = AnalysisTime::class;
 
+    protected static ?string $navigationIcon = 'heroicon-o-clock';
+
     // Make methods public to override parent methods
     public static function getNavigationGroup(): string
     {
@@ -40,7 +42,6 @@ class AnalysisTimeResource extends Resource
         return __('filament.labels.analysis_time_management');
     }
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     
     protected static ?int $navigationSort = 4;
     

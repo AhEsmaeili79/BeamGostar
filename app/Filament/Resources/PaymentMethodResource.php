@@ -17,7 +17,10 @@ class PaymentMethodResource extends Resource
 {
     protected static ?string $model = payment_method::class;
     protected static ?string $navigationGroup = 'اطلاعات پایه';
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
+
+
+
     protected static ?int $navigationSort = 7;
 
     public static function getLabel(): string
