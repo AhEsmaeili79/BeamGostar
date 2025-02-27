@@ -20,6 +20,7 @@ return new class extends Migration
             $table->tinyInteger('ordering')->unsigned();
             $table->string('header_title', 100)->nullable();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
+            $table->timestamps();
         });
     }
 

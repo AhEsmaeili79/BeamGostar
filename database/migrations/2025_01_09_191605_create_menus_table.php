@@ -27,6 +27,7 @@ return new class extends Migration
             $table->smallInteger('clone_of')->nullable();
             $table->boolean('open_in_blank')->default(false);
             $table->boolean('open_in_iframe')->default(false);
+            $table->timestamps();
         });
     }
 

@@ -15,8 +15,6 @@ return new class extends Migration
             $table->id()->comment('کد');
             $table->foreignId('analyze_id')->constrained('analyze')->onDelete('cascade')->comment('آنالیز');
             $table->string('price', 10)->comment('قیمت(ریال)');
-            $table->string('date', 10)->nullable()->comment('تاریخ ثبت');
-            $table->string('time', 10)->nullable()->comment('زمان ثبت');
             $table->string('deleted_at', 16)->nullable();
             $table->timestamps();
         });
