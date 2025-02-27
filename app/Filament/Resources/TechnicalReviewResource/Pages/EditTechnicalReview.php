@@ -8,6 +8,10 @@ use Filament\Resources\Pages\EditRecord;
 
 class EditTechnicalReview extends EditRecord
 {
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
     protected static string $resource = TechnicalReviewResource::class;
 
     protected function getHeaderActions(): array

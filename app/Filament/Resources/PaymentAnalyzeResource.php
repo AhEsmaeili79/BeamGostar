@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\App;
 use Morilog\Jalali\Jalalian;
 use Carbon\Carbon;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\Eloquent\Builder;
 
 class PaymentAnalyzeResource extends Resource
 {
@@ -25,6 +26,11 @@ class PaymentAnalyzeResource extends Resource
     public static function getNavigationLabel(): string
     {
         return __('filament.labels.financial_check_management');
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->where('status', 8);
     }
 
     public static function getPluralLabel(): string

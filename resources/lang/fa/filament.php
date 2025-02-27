@@ -178,6 +178,9 @@ return [
         'download_result' => 'دانلود نتیجه آنالیز',
         "max_dayinvoice" => "تنظیم حداکثر روز مجاز صورتحساب",
         'max_day' => 'بیشترین روز',
+        'national_code_invalid' => 'کد ملی وارد شده معتبر نیست.',
+        'minutes' => 'دقیقه',
+        'days' => 'روز',
     ],
 
     'placeholders' => [

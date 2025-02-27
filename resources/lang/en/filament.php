@@ -178,6 +178,9 @@ return [
         'download_result' => 'Download Analysis Result',
         'max_dayinvoice' => 'set max day invoice',
         'max_day' => 'Max Day',
+        'national_code_invalid' => 'The entered national code is invalid.',
+        'minutes' => 'minutes',
+        'days' => 'days',
     ],
 
     'placeholders' => [

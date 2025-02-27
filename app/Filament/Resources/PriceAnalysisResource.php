@@ -77,6 +77,10 @@ class PriceAnalysisResource extends Resource
                 //             : \Carbon\Carbon::parse($state)->format('Y-m-d H:i') // Gregorian format
                 //     )
                 //     ->sortable(),
+                TextColumn::make('date')
+                ->label('تاریخ ثبت')
+                ->sortable()
+                ->searchable(),
             ])
             ->filters([
                 //

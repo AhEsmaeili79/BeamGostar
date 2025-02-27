@@ -8,6 +8,11 @@ use Filament\Resources\Pages\EditRecord;
 
 class EditFullCustomerAnalysis extends EditRecord
 {
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
     protected static string $resource = FullCustomerAnalysisResource::class;
 
     protected function getHeaderActions(): array

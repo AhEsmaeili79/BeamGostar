@@ -3,19 +3,22 @@
 namespace App\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
-use App\Models\Customer; // Assuming the model name is Customer
 
 class ValidNationalCode implements Rule
 {
     public function passes($attribute, $value)
     {
-        // Check if the national code is valid using your previous logic
+        // Check if the input is exactly 10 digits
+        if (!preg_match('/^[0-9]{10}$/', $value)) {
+            return false;
+        }
+        
         return self::checkNationalCode($value);
     }
 
     public function message()
     {
-        return 'کد ملی وارد شده معتبر نیست.';
+        return __('filament.labels.national_code_invalid');
     }
 
     public static function checkNationalCode($code)

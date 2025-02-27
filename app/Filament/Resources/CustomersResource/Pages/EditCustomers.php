@@ -21,7 +21,7 @@ class EditCustomers extends EditRecord
         return 'ویرایش مشتری'; // Your custom title for the form page
     }
     protected function getRedirectUrl(): string
-{
-    return $this->getResource()::getUrl('index');
-}
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }

@@ -4,11 +4,12 @@ namespace App\Providers;
 
 use BezhanSalleh\FilamentLanguageSwitch\LanguageSwitch;
 use Illuminate\Support\ServiceProvider;
-use Filament\Facades\Filament;
-use Filament\Navigation\NavigationGroup;
-use Filament\Navigation\NavigationItem;
-
-
+use App\Models\User;
+use App\Observers\UserObserver;
+use App\Models\Customers;
+use App\Observers\CustomerObserver;
+use App\Models\Personnel;
+use App\Observers\PersonnelObserver;
 class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
@@ -24,5 +25,9 @@ class AppServiceProvider extends ServiceProvider
                 ->visible(outsidePanels: true);  
         });
         app()->setLocale('fa');
+
+        User::observe(UserObserver::class);
+        Customers::observe(CustomerObserver::class);
+        Personnel::observe(PersonnelObserver::class);
     }
 }

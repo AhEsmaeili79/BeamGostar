@@ -8,6 +8,10 @@ use Filament\Resources\Pages\EditRecord;
 
 class EditLinkAnalysisPerson extends EditRecord
 {
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
     protected static string $resource = LinkAnalysisPersonResource::class;
 
     protected function getHeaderActions(): array

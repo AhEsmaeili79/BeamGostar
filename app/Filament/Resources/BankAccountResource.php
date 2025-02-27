@@ -67,6 +67,7 @@ class BankAccountResource extends Resource
                             ->mask('9999999999999999')
                             ->minLength(12)
                             ->maxLength(16)
+                            ->unique(bank_account::class, 'title')
                             ->rules([
                                 'required',
                                 'min:12',
@@ -81,6 +82,7 @@ class BankAccountResource extends Resource
                             ->label(__('filament.labels.card_number'))
                             ->mask('9999 9999 9999 9999')
                             ->placeholder('xxxx xxxx xxxx xxxx')
+                            ->unique(bank_account::class, 'title')
                             ->dehydrateStateUsing(fn($state) => str_replace(' ', '', $state))
                             ->columnSpan([
                                 'default' => 2,
@@ -90,6 +92,7 @@ class BankAccountResource extends Resource
                         Forms\Components\TextInput::make('shaba_number')
                             ->label(__('filament.labels.shaba_number'))
                             ->suffix('IR')
+                            ->unique(bank_account::class, 'title')
                             ->dehydrateStateUsing(fn($state) => str_replace(' ', '', $state))
                             ->mask('99 9999 9999 9999 9999 9999 99')
                             ->placeholder(__('filament.labels.shaba_number'))

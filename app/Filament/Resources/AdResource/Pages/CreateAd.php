@@ -9,4 +9,8 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateAd extends CreateRecord
 {
     protected static string $resource = AdResource::class;
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }

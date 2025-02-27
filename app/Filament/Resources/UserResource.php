@@ -11,13 +11,13 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Tables\Actions\Action;
 use Rawilk\FilamentPasswordInput\Password;
-
+use Filament\Notifications\Notification;
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
     
-    // Make methods public to override parent methods
     public static function getNavigationGroup(): string
     {
         return __('filament.labels.user_management');
@@ -44,12 +44,14 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
+                
                 TextInput::make('name')
                     ->label(__('filament.labels.username'))
                     ->required()
                     ->maxLength(50)
                     ->reactive()
-                    ->hiddenOn(['edit']),
+                    ->disabled(), // Change the route name to your edit route
+
 
                 Select::make('roles')
                     ->relationship('roles', 'name')
@@ -88,11 +90,9 @@ class UserResource extends Resource
                 TextColumn::make('customer_full_name')
                     ->label(__('filament.labels.full_name'))
                     ->getStateUsing(function ($record) {
-                        // Try to get the full name from customer or personnel
+                        // Same logic for customer and personnel full name
                         $fullName = trim(($record->customer ? ($record->customer->name_fa . ' ' . $record->customer->family_fa) : '') 
                                     ?: ($record->personnel ? ($record->personnel->name . ' ' . $record->personnel->family) : ''));
-                
-                        // Return the full name or "-" if empty
                         return $fullName ?: '-';
                     })
                     ->wrap(),
@@ -104,13 +104,33 @@ class UserResource extends Resource
                     ->label(__('filament.labels.working_group'))
                     ->wrap(),
             ])
-            ->filters([ 
-                // Add filters if necessary
+            ->filters([
+                // Optional filters
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
+                // Add the "reset password" action here
+                 // Reset Password action with modal confirmation
+                 Action::make('resetPassword')
+                 ->label('بازنشانی رمز عبور')
+                 ->color('success')
+                 ->modalHeading('تایید بازنشانی رمز عبور')
+                ->modalSubheading('آیا مطمئن هستید که می‌خواهید رمز عبور را به نام کاربری تنظیم کنید؟')
+                ->modalButton('بله، بازنشانی رمز عبور')
+                 ->action(function (User $record) {
+                     // Reset the password to the user's name (bcrypt hashed)
+                     $record->password = bcrypt($record->name);
+                     $record->save();
+
+                     // Show notification
+                     Notification::make()
+                     ->title('بازنشانی رمز عبور')
+                     ->success()
+                     ->body('رمز عبور با موفقیت به نام کاربری تنظیم شد.')
+                         ->send();
+                 }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -122,7 +142,7 @@ class UserResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            // Add relations if any
         ];
     }
 

@@ -152,7 +152,7 @@ class CustomersResource extends Resource
                     ->label(fn ($get) => $get('customer_type') == 1 && $get('nationality') == 0 ? __('filament.labels.family_en') : __('filament.labels.family_en'))
                     ->nullable(),
 
-                TextInput::make('national_code')
+                    TextInput::make('national_code')
                     ->label(__('filament.labels.national_code'))
                     ->numeric()
                     ->nullable()
@@ -160,24 +160,33 @@ class CustomersResource extends Resource
                     ->required()
                     ->mask(9999999999)
                     ->visible(fn ($state, $get) => $get('customer_type') == 0 && $get('nationality') == 0)
-                    ->rules(function ($get) {
+                    ->rules(function ($get, $record) {
                         return [
-                            'required', 
-                            'numeric',   
-                            'digits:10', 
-                            Rule::unique('users', 'name')->ignore($get('name')),
-                            new ValidNationalCode(), 
+                            'required',
+                            'numeric',
+                            'digits:10',
+                            Rule::unique('users', 'name')->ignore($record ? $record->user_id : null),  // Ignore user if editing
+                            new ValidNationalCode(),
                         ];
-                    }),
-
+                    })
+                    ->readonly(fn ($get) => $get('record') !== null),  // Make it readonly when editing
+                
                 TextInput::make('national_id')
                     ->label(__('filament.labels.national_id'))
                     ->numeric()
                     ->required()
                     ->unique('users', 'name')
                     ->reactive()
-                    ->visible(fn ($state, $get) => $get('customer_type') == 1),
-
+                    ->visible(fn ($state, $get) => $get('customer_type') == 1)
+                    ->rules(function ($get, $record) {
+                        return [
+                            'required',
+                            'numeric',
+                            Rule::unique('users', 'name')->ignore($record ? $record->user_id : null),  // Ignore user if editing
+                        ];
+                    })
+                    ->readonly(fn ($get) => $get('record') !== null),  // Make it readonly when editing
+                
                 TextInput::make('passport')
                     ->label(__('filament.labels.passport'))
                     ->numeric()
@@ -185,7 +194,16 @@ class CustomersResource extends Resource
                     ->unique('users', 'name')
                     ->same('password')
                     ->visible(fn ($state, $get) => $get('nationality') == 1)
-                    ->reactive(),
+                    ->reactive()
+                    ->rules(function ($get, $record) {
+                        return [
+                            'required',
+                            'numeric',
+                            Rule::unique('users', 'name')->ignore($record ? $record->user_id : null),  // Ignore user if editing
+                        ];
+                    })
+                    ->readonly(fn ($get) => $get('record') !== null),  // Make it readonly when editing
+                
             
                 TextInput::make('economy_code')
                     ->label(__('filament.labels.economy_code'))
@@ -243,6 +261,8 @@ class CustomersResource extends Resource
 
                 TextInput::make('postal_code')
                     ->label(__('filament.labels.postal_code'))
+                    ->numeric()
+                    ->mask(9999999999)
                     ->nullable(),
 
                 TextInput::make('address')

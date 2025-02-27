@@ -69,6 +69,7 @@ class AnalysisTimeResource extends Resource
                         Analyze::whereNotNull('title')  
                             ->pluck('title', 'id') 
                     )
+                    ->unique(AnalysisTime::class, 'analyze_id') // Enforce unique validation for the title
                     ->required()
                     ->searchable()
                     ->columnSpan([ 

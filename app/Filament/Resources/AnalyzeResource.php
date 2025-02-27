@@ -69,6 +69,7 @@ class AnalyzeResource extends Resource
                             ->maxLength(250)
                             ->required()
                             ->placeholder(__('filament.labels.title'))
+                            ->unique(Analyze::class, 'title') // Enforce unique validation for the title
                             ->columnSpan(2), // It will take 1/2 of the available space
                     ]),
             ]);

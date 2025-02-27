@@ -55,6 +55,7 @@ class GetAnswersResource extends Resource
                             ->label(__('filament.labels.title'))
                             ->maxLength(250)
                             ->required()
+                            ->unique(get_answers::class, 'title') // Enforce unique validation for the title
                             ->placeholder(__('filament.labels.title'))
                             ->columnSpan(2),
                     ]),

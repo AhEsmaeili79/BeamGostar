@@ -13,17 +13,18 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Spatie\Permission\Models\Role;
 use Morilog\Jalali\Jalalian;
-
+use App\Rules\ValidNationalCode;
+use Illuminate\Validation\Rule;
 
 class PersonnelResource extends Resource
 {
     protected static ?string $model = Personnel::class;
 
-    protected static ?string $pluralLabel =  'مدیریت اشخاص';
+    protected static ?string $pluralLabel =  'مدیریت پرسنل';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationGroup = 'اطلاعات پایه';
-    protected static ?string $navigationLabel = 'مدیریت اشخاص';
-    protected static ?string $label = 'مدیریت اشخاص';
+    protected static ?string $navigationLabel = 'مدیریت پرسنل';
+    protected static ?string $label = 'مدیریت پرسنل';
 
     
     protected static ?int $navigationSort =1;
@@ -41,19 +42,32 @@ class PersonnelResource extends Resource
                 ->label('نام خانوادگی')
                 ->required()
                 ->maxLength(40),
+        
             TextInput::make('national_code')
-                ->label('کد ملی')
+                ->label(__('filament.labels.national_code'))
+                ->numeric()
                 ->required()
-                ->unique('personnel', 'name')
-                ->unique('users', 'name')
-                ->maxLength(15),
-            
-                Select::make('role_id')
+                ->mask(9999999999)
+                ->rules(function ($get, $record) {
+                    return [
+                        'required', 
+                        'numeric',   
+                        'digits:10', 
+                        // Unique validation: Ignore the current 'national_code' in edit mode
+                        Rule::unique('personnel', 'national_code')->ignore($record ? $record->id : null),  // Ignore the current record during edit
+                        Rule::unique('users', 'name')->ignore($record ? $record->user_id : null),  // Ignore user if editing
+                        new ValidNationalCode(),
+                    ];
+                })
+                ->readonly(fn ($get) => $get('record') !== null),  // Make it readonly when editing
+
+
+            Select::make('role_id')
                 ->label('نقش')
                 ->required()
                 ->hiddenOn(['edit'])
                 ->options(function () {
-                    return Role::all()->pluck('name', 'id'); 
+                    return Role::where('name', '!=', 'مشتریان')->pluck('name', 'id'); 
                 })
                 ->searchable(),
             ]);
