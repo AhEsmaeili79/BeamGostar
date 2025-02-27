@@ -7,6 +7,7 @@ namespace App\Filament\Pages;
 use App\Models\Ad;
 use Filament\Pages\Dashboard as Page;
 use Illuminate\Contracts\View\View;
+use App\Filament\Widgets\AnalogClockWidget;
 
 class Dashboard extends Page
 {
@@ -28,5 +29,12 @@ class Dashboard extends Page
         return view('filament.pages.dashboard', [
             'ads' => $this->ads,
         ]);
+    }
+
+    public function getWidgets(): array
+    {
+        return [
+            AnalogClockWidget::class,
+        ];
     }
 }
