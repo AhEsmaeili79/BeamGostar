@@ -15,7 +15,7 @@ class CustomerAnalysisPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('view_any_payment::analyze');
+        return $user->can('view_any_upload::answer');
     }
 
     /**
@@ -23,7 +23,7 @@ class CustomerAnalysisPolicy
      */
     public function view(User $user, CustomerAnalysis $customerAnalysis): bool
     {
-        return $user->can('view_payment::analyze');
+        return $user->can('view_upload::answer');
     }
 
     /**
@@ -31,7 +31,7 @@ class CustomerAnalysisPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('create_payment::analyze');
+        return $user->can('create_upload::answer');
     }
 
     /**
@@ -39,7 +39,7 @@ class CustomerAnalysisPolicy
      */
     public function update(User $user, CustomerAnalysis $customerAnalysis): bool
     {
-        return $user->can('update_payment::analyze');
+        return $user->can('update_upload::answer');
     }
 
     /**
@@ -47,7 +47,7 @@ class CustomerAnalysisPolicy
      */
     public function delete(User $user, CustomerAnalysis $customerAnalysis): bool
     {
-        return $user->can('delete_payment::analyze');
+        return $user->can('delete_upload::answer');
     }
 
     /**
@@ -55,7 +55,7 @@ class CustomerAnalysisPolicy
      */
     public function deleteAny(User $user): bool
     {
-        return $user->can('delete_any_payment::analyze');
+        return $user->can('delete_any_upload::answer');
     }
 
     /**
@@ -63,7 +63,7 @@ class CustomerAnalysisPolicy
      */
     public function forceDelete(User $user, CustomerAnalysis $customerAnalysis): bool
     {
-        return $user->can('force_delete_payment::analyze');
+        return $user->can('force_delete_upload::answer');
     }
 
     /**
@@ -71,7 +71,7 @@ class CustomerAnalysisPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('force_delete_any_payment::analyze');
+        return $user->can('force_delete_any_upload::answer');
     }
 
     /**
@@ -79,7 +79,7 @@ class CustomerAnalysisPolicy
      */
     public function restore(User $user, CustomerAnalysis $customerAnalysis): bool
     {
-        return $user->can('restore_payment::analyze');
+        return $user->can('restore_upload::answer');
     }
 
     /**
@@ -87,7 +87,7 @@ class CustomerAnalysisPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('restore_any_payment::analyze');
+        return $user->can('restore_any_upload::answer');
     }
 
     /**
@@ -95,7 +95,7 @@ class CustomerAnalysisPolicy
      */
     public function replicate(User $user, CustomerAnalysis $customerAnalysis): bool
     {
-        return $user->can('replicate_payment::analyze');
+        return $user->can('replicate_upload::answer');
     }
 
     /**
@@ -103,6 +103,6 @@ class CustomerAnalysisPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('reorder_payment::analyze');
+        return $user->can('reorder_upload::answer');
     }
 }

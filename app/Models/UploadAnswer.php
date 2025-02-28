@@ -9,6 +9,8 @@ class UploadAnswer extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $table = 'upload_answers';
+
     protected $fillable = ['customer_analysis_id', 'result'];
 
     public function customerAnalysis() {
