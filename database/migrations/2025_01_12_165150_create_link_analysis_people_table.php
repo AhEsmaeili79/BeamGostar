@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('link_analysis_persons', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('customers_id')->constrained('customers')->onDelete('cascade')->comment('کد مشتریان');
+            $table->foreignId('personnel_id')->constrained('personnel')->onDelete('cascade')->comment('کد پرسنل');
             $table->foreignId('analyze_id')->constrained('analyze')->onDelete('cascade')->comment('آنالیز');
             $table->string('date', 10)->nullable()->comment('تاریخ ثبت');
             $table->string('time', 10)->nullable()->comment('زمان ثبت');

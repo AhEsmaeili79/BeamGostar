@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('customers', function (Blueprint $table) {
             $table->id()->comment('کد');
-            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
+            $table->foreignId('user_id')->nullable(false)->constrained('users')->onDelete('cascade');
             $table->tinyInteger('customer_type')->comment('نوع مشتری');
             $table->tinyInteger('clearing_type')->comment('نوع تسویه');
             $table->tinyInteger('nationality')->comment('تابعیت');

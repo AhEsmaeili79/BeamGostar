@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\LinkAnalysisPersonResource\Pages;
-use App\Models\Customers;
 use App\Models\LinkAnalysisPerson;
 use App\Models\Personnel;
 use Filament\Forms\Components\Select;
@@ -65,7 +64,7 @@ class LinkAnalysisPersonResource extends Resource
                     ->default(now()->format('H:i:s'))
                     ->hidden(),
 
-                Select::make('customers_id')
+                Select::make('personnel_id')
                 ->label(__('filament.labels.operator'))
                 ->options(
                     Personnel::whereNotNull('name')
@@ -112,7 +111,7 @@ class LinkAnalysisPersonResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('customer.name')
+                TextColumn::make('personnel_id')
                     ->label(__('filament.labels.operator'))
                     ->formatStateUsing(fn($state, $record) => $record->personnel->name . ' ' . $record->personnel->family),
 

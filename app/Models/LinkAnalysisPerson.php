@@ -12,16 +12,16 @@ class LinkAnalysisPerson extends Model
     protected $table = 'link_analysis_persons';
 
     protected $fillable = [
-        'customers_id',
+        'personnel_id',
         'analyze_id',
         'date',
         'time',
         'deleted_at',
     ];
     // Defining the relationships
-    public function customer()
+    public function personnel()
     {
-        return $this->belongsTo(Customers::class, 'customers_id');
+        return $this->belongsTo(Personnel::class, 'personnel_id');
     }
 
     public function analyze()
