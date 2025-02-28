@@ -368,6 +368,13 @@ class CustomerAnalysisResource extends Resource
                 Forms\Components\Textarea::make('description')
                     ->label('توضیحات پذیرش'),
 
+                Forms\Components\FileUpload::make('scan_form')
+                    ->label('اسکن فرم')
+                    ->image()
+                    ->disk('public')
+                    ->directory('images')
+                    ->nullable(),
+
                 Forms\Components\Hidden::make('status')
                     ->required(),
 

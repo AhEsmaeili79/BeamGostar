@@ -78,4 +78,9 @@ class CustomerAnalysis extends Model
         return $this->hasOne(ReturnRequest::class);
     }
 
+    public function technicalReview()
+    {
+        return $this->hasOne(TechnicalReview::class, 'customer_analysis_id'); // Adjust the foreign key if needed
+    }
+
 }
