@@ -4,11 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class Laboratory extends Model
 {
     use HasFactory;
-
+    use LogsActivity;
     protected $table = 'laboratory';
     protected $primaryKey = 'id';
     public $timestamps = false;
@@ -58,5 +60,29 @@ class Laboratory extends Model
     public function financialCheck()
     {
         return $this->hasOne(FinancialCheck::class, 'customer_analysis_id', 'id');
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly([
+                'id',
+                'full_name_fa',
+                'full_name_en',
+                'national',
+                'mobile',
+                'customer_type',
+                'clearing_type',
+                'acceptance_date',
+                'samples_number',
+                'analyze_id',
+                'tracking_code',
+                'scan_form',
+                'description',
+                'priority',
+                'status',
+                'state',
+                'date_success',
+            ]); // Log these attributes
     }
 }

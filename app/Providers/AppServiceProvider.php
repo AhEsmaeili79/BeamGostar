@@ -32,49 +32,38 @@ class AppServiceProvider extends ServiceProvider
         Customers::observe(CustomerObserver::class);
         Personnel::observe(PersonnelObserver::class);
 
-        // Filament::serving(function () {
-        //     Filament::registerNavigationGroups([
-        //         NavigationGroup::make()
-        //             ->label('مدیریت کاربران')
-        //             ->icon('heroicon-s-user-group'),
-        //             // Example icon
+        Filament::serving(function () {
+            Filament::registerNavigationGroups([
+                NavigationGroup::make()
+                    ->label('مدیریت کاربران'),
                 
-        //         NavigationGroup::make()
-        //             ->label('اطلاعات پایه')
-        //             ->icon('heroicon-s-circle-stack'), // Example icon
+                NavigationGroup::make()
+                    ->label('اطلاعات پایه'),
                 
-        //         NavigationGroup::make()
-        //             ->label('پذیرش')
-        //             ->icon('heroicon-s-clipboard'), // Example icon
+                NavigationGroup::make()
+                    ->label('پذیرش'),
                 
-        //         NavigationGroup::make()
-        //             ->label('امور مالی')
-        //             ->icon('heroicon-s-credit-card'), // Example icon
+                NavigationGroup::make()
+                    ->label('امور مالی'),
                 
-        //         NavigationGroup::make()
-        //             ->label('آزمایشگاه')
-        //             ->icon('heroicon-s-beaker'), // Example icon
+                NavigationGroup::make()
+                    ->label('آزمایشگاه'),
                 
-        //         NavigationGroup::make()
-        //             ->label('مدیریت فنی')
-        //             ->icon('heroicon-s-cog'), // Example icon
+                NavigationGroup::make()
+                    ->label('مدیریت فنی'),
                 
-        //         NavigationGroup::make()
-        //             ->label('جوابدهی')
-        //             ->icon('heroicon-s-chat'), // Example icon (change to whatever fits best)
+                NavigationGroup::make()
+                    ->label('جوابدهی'),
                 
-        //         NavigationGroup::make()
-        //             ->label('مشتریان')
-        //             ->icon('heroicon-s-users'), // Example icon
+                NavigationGroup::make()
+                    ->label('مشتریان'),
                 
-        //         NavigationGroup::make()
-        //             ->label('مدیریت صورتحساب')
-        //             ->icon('heroicon-s-credit-card'), // Example icon (can be adjusted)
+                NavigationGroup::make()
+                    ->label('مدیریت صورتحساب'),
                 
-        //         NavigationGroup::make()
-        //             ->label('مدیریت پیام رسانی')
-        //             ->icon('heroicon-s-chat-bubble'), // Example icon (can be adjusted)
-        //     ]);
-        // });
+                NavigationGroup::make()
+                    ->label('مدیریت پیام رسانی'),
+            ]);
+        });
     }
 }

@@ -4,11 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class InvoiceRule extends Model
 {
     use HasFactory;
-
+    use LogsActivity;
     // The table associated with the model.
     protected $table = 'invoice_rules';
 
@@ -32,4 +34,16 @@ class InvoiceRule extends Model
         'created_at' => 'datetime:Y-m-d H:i:s',
         'updated_at' => 'datetime:Y-m-d H:i:s',
     ];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly([
+                'title',
+                'text',
+                'state',
+                'created_at',
+                'updated_at',
+            ]); // Log these attributes
+    }
 }

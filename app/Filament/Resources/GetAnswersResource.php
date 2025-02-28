@@ -34,6 +34,11 @@ class GetAnswersResource extends Resource
         return __('filament.labels.get_answers_management');
     }
 
+    public static function getPluralLabel(): string
+    {
+        return __('filament.labels.get_answers_management');
+    }
+
     // Move this dynamic property to a method
     public static function getNavigationLabel(): string
     {
@@ -56,13 +61,14 @@ class GetAnswersResource extends Resource
                             ->helperText(__('filament.labels.choose_status'))
                             ->columnSpan(1),
 
-                        TextInput::make('title')
+                            TextInput::make('title')
                             ->label(__('filament.labels.title'))
                             ->maxLength(250)
                             ->required()
                             ->unique(get_answers::class, 'title') // Enforce unique validation for the title
                             ->placeholder(__('filament.labels.title'))
                             ->columnSpan(2),
+                        
                     ]),
             ])
            ->extraAttributes([

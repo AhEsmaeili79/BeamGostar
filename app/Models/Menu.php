@@ -6,11 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class Menu extends Model
 {
     use HasFactory;
-
+    use LogsActivity;
     protected $table = 'menu';
 
     protected $fillable = [
@@ -47,5 +49,21 @@ class Menu extends Model
         return $this->belongsTo(Subsystem::class, 'subsystem_id');
     }
 
-    
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly([
+                'subsystem_id',
+                'menu_id',
+                'title',
+                'title_en',
+                'icon_class',
+                'route',
+                'state',
+                'ordering',
+                'clone_of',
+                'open_in_blank',
+                'open_in_iframe',
+            ]); // Log these attributes
+    }
 }

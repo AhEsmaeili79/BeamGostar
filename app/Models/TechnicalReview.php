@@ -4,10 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class TechnicalReview extends Model
 {
     use HasFactory;
+    use LogsActivity;
 
     protected $table = 'technical_reviews';
 
@@ -31,5 +34,17 @@ class TechnicalReview extends Model
     public function analyze()
     {
         return $this->belongsTo(Analyze::class);
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly([
+               'customer_analysis_id',
+                'analyze_id',
+                'state',
+                'text',
+                'deleted_at',
+            ]); // Log these attributes
     }
 }

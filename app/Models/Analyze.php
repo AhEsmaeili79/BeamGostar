@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 class Analyze extends Model
 {
     use HasFactory;
+    use LogsActivity;
 
     protected $table = 'analyze';
 
@@ -31,5 +33,12 @@ class Analyze extends Model
     public function priceAnalyses()
     {
         return $this->hasMany(price_analysis::class, 'analyze_id');
+    }
+
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['title','status',]); // Log these attributes
     }
 }

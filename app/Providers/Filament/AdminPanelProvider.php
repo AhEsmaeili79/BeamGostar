@@ -20,6 +20,8 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use App\Filament\Widgets\CustomerCountWidget;
 use App\Filament\Widgets\CustomerAnalysisChart;
+use Rmsramos\Activitylog\ActivitylogPlugin;
+
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
@@ -64,6 +66,9 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->plugins([
                 FilamentShieldPlugin::make(),
+                ActivitylogPlugin::make()
+                ->label(__('filament.labels.log'))
+                ->pluralLabel(__('filament.labels.logs')),
             ])
             ->plugin(
                 \Hasnayeen\Themes\ThemesPlugin::make()

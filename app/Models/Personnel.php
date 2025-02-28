@@ -4,10 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class Personnel extends Model
 {
     use HasFactory;
+    use LogsActivity;
     protected $table = 'personnel';
 
     protected $fillable = [
@@ -62,5 +65,17 @@ class Personnel extends Model
     {
         // Access roles through the user relation
         return $this->user ? $this->user->getRoleNames()->implode(', ') : 'No roles assigned';
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly([
+                'name',
+                'family',
+                'national_code',
+                'user_id',
+                'role_id',
+            ]); // Log these attributes
     }
 }

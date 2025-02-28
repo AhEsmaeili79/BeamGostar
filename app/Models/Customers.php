@@ -4,11 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class Customers extends Model
 {
     use HasFactory;
-
+    use LogsActivity;
     // Defining constants for specific values
     const CUSTOMER_TYPE_HAGHIGHI = 0;  // حقیقی
     const CUSTOMER_TYPE_HOQQOQI = 1;  // حقوقی
@@ -80,5 +82,31 @@ class Customers extends Model
     {
         return $this->hasOne(CustomerAnalysis::class, 'customers_id');
     }
-
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly([
+               'customer_type',
+                'clearing_type',
+                'nationality',
+                'national_code',
+                'national_id',
+                'passport',
+                'economy_code',
+                'name_fa',
+                'family_fa',
+                'name_en',
+                'family_en',
+                'birth_date',
+                'password',
+                're_password',
+                'company_fa',
+                'company_en',
+                'mobile',
+                'phone',
+                'email',
+                'postal_code',
+                'address',
+            ]); // Log these attributes
+    }
 }

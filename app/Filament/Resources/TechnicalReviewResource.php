@@ -14,7 +14,7 @@ use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\App;
-
+use Morilog\Jalali\Jalalian;
 class TechnicalReviewResource extends Resource
 {
     protected static ?string $model = CustomerAnalysis::class;
@@ -180,8 +180,11 @@ class TechnicalReviewResource extends Resource
 
                 Tables\Columns\TextColumn::make('acceptance_date')
                     ->label(__('filament.labels.acceptance_date'))
-                    ->dateTime()
-                    ->unless(App::isLocale('en'), fn (Tables\Columns\TextColumn $column) => $column->jalaliDate()),
+                    ->formatStateUsing(fn ($state) => 
+                        app()->getLocale() === 'fa' 
+                            ? Jalalian::fromDateTime($state)->format('Y/m/d H:i') // Convert to Jalali
+                            : \Carbon\Carbon::parse($state)->format('Y-m-d H:i') // Gregorian format
+                ),
                 
                 BadgeColumn::make('technicalReview.state')
                     ->label('وضعیت')
@@ -247,7 +250,6 @@ class TechnicalReviewResource extends Resource
 
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
 

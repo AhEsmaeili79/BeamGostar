@@ -194,6 +194,8 @@ return [
         'Created_At' => 'تاریخ ایجاد',
         'Updated_At' => 'تاریخ به‌روزرسانی',
         'analyze_personnel_exists' => 'پرسنل با این آنالیز قبلا ایجاد شده است',
+        'logs' => 'فعالیت کاربران',
+        'log' => 'فعالیت ها',
     ],
 
     'placeholders' => [
