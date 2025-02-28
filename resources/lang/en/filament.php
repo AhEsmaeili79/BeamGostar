@@ -31,6 +31,7 @@ return [
         'national_id' => 'National ID',
         'passport' => 'Passport Number',
         'economy_code' => 'Economic Code',
+        'roles' => 'Roles',
         'birth_date' => 'Birth Date',
         'mobile' => 'Mobile Number',
         'phone' => 'Company Phone',

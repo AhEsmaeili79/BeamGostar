@@ -54,6 +54,7 @@ class UserResource extends Resource
 
 
                 Select::make('roles')
+                    ->label(__('filament.labels.roles'))
                     ->relationship('roles', 'name')
                     ->multiple()
                     ->preload()

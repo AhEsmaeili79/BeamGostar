@@ -66,7 +66,7 @@ class PersonnelResource extends Resource
 
 
             Select::make('role_id')
-                ->label('نقش')
+                ->label(__('filament.labels.roles'))
                 ->required()
                 ->hiddenOn(['edit'])
                 ->options(function () {
