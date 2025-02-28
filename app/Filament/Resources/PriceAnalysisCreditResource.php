@@ -20,7 +20,10 @@ class PriceAnalysisCreditResource extends Resource
     
     protected static ?string $label = 'هزینه آنالیز مشتریان اعتباری';
 
-    protected static ?string $navigationGroup = 'اطلاعات پایه';
+    public static function getNavigationGroup(): string
+    {
+        return __('filament.labels.base_info');
+    }
 
     protected static ?string $navigationLabel = 'هزینه آنالیز مشتریان اعتباری';
 

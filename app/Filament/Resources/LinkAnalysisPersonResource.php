@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\LinkAnalysisPersonResource\Pages;
 use App\Models\Customers;
 use App\Models\LinkAnalysisPerson;
+use App\Models\Personnel;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -19,7 +20,10 @@ class LinkAnalysisPersonResource extends Resource
     protected static ?string $model = LinkAnalysisPerson::class;
     protected static ?string $navigationIcon = 'heroicon-o-link';
 
-    protected static ?string $navigationGroup = 'اطلاعات پایه';
+    public static function getNavigationGroup(): string
+    {
+        return __('filament.labels.base_info');
+    }
     protected static ?int $navigationSort = 6;
 
     // Move dynamic translations to methods
@@ -62,17 +66,23 @@ class LinkAnalysisPersonResource extends Resource
                     ->hidden(),
 
                 Select::make('customers_id')
-                    ->label(__('filament.labels.customer'))
-                    ->options(
-                        Customers::whereNotNull('name_fa')
-                            ->whereNotNull('family_fa')
-                            ->get()
-                            ->mapWithKeys(function ($customer) {
-                                return [$customer->id => $customer->name_fa . ' ' . $customer->family_fa];
-                            })
-                    )
-                    ->required()
-                    ->searchable(),
+                ->label(__('filament.labels.operator'))
+                ->options(
+                    Personnel::whereNotNull('name')
+                        ->whereNotNull('family')
+                        ->whereHas('user', function($query) {
+                            $query->whereHas('roles', function($query) {
+                                $query->whereIn('name', ['آزمایشگاه', 'ازمایشگاه']);
+                            });
+                        })
+                        ->get()
+                        ->mapWithKeys(function ($personnel) {
+                            return [$personnel->id => $personnel->name . ' ' . $personnel->family];
+                        })
+                )
+                ->required()
+                ->searchable(),
+            
 
                 Select::make('analyze_id')
                     ->label(__('filament.labels.analysis'))
@@ -102,9 +112,9 @@ class LinkAnalysisPersonResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('customer.name_fa')
-                    ->label(__('filament.labels.customer_name'))
-                    ->formatStateUsing(fn($state, $record) => $record->customer->name_fa . ' ' . $record->customer->family_fa),
+                TextColumn::make('customer.name')
+                    ->label(__('filament.labels.operator'))
+                    ->formatStateUsing(fn($state, $record) => $record->personnel->name . ' ' . $record->personnel->family),
 
                 TextColumn::make('analyze_id')
                     ->label(__('filament.labels.analysis_title'))

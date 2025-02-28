@@ -163,6 +163,7 @@ return [
         'invoice_management' => 'مدیریت فاکتور',
         'customers_management' => 'مدیریت مشتریان',
         'singular_customer' => 'مدیریت مشتریان',
+        'operator' => 'آنالیزگر',
         'admissions' => 'پذیرش',
         'ad_management' => 'مدیریت تبلیغات',
         'image' => 'تصویر',
@@ -187,6 +188,11 @@ return [
         'national_code_invalid' => 'کد ملی وارد شده معتبر نیست.',
         'minutes' => 'دقیقه',
         'days' => 'روز',
+        'Stage_Level' => 'سطح مرحله',
+        'Text' => 'متن',
+        'Active' => 'فعال',
+        'Created_At' => 'تاریخ ایجاد',
+        'Updated_At' => 'تاریخ به‌روزرسانی',
     ],
 
     'placeholders' => [

@@ -160,6 +160,7 @@ return [
         'my_analyses' => 'my analyses' ,
         'invoice_rules' => 'Invoice Rules',
         'text' => 'Text',
+        'operator' => 'Operator',
         'invoice_set_management' => 'Invoice Set Management',
         'invoice_management' => 'Invoice Management',
         'customers_management' => 'Customer Management',
@@ -187,6 +188,11 @@ return [
         'national_code_invalid' => 'The entered national code is invalid.',
         'minutes' => 'minutes',
         'days' => 'days',
+        'Stage_Level' => 'Stage Level',
+        'Text' => 'Text',
+        'Active' => 'Active',
+        'Created_At' => 'Created At',
+        'Updated_At' => 'Updated At',
     ],
 
     'placeholders' => [

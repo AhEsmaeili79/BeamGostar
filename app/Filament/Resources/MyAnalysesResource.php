@@ -148,8 +148,12 @@ class MyAnalysesResource extends Resource
                     ->formatStateUsing(fn ($state, $record) => $record->customer->name_fa . ' ' . $record->customer->family_fa),
                 TextColumn::make('acceptance_date')
                     ->label(__('filament.labels.acceptance_date'))
-                    ->dateTime()
-                    ->unless(App::isLocale('en'), fn (TextColumn $column) => $column->jalaliDate()),
+                    ->formatStateUsing(fn ($state) => 
+                        app()->getLocale() === 'fa' 
+                            ? Jalalian::fromDateTime($state)->format('Y/m/d H:i') // Convert to Jalali
+                            : Carbon::parse($state)->format('Y-m-d H:i') // Gregorian format
+                    )
+                    ->sortable(),
                 TextColumn::make('analyze.title')
                     ->label(__('filament.labels.analyze')),
                 TextColumn::make('total_cost')

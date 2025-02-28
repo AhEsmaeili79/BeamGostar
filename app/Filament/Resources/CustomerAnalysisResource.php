@@ -405,13 +405,21 @@ class CustomerAnalysisResource extends Resource
                 
                 Tables\Columns\TextColumn::make('acceptance_date')
                     ->label('تاریخ پذیرش')
-                    ->dateTime()
-                    ->unless(App::isLocale('en'), fn (Tables\Columns\TextColumn $column) => $column->jalaliDate()),
+                    ->formatStateUsing(fn ($state) => 
+                        app()->getLocale() === 'fa' 
+                            ? Jalalian::fromDateTime($state)->format('Y/m/d H:i') // Convert to Jalali
+                            : \Carbon\Carbon::parse($state)->format('Y-m-d H:i') // Gregorian format
+                    )
+                    ->sortable(),
                 
                 Tables\Columns\TextColumn::make('date_answer')
                     ->label('تاریخ جوابدهی')
-                    ->dateTime()
-                    ->unless(App::isLocale('en'), fn (Tables\Columns\TextColumn $column) => $column->jalaliDate()),
+                    ->formatStateUsing(fn ($state) => 
+                    app()->getLocale() === 'fa' 
+                            ? Jalalian::fromDateTime($state)->format('Y/m/d H:i') // Convert to Jalali
+                            : \Carbon\Carbon::parse($state)->format('Y-m-d H:i') // Gregorian format
+                    )
+                    ->sortable(),
                 
                 Tables\Columns\TextColumn::make('analyze.title')
                     ->label('آنالیز'),

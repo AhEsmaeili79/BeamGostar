@@ -19,6 +19,7 @@ class InvoiceRuleSetResource extends Resource
 
     protected static ?string $navigationGroup = null;
 
+    protected static ?int $navigationSort = 14;
     public static function getLabel(): string
     {
         return __('filament.labels.invoice_set_management');

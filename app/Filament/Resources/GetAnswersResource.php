@@ -17,7 +17,10 @@ use Morilog\Jalali\Jalalian;
 class GetAnswersResource extends Resource
 {
     protected static ?string $model = get_answers::class;
-    protected static ?string $navigationGroup = 'اطلاعات پایه';
+    public static function getNavigationGroup(): string
+    {
+        return __('filament.labels.base_info');
+    }
     protected static ?string $navigationIcon = 'heroicon-o-chat-bubble-left-right';
 
 

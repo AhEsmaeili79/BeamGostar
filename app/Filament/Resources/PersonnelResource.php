@@ -23,8 +23,10 @@ class PersonnelResource extends Resource
     protected static ?string $pluralLabel =  'مدیریت پرسنل';
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
-    protected static ?string $navigationGroup = 'اطلاعات پایه';
-    protected static ?string $navigationLabel = 'مدیریت پرسنل';
+    public static function getNavigationGroup(): string
+    {
+        return __('filament.labels.base_info');
+    }
     protected static ?string $label = 'مدیریت پرسنل';
 
     
@@ -41,6 +43,7 @@ class PersonnelResource extends Resource
                 ->label('نام')
                 ->required()
                 ->maxLength(40),
+                
             TextInput::make('family')
                 ->label('نام خانوادگی')
                 ->required()

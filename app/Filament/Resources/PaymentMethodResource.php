@@ -16,7 +16,10 @@ use Morilog\Jalali\Jalalian;
 class PaymentMethodResource extends Resource
 {
     protected static ?string $model = payment_method::class;
-    protected static ?string $navigationGroup = 'اطلاعات پایه';
+    public static function getNavigationGroup(): string
+    {
+        return __('filament.labels.base_info');
+    }
     protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
 
 

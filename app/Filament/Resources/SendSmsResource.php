@@ -20,13 +20,16 @@ class SendSmsResource extends Resource
     protected static ?string $model = sendsms::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-chat-bubble-left-right';
-    protected static ?string $navigationGroup = 'اطلاعات پایه';
+    public static function getNavigationGroup(): string
+    {
+        return __('filament.labels.base_info');
+    }
 
-    protected static ?string $navigationLabel = 'پیامک ها';
+    protected static ?string $navigationLabel = 'پیامک های ارسالی';
 
-    protected static ?string $pluralLabel = 'پیامک ها';
+    protected static ?string $pluralLabel = 'پیامک های ارسالی';
 
-    protected static ?string $singularLabel = 'پیامک ها';
+    protected static ?string $singularLabel = 'پیامک های ارسالی';
 
     protected static ?int $navigationSort = 11;
 
