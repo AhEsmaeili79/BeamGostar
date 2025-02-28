@@ -193,6 +193,7 @@ return [
         'Active' => 'Active',
         'Created_At' => 'Created At',
         'Updated_At' => 'Updated At',
+        'analyze_personnel_exists' => 'This combination of analyze and personnel already exists.',
     ],
 
     'placeholders' => [

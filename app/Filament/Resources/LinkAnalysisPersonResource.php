@@ -50,20 +50,6 @@ class LinkAnalysisPersonResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('date')
-                    ->label(__('filament.labels.registration_date'))
-                    ->maxLength(10)
-                    ->required()
-                    ->default(now()->format('Y-m-d')) 
-                    ->hidden(),
-
-                TextInput::make('time')
-                    ->label(__('filament.labels.registration_time'))
-                    ->maxLength(10)
-                    ->required()
-                    ->default(now()->format('H:i:s'))
-                    ->hidden(),
-
                 Select::make('personnel_id')
                 ->label(__('filament.labels.operator'))
                 ->options(
@@ -124,6 +110,14 @@ class LinkAnalysisPersonResource extends Resource
 
                 TextColumn::make('created_at')
                     ->label(__('filament.labels.created_at'))
+                    ->formatStateUsing(fn ($state) => 
+                        app()->getLocale() === 'fa' 
+                            ? Jalalian::fromDateTime($state)->format('Y/m/d H:i') // Convert to Jalali
+                            : \Carbon\Carbon::parse($state)->format('Y-m-d H:i') // Gregorian format
+                    )
+                    ->sortable(),
+                TextColumn::make('updated_at')
+                    ->label(__('filament.labels.updated_at'))
                     ->formatStateUsing(fn ($state) => 
                         app()->getLocale() === 'fa' 
                             ? Jalalian::fromDateTime($state)->format('Y/m/d H:i') // Convert to Jalali

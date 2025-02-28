@@ -12,8 +12,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('personnel_id')->constrained('personnel')->onDelete('cascade')->comment('کد پرسنل');
             $table->foreignId('analyze_id')->constrained('analyze')->onDelete('cascade')->comment('آنالیز');
-            $table->string('date', 10)->nullable()->comment('تاریخ ثبت');
-            $table->string('time', 10)->nullable()->comment('زمان ثبت');
             $table->string('deleted_at', 16)->nullable();
             $table->timestamps();
         });
