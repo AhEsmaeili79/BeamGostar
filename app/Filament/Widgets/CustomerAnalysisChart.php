@@ -26,6 +26,9 @@ class CustomerAnalysisChart extends ChartWidget
     {
         return Lang::get('widget.heading');
     }
+
+    protected static ?int $sort = 2;
+
     protected function getData(): array
     {
         // Query to get the count of CustomerAnalysis records grouped by date

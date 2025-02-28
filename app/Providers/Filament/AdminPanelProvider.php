@@ -3,7 +3,6 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Auth\CustomLogin;
-use App\Filament\Widgets\CustomerAnalysisChart;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -20,7 +19,7 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use App\Filament\Widgets\CustomerCountWidget;
-
+use App\Filament\Widgets\CustomerAnalysisChart;
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel

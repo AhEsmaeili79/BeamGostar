@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\App;
 
 class CustomerCountWidget extends BaseWidget
 {
+    protected static ?int $sort = 1;
     protected function getStats(): array
     {
         // Check if the user has the "مشتری" role
@@ -19,6 +20,7 @@ class CustomerCountWidget extends BaseWidget
             // Return an empty array to hide the widget if the user has the "مشتری" role
             return [];
         }
+        
 
         // Otherwise, show the stats
         $locale = App::getLocale();
