@@ -5,7 +5,7 @@ return [
         'label'                  => 'Activity Log',
         'plural_label'           => 'Activity Logs',
         'navigation_item'        => true,
-        'navigation_icon'        => 'heroicon-o-shield-check',
+        'navigation_icon'        => 'heroicon-o-presentation-chart-line',
         'navigation_sort'        => null,
         'default_sort_column'    => 'id',
         'default_sort_direction' => 'desc',

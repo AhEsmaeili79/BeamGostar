@@ -23,7 +23,6 @@ return new class extends Migration
             $table->string('route', 100)->nullable();
             $table->boolean('state')->default(true)->comment('Status: 1 – Active, 0 - Inactive');
             $table->smallInteger('ordering');
-            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
             $table->smallInteger('clone_of')->nullable();
             $table->boolean('open_in_blank')->default(false);
             $table->boolean('open_in_iframe')->default(false);

@@ -30,8 +30,6 @@ return new class extends Migration
             $table->string('company_en', 255)->nullable()->comment('نام شرکت (انگلیسی)');
             $table->string('mobile', 15)->comment('شماره همراه');
             $table->string('phone', 11)->nullable()->comment('شماره تماس شرکت');
-            $table->string('password', 255)->nullable()->comment('رمز عبور');
-            $table->string('re_password', 255)->nullable()->comment('تکرار رمز عبور');
             $table->string('email', 170)->nullable()->comment('پست الکترونیک');
             $table->string('postal_code', 10)->nullable()->comment('کد پستی');
             $table->string('address', 255)->nullable()->comment('آدرس');

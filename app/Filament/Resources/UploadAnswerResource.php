@@ -30,7 +30,7 @@ class UploadAnswerResource extends Resource
 
     protected static ?string $navigationLabel = 'مدیریت نتیجه آنالیز مشتریان';
 
-    protected static ?string $navigationGroup = 'چوابدهی';
+    protected static ?string $navigationGroup = 'جوابدهی';
 
     protected static ?string $pluralModelLabel = 'مدیریت نتیجه آنالیز مشتریان';
 
