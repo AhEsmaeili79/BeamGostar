@@ -72,6 +72,12 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->plugin(
                 \Hasnayeen\Themes\ThemesPlugin::make()
+                ->registerTheme(
+                    [
+                        \Hasnayeen\Themes\Themes\Sunset::class,
+                    ],
+                    override: true,
+                )
             )
             ->widgets([
                 CustomerCountWidget::class,

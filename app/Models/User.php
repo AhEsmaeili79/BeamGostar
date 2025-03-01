@@ -28,6 +28,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'state',
         'password',
     ];
 
@@ -70,6 +71,7 @@ class User extends Authenticatable
                 'name',
                 'email',
                 'password',
+                'state',
             ]); // Log these attributes
     }
 }

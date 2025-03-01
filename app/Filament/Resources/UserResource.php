@@ -14,6 +14,7 @@ use Filament\Tables\Table;
 use Filament\Tables\Actions\Action;
 use Rawilk\FilamentPasswordInput\Password;
 use Filament\Notifications\Notification;
+use Filament\Forms\Components\Toggle;
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
@@ -51,6 +52,11 @@ class UserResource extends Resource
                     ->maxLength(50)
                     ->reactive()
                     ->disabled(), // Change the route name to your edit route
+
+                Toggle::make('state')
+                        ->label(__('filament.labels.status'))
+                        ->required()
+                        ->default(1),
 
 
                 Select::make('roles')
@@ -112,6 +118,16 @@ class UserResource extends Resource
                 TextColumn::make('roles.name')
                     ->label(__('filament.labels.working_group'))
                     ->wrap(),
+
+                Tables\Columns\IconColumn::make('state')
+                    ->label(__('filament.labels.status'))
+                    ->icon(fn($state) => $state ? 'heroicon-o-check-circle' : 'heroicon-o-x-circle') 
+                    ->color(fn($state) => $state ? 'success' : 'danger')
+                    ->sortable()
+                    ->wrap()
+                    ->default(1)
+                    ->toggleable()
+                    ->searchable(),
             ])
             ->filters([
                 // Optional filters
